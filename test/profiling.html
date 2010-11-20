@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Profiling jsFace's Internal APIs Over Unit Tests</title>
+	<link rel="stylesheet" href="qunit/qunit.css" type="text/css" media="screen">
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.js"></script>
+	<script type="text/javascript" src="qunit/qunit.js"></script>
+	<script type="text/javascript" src="../jsface.js"></script>
+	<script type="text/javascript">
+	// Export profiling data to jsface.profileData
+	jsface.profileData = {};
+
+	// Profiling jsFace itself
+	jsface.profiling(jsface, jsface.profileData);
+	</script>
+	<script type="text/javascript" src="jsface/utils.js"></script>
+	<script type="text/javascript" src="jsface/classes.js"></script>
+	<script type="text/javascript">
+	$(document).ready(function() {
+		test('Show profiling info', function() {
+			var html = '';
+			jsface.each(jsface.profileData, function(method, info) {
+				html += '<tr><td>' + method + '</td><td>' + (info.time/info.count) + '</td><td>' + info.count + '</td><td>' + info.time + '</tr>';
+			});
+			$(html).appendTo($('#profiling-info'));
+		});
+	});
+	</script>
+</head>
+<body>
+	<div style="display: none;">
+		<h1 id="qunit-header">jsFace Test Suite</h1>
+	 	<h2 id="qunit-banner"></h2>
+	 	<div id="qunit-testrunner-toolbar"></div>
+	 	<h2 id="qunit-userAgent"></h2>
+	 	<ol id="qunit-tests"></ol>
+	 	<div id="qunit-fixture"></div>
+ 	</div>
+	<table id="profiling-info" border="1px">
+		<tr>
+			<td>Method</td>
+			<td>Time per call (ms)</td>
+			<td># calls</td>
+			<td>Total time (ms)</td>
+		</tr>
+	</table>
+</body>
+</html>

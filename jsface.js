@@ -1,12 +1,10 @@
-/**
- * jsface.js - jsFace JavaScript Object Oriented Library.
+/*
+ * jsFace JavaScript Object Oriented Library
  *
- * Copyright (c) 2010-2011 Tan Nhu. All rights reserved.
+ * https://github.com/tannhu/jsface
  *
- * Licensed under MIT and GPL version 2.
- *
- * @version 1.2b
- * @author <a href='tannhu@gmail.com'>Tan Nhu</a>.
+ * Copyright (c) 2010 Tan Nhu
+ * Dual licensed under the MIT and GPL version 2 licenses.
  * $Date: Saturday, March 07 2009 $
  */
 (function() {
@@ -14,6 +12,7 @@
 'use strict';
 
 var jsface = {
+
 	version: '1.2b',
 
 	/**
@@ -943,7 +942,7 @@ var jsface = {
 		// Rebind jsface.profile
 		jsface.profile = function profile(subject, repository) {
 			if ( !jsface.isMap(repository)) {
-				throw 'jsface.profile: profiling repository must be a map';
+				throw 'jsface.profile: profiling repository must be a map/object';
 			}
 			// Simply invoke jsface.pointcuts
 			jsface.pointcuts(subject, makePointcuts(subject, repository));

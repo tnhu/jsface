@@ -515,7 +515,7 @@ test('Pointcuts over static method', function() {
 		$meta: {
 			name: 'Foo',
 			namespace: jsface.tests,
-			statics: ['sayHi']
+			statics: [ 'sayHi' ]
 		},
 		sayHi: function() {
 			count++;
