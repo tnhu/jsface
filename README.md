@@ -30,7 +30,7 @@ Let define a simple class with one constructor and one method
 	});
 
 	var person = new Person('John F. Kennedy');
-	person.getName(); // 'John Kennedy'
+	person.getName(); // 'John F. Kennedy'
 
 #### A singleton class
 
@@ -61,7 +61,7 @@ Let define a simple class with one constructor and one method
 	});
 
 	var student = new Student('John F. Kennedy');
-	student.getName(); // 'John Kennedy'
+	student.getName(); // 'John F. Kennedy'
 
 #### Method overloading.
 
@@ -92,7 +92,7 @@ Overloading by Array is just about parameters length. Overloading by Map support
 #### Type checking and parameter validating
 
 You can specify the condition of parameters passing in to a method by expression. Any valid JavaScript
-expression can be used. Note that it is the actual value which is passed to the method.
+expression can be used. Note that *it* is the actual value which is passed to the method.
 
 	jsface.def({
 		$meta: {
@@ -101,6 +101,10 @@ expression can be used. Note that it is the actual value which is passed to the 
 
 		Person: {
 			'String, Number: it > 0': function(name, age) {
+				this.name = name;
+				this.age = age;
+			},
+			'String, Number: it > 0, Number: it > 0': function(name, age, gpa) {
 				this.name = name;
 				this.age = age;
 			}
