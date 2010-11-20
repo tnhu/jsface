@@ -1,10 +1,10 @@
 module('Utils Tests');
 
 test('Declare a namespace', function(){
-	jsface.namespace('com.foo.bar');
-	ok(com, 'com namespace must exists');
-	ok(com.foo, 'com.foo namespace must exists');
-	ok(com.foo.bar, 'com.foo.bar namespace must exists');
+	jsface.namespace('jsface.tests.foo.bar');
+	ok(jsface.tests, 'com namespace must exists');
+	ok(jsface.tests.foo, 'com.foo namespace must exists');
+	ok(jsface.tests.foo.bar, 'com.foo.bar namespace must exists');
 });
 
 test('Declare an invalid namespace', function(){

@@ -1,19 +1,19 @@
 module('Class Tests');
 
-test('jsface.def with invalid params', function(){
-	raises(function(){
+test('jsface.def with invalid params', function() {
+	raises(function() {
 		jsface.def(null);
 	}, 'An exception must be thrown for invalid params');
 });
 
-test('jsface.def with invalid params.$meta', function(){
-	raises(function(){
+test('jsface.def with invalid params.$meta', function() {
+	raises(function() {
 		jsface.def({});
 	}, 'An exception must be thrown for invalid params.$meta');
 });
 
-test('jsface.def with invalid params.$meta.name', function(){
-	raises(function(){
+test('jsface.def with invalid params.$meta.name', function() {
+	raises(function() {
 		jsface.def({
 			$meta: {
 				name: 'Hello World'
@@ -22,54 +22,54 @@ test('jsface.def with invalid params.$meta.name', function(){
 	}, 'An exception must be thrown for invalid params.$meta.name');
 });
 
-test('Define a singleton class', function(){
+test('Define a singleton class', function() {
 	jsface.namespace('jsface.tests');
-	jsface.def({
-	    $meta: {
-	        name: 'Foo',
-	        namespace: jsface.tests,
-	        singleton: true
-	    },
 
-	    sayHi: function(){
-	    	return 'Hello World';
-	    }
+	jsface.def({
+		$meta: {
+			name: 'Foo',
+			namespace: jsface.tests,
+			singleton: true
+		},
+
+		sayHi: function() {
+			return 'Hello World';
+		}
 	});
 
 	var Foo = jsface.tests.Foo;
 
 	ok(jsface.isMap(Foo), 'Singleton class must be a map object');
 	ok(Foo.sayHi() === 'Hello World', 'Error invoking method on singleton class');
-
 	delete jsface.tests;
 });
 
-test('Inherit a singleton class', function(){
+test('Inherit a singleton class', function() {
 	jsface.namespace('jsface.tests');
 
 	jsface.def({
-	    $meta: {
-	        name: 'Foo',
-	        namespace: jsface.tests,
-	        singleton: true
-	    },
+		$meta: {
+			name: 'Foo',
+			namespace: jsface.tests,
+			singleton: true
+		},
 
-	    sayHi: function(){
-	    	return 'Hello World';
-	    }
+		sayHi: function() {
+			return 'Hello World';
+		}
 	});
 
 	jsface.def({
-	    $meta: {
-	        name: 'Bar',
-	        namespace: jsface.tests,
-	        parent: jsface.tests.Foo,
-	        singleton: true
-	    },
+		$meta: {
+			name: 'Bar',
+			namespace: jsface.tests,
+			parent: jsface.tests.Foo,
+			singleton: true
+		},
 
-	    sayBye: function(){
-	    	return 'Bye!';
-	    }
+		sayBye: function() {
+			return 'Bye!';
+		}
 	});
 
 	var Bar = jsface.tests.Bar;
@@ -77,25 +77,25 @@ test('Inherit a singleton class', function(){
 	ok(jsface.isMap(Bar), 'Singleton class must be a map object');
 	ok(Bar.sayHi() === 'Hello World', 'Error invoking method on singleton class');
 	ok(Bar.sayBye() === 'Bye!', 'Error invoking method on singleton class');
-
 	delete jsface.tests;
 });
 
-test('Define a class', function(){
+test('Define a class', function() {
 	jsface.namespace('jsface.tests');
+
 	jsface.def({
-	    $meta: {
-	        name: 'Foo',
-	        namespace: jsface.tests
-	    },
+		$meta: {
+			name: 'Foo',
+			namespace: jsface.tests
+		},
 
-	    Foo: function(name){
-	    	this.name = name;
-	    },
+		Foo: function(name) {
+			this.name = name;
+		},
 
-	    sayHi: function(){
-	    	return 'Hello World ' + this.name;
-	    }
+		sayHi: function() {
+			return 'Hello World ' + this.name;
+		}
 	});
 
 	var foo = new jsface.tests.Foo('John Rambo');
@@ -103,72 +103,70 @@ test('Define a class', function(){
 	ok(jsface.isFunction(jsface.tests.Foo), 'Class defination must be a function');
 	ok(jsface.isMap(foo), 'Class instance must be a map');
 	ok(foo.sayHi() === 'Hello World John Rambo', 'Error invoking method on class instance');
-
 	delete jsface.tests;
 });
 
-test('Define a class with default constructor', function(){
+test('Define a class with default constructor', function() {
 	jsface.namespace('jsface.tests');
 
 	jsface.def({
-	    $meta: {
-	        name: 'Foo',
-	        namespace: jsface.tests
-	    },
+		$meta: {
+			name: 'Foo',
+			namespace: jsface.tests
+		},
 
-	    sayBye: function(){
-	    	return 'Bye!';
-	    }
+		sayBye: function() {
+			return 'Bye!';
+		}
 	});
 
 	var foo = new jsface.tests.Foo();
 
 	ok(jsface.isFunction(jsface.tests.Foo), 'Default constructor must be a function');
 	ok(foo.sayBye() === 'Bye!', 'Error invoking method on class instance');
-
 	delete jsface.tests;
 });
 
-test('Define a sub class', function(){
+test('Define a sub class', function() {
 	jsface.namespace('jsface.tests');
 
 	jsface.def({
-	    $meta: {
-	        name: 'Foo',
-	        namespace: jsface.tests
-	    },
+		$meta: {
+			name: 'Foo',
+			namespace: jsface.tests
+		},
 
-	    Foo: function(name){
-	    	this.name = name;
-	    },
+		Foo: function(name) {
+			this.name = name;
+		},
 
-	    welcome: function(){
-	    	return 'Welcome ' + this.name;
-	    },
+		welcome: function() {
+			return 'Welcome ' + this.name;
+		},
 
-	    sayHi: function(){
-	    	return 'Hello World ' + this.name;
-	    }
+		sayHi: function() {
+			return 'Hello World ' + this.name;
+		}
 	});
 
 	jsface.def({
-	    $meta: {
-	        name: 'Bar',
-	        namespace: jsface.tests,
-	        parent: jsface.tests.Foo
-	    },
+		$meta: {
+			name: 'Bar',
+			namespace: jsface.tests,
+			parent: jsface.tests.Foo
+		},
 
-	    Bar: function(name){
-	    	jsface.tests.Foo.apply(this, arguments);
-	    },
+		Bar: function(name) {
+			jsface.tests.Foo.apply(this, arguments);
+		},
 
-	    sayHi: function(){
-	    	return jsface.tests.Foo.prototype.sayHi.apply(this, arguments);
-	    },
+		sayHi: function() {
+			return jsface.tests.Foo.prototype.sayHi.apply(this, arguments);
+		},
 
-	    sayBye: function(){
-	    	return 'Bye!';
-	    }
+		sayBye: function() {
+			return 'Bye!';
+		}
 	});
 
 	var bar = new jsface.tests.Bar('John Rambo');
@@ -177,27 +175,26 @@ test('Define a sub class', function(){
 	ok(bar.welcome() === 'Welcome John Rambo', 'Subclass must be able to inherit parent methods');
 	ok(bar.sayHi() === 'Hello World John Rambo', 'Subclass must be able to invoke parent method');
 	ok(bar.sayBye() === 'Bye!', 'Error invoking subclass method');
-
 	delete jsface.tests;
 });
 
-test('Static methods', function(){
+test('Static methods', function() {
 	jsface.namespace('jsface.tests');
 
 	jsface.def({
-	    $meta: {
-	        name: 'Bar',
-	        namespace: jsface.tests,
-		    statics: [ 'sayBye' ]
-	    },
+		$meta: {
+			name: 'Bar',
+			namespace: jsface.tests,
+			statics: ['sayBye']
+		},
 
-	    Bar: function(name){
-	    	this.name = name;
-	    },
+		Bar: function(name) {
+			this.name = name;
+		},
 
-	    sayBye: function(){
-	    	return 'Bye!';
-	    }
+		sayBye: function() {
+			return 'Bye!';
+		}
 	});
 
 	var bar = new jsface.tests.Bar('John Rambo');
@@ -205,106 +202,105 @@ test('Static methods', function(){
 	ok(jsface.tests.Bar.sayBye() === 'Bye!', 'Error invoking static method');
 	ok(bar.sayBye() === 'Bye!', 'Error invoking static method from class instance');
 	ok(bar.sayBye === jsface.tests.Bar.sayBye, 'Static method must be the same on both class and class instance');
-
 	delete jsface.tests;
 });
 
-test('Class level initialization', function(){
+test('Class level initialization', function() {
 	jsface.namespace('jsface.tests');
 
 	jsface.def({
-	    $meta: {
-	        name: 'Bar',
-	        namespace: jsface.tests,
-		    ready: function(clazz, opts){
-		    	ok(jsface.isFunction(jsface.tests.Bar), 'Class defination must be defined before class initialization');
-		    	ok(clazz.$meta.name === 'Bar', 'Invalid class name');
-		    	ok(opts.$meta.name === 'Bar', 'Invalid opts.$meta.name');
-		    },
-	    },
+		$meta: {
+			name: 'Bar',
+			namespace: jsface.tests,
+			ready: function(clazz, opts) {
+				ok(jsface.isFunction(jsface.tests.Bar), 'Class defination must be defined before class initialization');
+				ok(clazz.$meta.name === 'Bar', 'Invalid class name');
+				ok(opts.$meta.name === 'Bar', 'Invalid opts.$meta.name');
+			},
+		},
 
-	    Bar: function(name){
-	    	this.name = name;
-	    }
+		Bar: function(name) {
+			this.name = name;
+		}
 	});
-
 	delete jsface.tests;
 });
 
-test('Sub classes method call chain', function(){
+test('Sub classes method call chain', function() {
 	jsface.namespace('jsface.tests');
+
 	jsface.def({
-	    $meta: {
-	        name: 'Foo',
-	        namespace: jsface.tests
-	    },
+		$meta: {
+			name: 'Foo',
+			namespace: jsface.tests
+		},
 
-	    Foo: function(name){
-	    	this.name = name;
-	    },
+		Foo: function(name) {
+			this.name = name;
+		},
 
-	    sayHi: function(){
-	    	return 'Hello ' + this.name;
-	    }
+		sayHi: function() {
+			return 'Hello ' + this.name;
+		}
 	});
 
 	jsface.def({
-	    $meta: {
-	        name: 'Bar',
-	        namespace: jsface.tests,
-	        parent: jsface.tests.Foo
-	    },
+		$meta: {
+			name: 'Bar',
+			namespace: jsface.tests,
+			parent: jsface.tests.Foo
+		},
 
-	    Bar: function(name){
-	    	jsface.tests.Foo.apply(this, arguments);
-	    },
+		Bar: function(name) {
+			jsface.tests.Foo.apply(this, arguments);
+		},
 
-	    sayHi: function(){
-	    	return jsface.tests.Foo.prototype.sayHi.apply(this, arguments);
-	    }
+		sayHi: function() {
+			return jsface.tests.Foo.prototype.sayHi.apply(this, arguments);
+		}
 	});
 
 	jsface.def({
-	    $meta: {
-	        name: 'Child',
-	        namespace: jsface.tests,
-	        parent: jsface.tests.Bar
-	    },
+		$meta: {
+			name: 'Child',
+			namespace: jsface.tests,
+			parent: jsface.tests.Bar
+		},
 
-	    Child: function(name){
-	    	jsface.tests.Bar.apply(this, arguments);
-	    },
+		Child: function(name) {
+			jsface.tests.Bar.apply(this, arguments);
+		},
 
-	    sayHi: function(){
-	    	return jsface.tests.Bar.prototype.sayHi.apply(this, arguments);
-	    }
+		sayHi: function() {
+			return jsface.tests.Bar.prototype.sayHi.apply(this, arguments);
+		}
 	});
 
 	var child = new jsface.tests.Child('John Rambo');
 
 	ok(child.name === 'John Rambo', 'Subclass must be able to invoke parent constructor');
 	ok(child.sayHi() === 'Hello John Rambo', 'Subclass must be able to invoke parent method');
-
 	delete jsface.tests;
 });
 
-test('Constructor overloading (Array)', function(){
+test('Constructor overloading (Array)', function() {
 	jsface.namespace('jsface.tests');
-	jsface.def({
-	    $meta: {
-	        name: 'Foo',
-	        namespace: jsface.tests
-	    },
 
-	    Foo: [
-	        function(name){
-	        	this.name = name;
-	        },
-	        function(name, age){
-	        	this.name = name;
-	        	this.age = age;
-	        }
-	    ]
+	jsface.def({
+		$meta: {
+			name: 'Foo',
+			namespace: jsface.tests
+		},
+
+		Foo: [
+			function(name) {
+				this.name = name;
+			},
+			function(name, age) {
+				this.name = name;
+				this.age = age;
+			}
+		]
 	});
 
 	var foo1 = new jsface.tests.Foo('John Rambo'),
@@ -314,31 +310,34 @@ test('Constructor overloading (Array)', function(){
 	ok(!foo1.age, 'Invalid constructor overloading');
 	ok(foo2.name === 'John Rambo', 'Invalid constructor overloading');
 	ok(foo2.age == 55, 'Invalid constructor overloading');
-
 	delete jsface.tests;
 });
 
-test('Constructor overloading (Array) - default constructor', function(){
+test('Constructor overloading (Array) - default constructor', function() {
 	jsface.namespace('jsface.tests');
-	jsface.def({
-	    $meta: {
-	        name: 'Foo',
-	        namespace: jsface.tests
-	    },
 
-	    Foo: [
-	        // Default constructor
-	        function(){
-	        	jsface.bindProperties(this, { name: 'John Rambo', age: 55 });
-	        },
-	        function(name){
-	        	this.name = name;
-	        },
-	        function(name, age){
-	        	this.name = name;
-	        	this.age = age;
-	        }
-	    ]
+	jsface.def({
+		$meta: {
+			name: 'Foo',
+			namespace: jsface.tests
+		},
+
+		Foo: [
+			// Default constructor
+			function() {
+				jsface.bindProperties(this, {
+					name: 'John Rambo',
+					age: 55
+				});
+			},
+			function(name) {
+				this.name = name;
+			},
+			function(name, age) {
+				this.name = name;
+				this.age = age;
+			}
+		]
 	});
 
 	var foo = new jsface.tests.Foo();
@@ -350,29 +349,29 @@ test('Constructor overloading (Array) - default constructor', function(){
 
 	ok(foo2.name === 'John Rambo', 'Invalid constructor overloading');
 	ok(foo2.age == 55, 'Invalid constructor overloading');
-
 	delete jsface.tests;
 });
 
-test('Method overloading (Array)', function(){
+test('Method overloading (Array)', function() {
 	jsface.namespace('jsface.tests');
-	jsface.def({
-	    $meta: {
-	        name: 'Foo',
-	        namespace: jsface.tests
-	    },
 
-	    count: [
-	        function(){
-	        	return 0;
-	        },
-	        function(num){
-	        	return num;
-	        },
-	        function(num1, num2){
-	        	return num1 + num2;
-	        }
-	    ]
+	jsface.def({
+		$meta: {
+			name: 'Foo',
+			namespace: jsface.tests
+		},
+
+		count: [
+			function() {
+				return 0;
+			},
+			function(num) {
+				return num;
+			},
+			function(num1, num2) {
+				return num1 + num2;
+			}
+		]
 	});
 
 	var foo = new jsface.tests.Foo();
@@ -381,72 +380,71 @@ test('Method overloading (Array)', function(){
 	ok(foo.count(1, 2, 3) === 0, 'Default overloading must get called');
 	ok(foo.count(1) == 1, 'Second overloading must get called');
 	ok(foo.count(1, 2) == 3, 'Third overloading must get called');
-
 	delete jsface.tests;
 });
 
-test('Constructor overloading (Map)', function(){
+test('Constructor overloading (Map)', function() {
 	jsface.namespace('jsface.tests');
 	jsface.def({
-	    $meta: {
-	        name: 'Foo',
-	        namespace: jsface.tests
-	    },
+		$meta: {
+			name: 'Foo',
+			namespace: jsface.tests
+		},
 
-	    Foo: {
-	        'String': function(name){
-	        	this.name = name;
-	        },
-	        'String, Number': function(name, age){
-	        	this.name = name;
-	        	this.age = age;
-	        }
-	    }
+		Foo: {
+			'String': function(name) {
+				this.name = name;
+			},
+			'String, Number': function(name, age) {
+				this.name = name;
+				this.age = age;
+			}
+		}
 	});
 
 	var foo1 = new jsface.tests.Foo('John Rambo'),
 		foo2 = new jsface.tests.Foo('John Rambo', 55);
 
 	ok(foo1.name === 'John Rambo', 'First constructor must get called');
-	ok( !foo1.age, 'First constructor must get called');
+	ok(!foo1.age, 'First constructor must get called');
 	ok(foo2.name === 'John Rambo', 'Second constructor must get called');
 	ok(foo2.age == 55, 'Second constructor must get called');
-
 	delete jsface.tests;
 });
 
-test('Pointcuts over constructor and method', function(){
+test('Pointcuts over constructor and method', function() {
 	jsface.namespace('jsface.tests');
+
 	jsface.def({
-	    $meta: {
-	        name: 'Foo',
-	        namespace: jsface.tests
-	    },
+		$meta: {
+			name: 'Foo',
+			namespace: jsface.tests
+		},
 
-	    Foo: function(){
-	    	this.count++;
-	    },
+		Foo: function() {
+			this.count++;
+		},
 
-	    sayHi: function(){
-	    	this.say++;
-	    }
+		sayHi: function() {
+			this.say++;
+		}
 	});
 
 	jsface.pointcuts(jsface.tests.Foo, {
 		Foo: {
-			before: function(){
+			before: function() {
 				this.count = 1;
 			},
-			after: function(){
+			after: function() {
 				this.count++;
 			}
 		},
 
 		sayHi: {
-			before: function(){
+			before: function() {
 				this.say = 1;
 			},
-			after: function(){
+			after: function() {
 				this.say++;
 			}
 		}
@@ -457,46 +455,46 @@ test('Pointcuts over constructor and method', function(){
 
 	ok(foo.count === 3, 'Pointcuts over constructor must get called');
 	ok(foo.say === 3, 'Pointcuts over method must get called');
-
 	delete jsface.tests;
 });
 
-test('Pointcuts over constructor and method, specified by $meta', function(){
+test('Pointcuts over constructor and method, specified by $meta', function() {
 	var pointcuts = {
 		Foo: {
-			before: function(){
+			before: function() {
 				this.count = 1;
 			},
-			after: function(){
+			after: function() {
 				this.count++;
 			}
 		},
 
 		sayHi: {
-			before: function(){
+			before: function() {
 				this.say = 1;
 			},
-			after: function(){
+			after: function() {
 				this.say++;
 			}
 		}
 	};
 
 	jsface.namespace('jsface.tests');
+
 	jsface.def({
-	    $meta: {
-	        name: 'Foo',
-	        namespace: jsface.tests,
-	        pointcuts: pointcuts
-	    },
+		$meta: {
+			name: 'Foo',
+			namespace: jsface.tests,
+			pointcuts: pointcuts
+		},
 
-	    Foo: function(){
-	    	this.count++;
-	    },
+		Foo: function() {
+			this.count++;
+		},
 
-	    sayHi: function(){
-	    	this.say++;
-	    }
+		sayHi: function() {
+			this.say++;
+		}
 	});
 
 	var foo = new jsface.tests.Foo();
@@ -508,26 +506,28 @@ test('Pointcuts over constructor and method, specified by $meta', function(){
 	delete jsface.tests;
 });
 
-test('Pointcuts over static method', function(){
+test('Pointcuts over static method', function() {
 	var count = 0;
+
 	jsface.namespace('jsface.tests');
+
 	jsface.def({
-	    $meta: {
-	        name: 'Foo',
-	        namespace: jsface.tests,
-	        statics: [ 'sayHi' ]
-	    },
-	    sayHi: function(){
-	    	count++;
-	    }
+		$meta: {
+			name: 'Foo',
+			namespace: jsface.tests,
+			statics: ['sayHi']
+		},
+		sayHi: function() {
+			count++;
+		}
 	});
 
 	jsface.pointcuts(jsface.tests.Foo, {
 		sayHi: {
-			before: function(){
+			before: function() {
 				count++;
 			},
-			after: function(){
+			after: function() {
 				count++;
 			}
 		}
@@ -543,16 +543,289 @@ test('Pointcuts over static method', function(){
 	delete jsface.tests;
 });
 
+test('Pointcuts over a built-in class', function() {
+	var before, after;
 
-jsface.pointcuts(String, {
-    trim: {
-        before: function(){
-            alert('before');
-        },
-        after: function(){
-            alert('after');
-        }
-    }
+	jsface.pointcuts(String, {
+		concat: {
+			before: function() {
+				before = true;
+			},
+			after: function() {
+				after = true;
+			}
+		}
+	});
+
+	'Hello '.concat('World');
+
+	ok(before, 'before pointcut on String.prototype.concat must get called');
+	ok(after, 'after pointcut on String.prototype.concat must get called');
 });
 
-jsface.trim(111121);
+test('Pointcuts on jsface itself', function() {
+	var before, after;
+
+	jsface.pointcuts(jsface, {
+		namespace: {
+			before: function() {
+				before = true;
+			},
+			after: function() {
+				after = true;
+			}
+		}
+	});
+
+	jsface.namespace('jsface.tests.foo.bar.test');
+
+	ok(before, 'before pointcut on jsface.namespace must get called');
+	ok(after, 'after pointcut on jsface.namespace must get called');
+	delete jsface.tests;
+});
+
+test('Add plugins (import methods) from a map to a class', function() {
+	jsface.namespace('jsface.tests');
+
+	jsface.def({
+		$meta: {
+			name: 'Foo',
+			namespace: jsface.tests
+		}
+	});
+
+	var plugins = {
+		setName: function(name){
+			this.name = name;
+		}
+	};
+
+	jsface.plugins(jsface.tests.Foo, plugins); // Plug plugins to class
+
+	var foo = new jsface.tests.Foo();
+	foo.setName('John');
+
+	ok(foo.name === 'John', 'Plugins APIs must be plugged into class');
+	ok(foo.setName === plugins.setName, 'Plugins APIs must be plugged into class');
+	ok(jsface.tests.Foo.prototype.setName === plugins.setName, 'Plugins APIs must be plugged into class');
+	delete jsface.tests;
+});
+
+test('Add plugins (import methods) from a map to an instance', function() {
+	jsface.namespace('jsface.tests');
+
+	jsface.def({
+		$meta: {
+			name: 'Foo',
+			namespace: jsface.tests
+		}
+	});
+
+	var plugins = {
+		setName: function(name){
+			this.name = name;
+		}
+	};
+
+	var foo = new jsface.tests.Foo();
+
+	jsface.plugins(foo, plugins); // Plug plugins to class instance
+
+	foo.setName('John');
+
+	ok(foo.name === 'John', 'Plugins APIs must be plugged into class instance');
+	ok(foo.setName === plugins.setName, 'Plugins APIs must be plugged into class instance');
+	ok( !jsface.tests.Foo.prototype.setName, 'Plugins APIs must be plugged into class instance and not class');
+	delete jsface.tests;
+});
+
+test('Add plugins (import methods) from a class to a class', function() {
+	jsface.namespace('jsface.tests');
+
+	jsface.def({
+		$meta: {
+			name: 'Foo',
+			namespace: jsface.tests
+		}
+	});
+
+	jsface.def({
+		$meta: {
+			name: 'Bar',
+			namespace: jsface.tests
+		},
+
+		setName: function(name){
+			this.name = name;
+		}
+	});
+
+	jsface.plugins(jsface.tests.Foo, jsface.tests.Bar);
+
+	var foo = new jsface.tests.Foo();
+	foo.setName('John');
+
+	ok(foo.name === 'John', 'Plugins APIs must be plugged into class');
+	ok(foo.setName === jsface.tests.Bar.prototype.setName, 'Plugins APIs must be plugged into class');
+	ok(jsface.tests.Foo.prototype.setName === jsface.tests.Bar.prototype.setName, 'Plugins APIs must be plugged into class');
+	delete jsface.tests;
+});
+
+test('Add plugins (import methods) from a class to a class instance', function() {
+	jsface.namespace('jsface.tests');
+
+	jsface.def({
+		$meta: {
+			name: 'Foo',
+			namespace: jsface.tests
+		}
+	});
+
+	jsface.def({
+		$meta: {
+			name: 'Bar',
+			namespace: jsface.tests
+		},
+
+		setName: function(name){
+			this.name = name;
+		}
+	});
+
+	var foo = new jsface.tests.Foo();
+	jsface.plugins(foo, jsface.tests.Bar);
+	foo.setName('John');
+
+	ok(foo.name === 'John', 'Plugins APIs must be plugged into class instance');
+	ok(foo.setName === jsface.tests.Bar.prototype.setName, 'Plugins APIs must be plugged into class instance');
+	ok( !jsface.tests.Foo.prototype.setName, 'Plugins APIs must be plugged into class instance and not the class');
+	delete jsface.tests;
+});
+
+test('Add multiple plugins', function() {
+	jsface.namespace('jsface.tests');
+
+	jsface.def({
+		$meta: {
+			name: 'Foo',
+			namespace: jsface.tests
+		}
+	});
+
+	jsface.def({
+		$meta: {
+			name: 'Events',
+			namespace: jsface.tests
+		},
+
+		bind: function(name){
+			this.event = name;
+		}
+	});
+
+	jsface.def({
+		$meta: {
+			name: 'Options',
+			namespace: jsface.tests
+		},
+
+		setOptions: function(attrs){
+			jsface.bindProperties(this, attrs);
+		}
+	});
+
+	jsface.plugins(jsface.tests.Foo, [ jsface.tests.Events, jsface.tests.Options ]);
+
+	var foo = new jsface.tests.Foo();
+
+	foo.bind('click');
+	foo.setOptions({ name: 'John', age: 58 });
+
+	ok(foo.event === 'click', 'Plugins APIs must be plugged into class');
+	ok(foo.name === 'John', 'Plugins APIs must be plugged into class');
+	ok(foo.age === 58, 'Plugins APIs must be plugged into class');
+	ok(foo.bind === jsface.tests.Events.prototype.bind, 'Plugins APIs must be plugged into class');
+	ok(foo.setOptions === jsface.tests.Options.prototype.setOptions, 'Plugins APIs must be plugged into class');
+	ok(jsface.tests.Foo.prototype.bind === jsface.tests.Events.prototype.bind, 'Plugins APIs must be plugged into class');
+	ok(jsface.tests.Foo.prototype.setOptions === jsface.tests.Options.prototype.setOptions, 'Plugins APIs must be plugged into class');
+	delete jsface.tests;
+});
+
+test('Add plugins (import methods) via $meta.plugins', function() {
+	jsface.namespace('jsface.tests');
+
+	jsface.def({
+		$meta: {
+			name: 'Bar',
+			namespace: jsface.tests
+		},
+
+		setName: function(name){
+			this.name = name;
+		}
+	});
+
+	jsface.def({
+		$meta: {
+			name: 'Foo',
+			namespace: jsface.tests,
+			plugins: jsface.tests.Bar
+		}
+	});
+
+	var foo = new jsface.tests.Foo();
+	foo.setName('John');
+
+	ok(foo.name === 'John', 'Plugins APIs must be plugged into class');
+	ok(foo.setName === jsface.tests.Bar.prototype.setName, 'Plugins APIs must be plugged into class');
+	ok(jsface.tests.Foo.prototype.setName === jsface.tests.Bar.prototype.setName, 'Plugins APIs must be plugged into class');
+	delete jsface.tests;
+});
+
+test('Add multiple plugins via $meta.plugins', function() {
+	jsface.namespace('jsface.tests');
+
+	jsface.def({
+		$meta: {
+			name: 'Events',
+			namespace: jsface.tests
+		},
+
+		bind: function(name){
+			this.event = name;
+		}
+	});
+
+	jsface.def({
+		$meta: {
+			name: 'Options',
+			namespace: jsface.tests
+		},
+
+		setOptions: function(attrs){
+			jsface.bindProperties(this, attrs);
+		}
+	});
+
+	jsface.def({
+		$meta: {
+			name: 'Foo',
+			namespace: jsface.tests,
+			plugins: [ jsface.tests.Events, jsface.tests.Options ]
+		}
+	});
+
+	var foo = new jsface.tests.Foo();
+
+	foo.bind('click');
+	foo.setOptions({ name: 'John', age: 58 });
+
+	equals(foo.event, 'click', 'Plugins APIs must be plugged into class');
+	equals(foo.name, 'John', 'Plugins APIs must be plugged into class');
+	equals(foo.age, 58, 'Plugins APIs must be plugged into class');
+	equals(foo.bind, jsface.tests.Events.prototype.bind, 'Plugins APIs must be plugged into class');
+	equals(foo.setOptions, jsface.tests.Options.prototype.setOptions, 'Plugins APIs must be plugged into class');
+	equals(jsface.tests.Foo.prototype.bind, jsface.tests.Events.prototype.bind, 'Plugins APIs must be plugged into class');
+	equals(jsface.tests.Foo.prototype.setOptions, jsface.tests.Options.prototype.setOptions, 'Plugins APIs must be plugged into class');
+	delete jsface.tests;
+});

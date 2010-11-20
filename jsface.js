@@ -1,7 +1,7 @@
 /**
  * jsface.js - jsFace JavaScript Object Oriented Library.
  *
- * Copyright (c) 2011 Tan Nhu. All rights reserved.
+ * Copyright (c) 2010-2011 Tan Nhu. All rights reserved.
  *
  * Licensed under MIT and GPL version 2.
  *
@@ -9,39 +9,35 @@
  * @author <a href='tannhu@gmail.com'>Tan Nhu</a>.
  * $Date: Saturday, March 07 2009 $
  */
-(function(){
+(function() {
 
-/**
- * Define namespace jsface the root of jsface core and its standard sub-namespace place holders.
- * @namespace jsface.
- */
-jsface = {
+'use strict';
+
+var jsface = {
 	version: '1.2b',
 
 	/**
-	 * Create a namespace hierarchy.
+	 * Create a namespace hierarchy. If one namespace in chain exists, it will be reused.
 	 * @param {String} namespace
 	 * @return null if namespace is invalid. otherwise, return the namespace object.
 	 * Example: var ns = jsface.namespace('com.jsface.widgets'); // ns becomes com.jsface.widgets
-	 *
-	 * If one namespace in chain exists, it will be reused.
 	 */
-	namespace: function(namespace){
-		if (jsface.isString(namespace)){
+	namespace: function(namespace) {
+		if (jsface.isString(namespace)) {
 			var names = namespace.split('.'), len = names.length, root, i;
 
 			// Check each name using regular expression
 			// Condition: Begin with an alphabet character, follow by alphabets or numbers
-			for (i in names){
-				if ( !jsface.isIdentifier(names[i])){
+			for (i in names) {
+				if ( !jsface.isIdentifier(names[i])) {
 					throw names[i] + ' is not a valid namespace alias';
 				}
 			}
 
-			root = new Function('try { return ' + names[0] + '; } catch (e){ return ' + names[0] + ' = {}; }')();
+			root = new Function('try { return ' + names[0] + '; } catch (e) { return ' + names[0] + ' = {}; }')();
 
-			for (i = 1; i < len; i++){
-				if ( !root[names[i]]){   // Create if namespace does not exist
+			for (i = 1; i < len; i++) {
+				if ( !root[names[i]]) {   // Create if namespace does not exist
 					root[names[i]] = {};
 				}
 				root = root[names[i]];
@@ -69,10 +65,10 @@ jsface = {
 	 *
 	 * This each() function supports string, array, object, and function.
 	 */
-	each: function(){
+	each: function() {
 		var len = arguments.length, collection, predicate, fn, item, isArray, isMap, isFunction, ret, i;
 
-		switch (len){
+		switch (len) {
 			case 2: // just collection and function
 				collection = arguments[0];
 				fn = arguments[1];
@@ -91,45 +87,44 @@ jsface = {
 		isFunction = jsface.isFunction(collection);
 
 		// Skip processing if collection is not String, Array, or Map
-		if ( !isArray && !isMap && !isFunction){
+		if ( !isArray && !isMap && !isFunction) {
 			return;
 		}
 
-		// If no predicate is passed, execute fn over all elements
-		// Otherwise, over the condition of predicate only
-		if (len === 2){
-			if (isArray){
+		// If no predicate is passed, execute fn over all elements. Otherwise, over the condition of predicate only
+		if (len === 2) {
+			if (isArray) {
 				len = collection.length;
-				for (i = 0; i < len; i++){
+				for (i = 0; i < len; i++) {
 					ret = fn(collection[i], i);
-					if (ret === true){
+					if (ret === true) {
 						break;
 					}
 				}
 			} else {
-				for (item in collection){
+				for (item in collection) {
 					ret = fn(item, collection[item]);
-					if (ret === true){
+					if (ret === true) {
 						break;
 					}
 				}
 			}
 		} else {
-			if (isArray){
+			if (isArray) {
 				len = collection.length;
-				for (i = 0; i < len; i++){
-					if (predicate(collection[i], i)){
+				for (i = 0; i < len; i++) {
+					if (predicate(collection[i], i)) {
 						ret = fn(collection[i], i);
-						if (ret === true){
+						if (ret === true) {
 							break;
 						}
 					}
 				}
 			} else {
-				for (item in collection){
-					if (predicate(item, collection[item])){
+				for (item in collection) {
+					if (predicate(item, collection[item])) {
 						ret = fn(item, collection[item]);
-						if (ret === true){
+						if (ret === true) {
 							break;
 						}
 					}
@@ -146,23 +141,23 @@ jsface = {
 	 * parameters on the left. That means if there is one value duplicated, value of the
 	 * right parameter will be used.
 	 */
-	merge: function(){
+	merge: function() {
 		var	args = [].concat(Array.prototype.slice.apply(arguments)),
 			result = null, first, second;
 
-		switch (args.length){
+		switch (args.length) {
 			case 0:
 			case 1:
 				break;
 			case 2:
 				first = args[0] || {};
 				second = args[1] || {};
-				if (jsface.isMap(first) && jsface.isMap(second)){
+				if (jsface.isMap(first) && jsface.isMap(second)) {
 					result = {};
-					jsface.each(first, function(fKey, fValue){
+					jsface.each(first, function(fKey, fValue) {
 						result[fKey] = fValue;
 					});
-					jsface.each(second, function(sKey, sValue){
+					jsface.each(second, function(sKey, sValue) {
 						result[sKey] = sValue;
 					});
 				}
@@ -170,8 +165,8 @@ jsface = {
 			default:
 				first = args.shift();
 				result = jsface.merge(first, jsface.merge.apply(jsface, args));
+				break;
 		}
-
 		return result;
 	},
 
@@ -181,8 +176,8 @@ jsface = {
 	 * @param {Object/Any} value object value.
 	 * @return the global object.
 	 */
-	global: function(name, value){
-		if (jsface.isIdentifier(name)){
+	global: function(name, value) {
+		if (jsface.isIdentifier(name)) {
 			return new Function('value', 'return ' + name + ' = value;')(value);
 		} else {
 			throw 'jsface.global: Invalid global name ' + name;
@@ -194,9 +189,9 @@ jsface = {
 	 * @param {Object} obj object.
 	 * @param {Map} map properties.
 	 */
-	bindProperties: function(obj, map){
-		if (obj && jsface.isMap(map)){
-			jsface.each(map, function(key, value){
+	bindProperties: function(obj, map) {
+		if (obj && jsface.isMap(map)) {
+			jsface.each(map, function(key, value) {
 				obj[key] = value;
 			});
 		}
@@ -205,81 +200,81 @@ jsface = {
 	/**
 	 * Check an object is a map or not. A map is something like { key1: value1, key2: value2 }.
 	 * @param {Object} obj
-	 * @return true if obj is a map. false if not.
+	 * @return true if obj is a map, false if not.
 	 */
-	isMap: function(obj){
+	isMap: function(obj) {
 		return (obj && typeof obj === 'object' && !(typeof obj.length === 'number' && !(obj.propertyIsEnumerable('length'))));
 	},
 
 	/**
 	 * Check an object is an array or not. An array is something like [].
 	 * @param {Object} obj
-	 * @return true if obj is an array. false if not.
+	 * @return true if obj is an array, false if not.
 	 */
-	isArray: function(obj){
+	isArray: function(obj) {
 		return (obj && typeof obj === 'object' && typeof obj.length === 'number' && !(obj.propertyIsEnumerable('length')));
 	},
 
 	/**
 	 * Check an object is a function or not.
 	 * @param {Object} obj
-	 * @return true if obj is a function. false if not.
+	 * @return true if obj is a function, false if not.
 	 */
-	isFunction: function(obj){
+	isFunction: function(obj) {
 		return (obj && typeof obj === 'function');
 	},
 
 	/**
 	 * Check an object is a string not.
 	 * @param {Object} obj
-	 * @return true if obj is a string. false if not.
+	 * @return true if obj is a string, false if not.
 	 */
-	isString: function(obj){
+	isString: function(obj) {
 		return (obj === '' || (obj && typeof obj === 'string'));
 	},
 
 	/**
 	 * Check an object is a boolean or not.
 	 * @param {Object} obj
-	 * @return true if obj is a boolean object. false if not.
+	 * @return true if obj is a boolean object, false if not.
 	 */
-	isBoolean: function(obj){
+	isBoolean: function(obj) {
 		return (typeof obj === 'boolean');
 	},
 
 	/**
 	 * Check an object is a number or not.
 	 * @param {Object} obj
-	 * @return true if obj is a number. false if not.
+	 * @return true if obj is a number, false if not.
 	 */
-	isNumber: function(obj){
+	isNumber: function(obj) {
 		return (typeof obj === 'number');
 	},
 
 	/**
 	 * Check an object is undefined or not.
 	 * @param {Object} obj
-	 * @return true if obj is undefined. false if not.
+	 * @return true if obj is undefined, false if not.
 	 */
-	isUndefined: function(obj){
+	isUndefined: function(obj) {
 		return (obj === undefined);
 	},
 
 	/**
 	 * Check an object is null or not.
 	 * @param {Object} obj
-	 * @return true if obj is null. false if not.
+	 * @return true if obj is null, false if not.
 	 */
-	isNull: function(obj){
+	isNull: function(obj) {
 		return (obj === null);
 	},
 
 	/**
 	 * Check an object is null or undefined.
 	 * @param {Object} obj object to check
-	 * @return true if the object is null or undefined. false if not.
+	 * @return true if the object is null or undefined, false if not.
 	 */
-	isNullOrUndefined: function(obj){
+	isNullOrUndefined: function(obj) {
 		return (obj === undefined || obj === null);
 	},
 
@@ -289,8 +284,17 @@ jsface = {
 	 * @param {Object} obj object to check
 	 * @return true if the object is empty.
 	 */
-	isEmpty: function(obj){
-		return (obj === undefined || obj === null || (jsface.isString(obj) && jsface.trim(obj) === '') || (jsface.isArray(obj) && obj.length === 0) || (jsface.isMap(obj) && (function(ob){ for (var i in ob){ return false; } return true;	})(obj)));
+	isEmpty: function(obj) {
+		return (obj === undefined || obj === null || (jsface.isString(obj) && jsface.trim(obj) === '') || (jsface.isArray(obj) && obj.length === 0) || (jsface.isMap(obj) && (function(ob) { for (var i in ob) { return false; } return true; })(obj)));
+	},
+
+	/**
+	 * Check an object is a class (not an instance of a class, which is a map) or not.
+	 * @param {Object} clazz object to check
+	 * @return true if the object is a class, false if not.
+	 */
+	isClass: function(clazz) {
+		return jsface.isFunction(clazz) && (clazz === clazz.prototype.constructor);
 	},
 
 	/**
@@ -299,36 +303,34 @@ jsface = {
 	 * @param {String} id identifier to check.
 	 * @return {Boolean} true if id is a valid JavaScript literal.
 	 */
-	isIdentifier: function(id){
+	isIdentifier: function(id) {
 		return /^[a-zA-Z_$]+[0-9a-zA-Z_$]+$/.test(id);
 	},
 
 	/**
 	 * Empty function.
 	 */
-	emptyFn: function(){
-	},
+	noop: function() {},
 
 	/**
 	 * Trim a string. If str is not a string, the whole object will be returned.
 	 * @param str string to trim
-	 * @param lr left, right flag. true: trim = trim left, false: trim = trim right, other: both.
 	 * @return trimmed string.
 	 * @see http://tinyurl.com/yl934kz
 	 */
-	trim: function(str){
+	trim: function(str) {
 		var	chars = ' \n\r\t\v\f\u00a0\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200a\u200b\u2028\u2029\u3000',
 			ws = {}, len = chars.length;
 
-		while (len--){
+		while (len--) {
 			ws[chars.charAt(len)] = true;
 		}
 
-		jsface.trim = function(str){
-			if ( !jsface.isString(str)){
+		jsface.trim = function(str) {
+			if ( !jsface.isString(str)) {
 				return str;
 			}
-			if (String.prototype.trim){
+			if (String.prototype.trim) {
 				return String.prototype.trim.apply(str);
 			}
 			var s = -1, e = str.length;
@@ -336,7 +338,6 @@ jsface = {
 			while (s++ !== e && ws[str.charAt(s)]);
 			return str.substring(s, e + 1);
 		};
-
 		return jsface.trim(str);
 	},
 
@@ -348,7 +349,7 @@ jsface = {
 	 * @return {Function} function supports all declared overloading.
 	 * @throw {Exception} if there is an error in an overloading method.
 	 */
-	overload: function(){
+	overload: function() {
 		/*
 		 * Make overloading method in case api is declared as an array.
 		 * @param {String} methodName method name.
@@ -356,38 +357,38 @@ jsface = {
 		 * @return {Function} function supports all declared overloading.
 		 * @throw {Exception} if there is an error in an overloading method.
 		 */
-		function makeOverloadingArray(methodName, api){
+		function makeOverloadingArray(methodName, api) {
 			// It is an array, check the length
-			if (api.length === 0){
+			if (api.length === 0) {
 				return api;
 			}
 
 			// Ok, it is an array, check if it is not a method but a normal array property
-			for (var idx in api){
-				if ( !jsface.isFunction(api[idx])){
+			for (var idx in api) {
+				if ( !jsface.isFunction(api[idx])) {
 					return api;
 				}
 			}
 
 			// Now it is an overloading method. If there is only one overloading, ignore wrapping
-			if (api.length === 1){
+			if (api.length === 1) {
 				return api[0];
 			}
 
 			// Make wrapper
-			return function(){
+			return function() {
 				var len = arguments.length, defaultFn = null, idx;
 
-				for (idx in api){
-					if (api[idx].length === len){
+				for (idx in api) {
+					if (api[idx].length === len) {
 						return api[idx].apply(this, arguments);
-					} else if (api[idx].length === 0){
+					} else if (api[idx].length === 0) {
 						defaultFn = api[idx];
 					}
 				}
 
 				// Still not match? How about passing to the default method which does not declare any argument?
-				if (defaultFn){
+				if (defaultFn) {
 					return defaultFn.apply(this, arguments);
 				} else { // No method supports arguments.length? Throw an exception
 					throw 'jsface.overload: ' + methodName + '() does not accept ' + len + ' arguments';
@@ -402,15 +403,15 @@ jsface = {
 		 * @return {Function} function supports all declared overloading.
 		 * @throw {Exception} if there is an error in an overloading method.
 		 */
-		function makeOverloadingObject(methodName, api){
+		function makeOverloadingObject(methodName, api) {
 			/*
 			 * Make evaluator function for an argument of a overriding function.
 			 */
-			function makeEvaluator(expression, typeDefsString){
-				var s = '(function(){ return function(it){ return (' + expression + ') === true; }})();';
+			function makeEvaluator(expression, typeDefsString) {
+				var s = '(function() { return function(it) { return (' + expression + ') === true; }})();';
 				try {
 					return eval(s);
-				} catch (error){
+				} catch (error) {
 					throw 'jsface.overload: Invalid validating expression: ' + expression + ' on overloading method ' + methodName + '(' + typeDefsString + ')';
 				}
 			}
@@ -419,18 +420,18 @@ jsface = {
 			 * Transform types definition for a overriding function.
 			 * typeDefs ~ ['string', 'string: it != null']
 			 *	>>: [{ name: 'string', type: String },
-			 *		   { name: 'String', type: String, expression: 'it != null', evaluator: function(it){ return (it != null) === true; }]
+			 *		   { name: 'String', type: String, expression: 'it != null', evaluator: function(it) { return (it != null) === true; }]
 			 * @param typeDefs array of type definitions.
 			 * @param typeDefsString the whole string represent types definition of the method.
 			 */
-			function transformTypes(typeDefs, typeDefsString){
+			function transformTypes(typeDefs, typeDefsString) {
 				var result = [];
 
-				jsface.each(typeDefs, function(typeDef, index){
+				jsface.each(typeDefs, function(typeDef, index) {
 					typeDef = jsface.trim(typeDef);
 					var name, type, expression, evaluator, colon = typeDef.indexOf(':');
 
-					if (colon === -1){
+					if (colon === -1) {
 						name = typeDef;
 					} else {
 						name = typeDef.substring(0, colon);
@@ -439,7 +440,7 @@ jsface = {
 					}
 					try {
 						type = eval(name);
-					} catch (error){
+					} catch (error) {
 						throw 'jsface.overload: Type ' + name + ' is not defined on overloading method ' + methodName + '(' + typeDefsString + ')';
 					}
 					result.push({
@@ -455,29 +456,29 @@ jsface = {
 			/*
 			 * Determine type of an argument.
 			 */
-			function getType(obj){
-				if (jsface.isString(obj)){
+			function getType(obj) {
+				if (jsface.isString(obj)) {
 					return String;
 				}
-				if (jsface.isArray(obj)){
+				if (jsface.isArray(obj)) {
 					return Array;
 				}
-				if (jsface.isNumber(obj)){
+				if (jsface.isNumber(obj)) {
 					return Number;
 				}
-				if (jsface.isFunction(obj)){
+				if (jsface.isFunction(obj)) {
 					return Function;
 				}
-				if (jsface.isBoolean(obj)){
+				if (jsface.isBoolean(obj)) {
 					return Boolean;
 				}
 
 				// Try to guess obj is a class created by jsface
 				try {
-					if (jsface.isString(obj.classMeta.name)){
+					if (jsface.isString(obj.classMeta.name)) {
 						return eval(obj.classMeta.name);
 					}
-				} catch (error){}
+				} catch (error) {}
 
 				// All other objects will be marked as Object type
 				return Object;
@@ -486,14 +487,14 @@ jsface = {
 			/*
 			 * Check that arguments passing to call function matches an overriding function or not.
 			 */
-			function isMatched(args, len, typeInfo){
+			function isMatched(args, len, typeInfo) {
 				var i, type, name, arg;
-				for (i = 0; i < len; i++){
+				for (i = 0; i < len; i++) {
 					type = typeInfo[i].type;
 					name = typeInfo[i].name;
 					arg = args[i];
 
-					if (getType(arg) !== type && !(arg === null && (type === String || type === Array || type === Object))){
+					if (getType(arg) !== type && !(arg === null && (type === String || type === Array || type === Object))) {
 						return false;
 					}
 				}
@@ -503,9 +504,9 @@ jsface = {
 			/*
 			 * Build method signature for debugging.
 			 */
-			function buildMethodSignature(typeItem, args, len){
+			function buildMethodSignature(typeItem, args, len) {
 				var s = methodName + '(', i;
-				for (i = 0; i < len - 1; i++){
+				for (i = 0; i < len - 1; i++) {
 					s += typeItem.types[i].name + ': ' + args[i] + ', ';
 				}
 				s += typeItem.types[len - 1].name + ': ' + args[len - 1] + ')';
@@ -515,23 +516,23 @@ jsface = {
 			/*
 			 * Select an overriding function to execute function with passing arguments.
 			 */
-			function selectHandler(context, mapItem, len, args){
+			function selectHandler(context, mapItem, len, args) {
 				var matches = [], typeItem, i, s;
 
 				// Iterator over mapItem, if arguments match types definition, push matched meta in matches
-				jsface.each(mapItem, function(item, index){
-					if (isMatched(args, len, item.types)){
+				jsface.each(mapItem, function(item, index) {
+					if (isMatched(args, len, item.types)) {
 						matches.push(item);
 					}
 				});
 
 				// There are more than one methods matched, check to remove methods which arguments do not pass evaluators
-				if (matches.length > 1){
-					jsface.each(matches, function(typeItem, index){
-						for (i = 0; i < len; i++){
+				if (matches.length > 1) {
+					jsface.each(matches, function(typeItem, index) {
+						for (i = 0; i < len; i++) {
 							var evaluator = typeItem.types[i].evaluator;
-							if (evaluator){
-								if (evaluator.call(context, args[i]) === false){
+							if (evaluator) {
+								if (evaluator.call(context, args[i]) === false) {
 									matches.splice(index, 1);
 								}
 							}
@@ -540,12 +541,12 @@ jsface = {
 				}
 
 				// Only one method matched, great, it is the method for arguments
-				if (matches.length === 1){
+				if (matches.length === 1) {
 					typeItem = matches[0];
-					for (i = 0; i < len; i++){
+					for (i = 0; i < len; i++) {
 						var evaluator = typeItem.types[i].evaluator;
-						if (evaluator){
-							if (evaluator.call(context, args[i]) !== true){
+						if (evaluator) {
+							if (evaluator.call(context, args[i]) !== true) {
 								throw buildMethodSignature(typeItem, args, len) +
 									'. Validating error at parameter ' + (i + 1) + ', expression: ' +
 									typeItem.types[i].expression;
@@ -557,13 +558,13 @@ jsface = {
 
 				// Prepare error message
 				s = methodName + '(';
-				for (i = 0; i < len - 1; i++){
+				for (i = 0; i < len - 1; i++) {
 					s += args[i] + ', ';
 				}
 				s += args[len - 1] + '). Check argument types and values.';
 
 				// Something wrong here
-				if (matches.length === 0){
+				if (matches.length === 0) {
 					throw 'No overloading method matches the call ' + s;
 				} else {
 					throw 'Vague arguments on calling ' + s;
@@ -574,34 +575,34 @@ jsface = {
 			var overloadingsMeta = {};
 
 			// Push default overloadingsMeta
-			if (jsface.isFunction(api['0'])){
+			if (jsface.isFunction(api['0'])) {
 				overloadingsMeta['0'] = [{
 					fn: api['0']
 				}];
 			}
 
 			// Pre-check, and process types during the checking time
-			for (var key in api){
+			for (var key in api) {
 				// Check for sure that the whole contents are key:function
-				if (!jsface.isFunction(api[key])){
+				if (!jsface.isFunction(api[key])) {
 					return api;
 				}
 
 				// Skip checking default handler
-				if (key === '0'){
+				if (key === '0') {
 					continue;
 				}
 
 				var typeDefs = key.split(','), f = api[key];
 
 				// Check, types length != function parameters length
-				if (typeDefs.length !== f.length){
+				if (typeDefs.length !== f.length) {
 					throw 'jsface.def: Invalid method declaration for ' + methodName + '() at overloading "' + key +
 					'". Actual overloading parameters do not match with their types declaration.';
 				}
 
 				// Prepare overloadingsMeta[] for this function
-				if (overloadingsMeta[typeDefs.length] === undefined){
+				if (overloadingsMeta[typeDefs.length] === undefined) {
 					overloadingsMeta[typeDefs.length] = [];
 				}
 
@@ -616,27 +617,27 @@ jsface = {
 			}
 
 			// Make wrapper
-			return function(overloadings){
-				return function(){
+			return function(overloadings) {
+				return function() {
 					var len = arguments.length;
 
-					if (overloadings[len] !== undefined){         // Match, delegate to selectHandler
+					if (overloadings[len] !== undefined) {         // Match, delegate to selectHandler
 						return selectHandler(this, overloadings[len], len, arguments);
-					} else if (overloadings[0] !== undefined){    // Default handler
+					} else if (overloadings[0] !== undefined) {    // Default handler
 						return overloadings[0][0].fn.apply(this, arguments);
-					} else {                                      // No one matched, throw an exception
+					} else {                                       // No one matched, throw an exception
 						throw methodName + '() does not accept ' + len + ' arguments';
 					}
 				};
 			}(overloadingsMeta);
 		}
 
-		return function(methodName, api){
-			if (jsface.isArray(api)){                          // API as an array
+		return function(methodName, api) {
+			if (jsface.isArray(api)) {                          // API as an array
 				return makeOverloadingArray(methodName, api);
-			} else if (jsface.isMap(api)){                     // API as an object
+			} else if (jsface.isMap(api)) {                     // API as an object
 				return makeOverloadingObject(methodName, api);
-			} else {                                           // Default, not a method, return as is
+			} else {                                            // Default, not a method, return as is
 				return api;
 			}
 		};
@@ -645,33 +646,28 @@ jsface = {
 	/**
 	 * Define a class. If a class exists, it will be replaced.
 	 *
-	 * @param {Object} opts options.
-	 * - opts.cls (String): class name.
-	 * - opts.on (Object): namespace or package of this class. Default is no namespace.
-	 * - opts.under (Object or Function): parent class. If no parent is specified, cls is top level class.
-	 * - opts.plugins (Array): List of plugins.
-	 * - opts.as (Function): api implementation.
-	 * - opts.statics (Array): list of static methods in opts.as.
+	 * @param {Object} opts class options.
+	 * @return {Class} class structure.
 	 */
-	def: function(){
+	def: function() {
 		/*
 		 * Make a class inherit a super class
 		 * @param {Object} parent the parent class.
 		 * @param {Object} child the sub class.
 		 */
-		function inherit(parent, child){
-			if (parent && child){
+		function inherit(parent, child) {
+			if (parent && child) {
 				// Copy static properties from parent to child
-				jsface.each(parent, function(key, fn){
-					if (key !== 'prototype' && key !== 'constructor' && key !== '$meta'){
+				jsface.each(parent, function(key, fn) {
+					if (key !== 'prototype' && key !== 'constructor' && key !== '$meta') {
 						child[key] = fn;
 					}
 				});
 
 				// Child is not a static class: move on with its prototype
-				if (child.prototype){
+				if (child.prototype) {
 					// Copy prototype properties from parent to child
-					jsface.each(parent.prototype, function(key, fn){
+					jsface.each(parent.prototype, function(key, fn) {
 						child.prototype[key] = fn;
 					});
 					child.prototype.constructor = child;
@@ -684,46 +680,46 @@ jsface = {
 		 * Check class parameters.
 		 * @param {Map} params class declaration parameters.
 		 */
-		function defCheck(params){
-			if ( !jsface.isMap(params)){
+		function defCheck(params) {
+			if ( !jsface.isMap(params)) {
 				throw 'jsface.def: Class parameters must be a map object';
 			}
-			if ( !jsface.isMap(params.$meta)){
+			if ( !jsface.isMap(params.$meta)) {
 				throw 'jsface.def: Invalid parameter $meta, must be a map';
 			}
-			if ( !jsface.isString(params.$meta.name)){
+			if ( !jsface.isString(params.$meta.name)) {
 				throw 'jsface.def: Class name is not valid string';
-			} else if ( !jsface.isIdentifier(params.$meta.name)){
+			} else if ( !jsface.isIdentifier(params.$meta.name)) {
 				throw 'jsface.def: Class name ' + params.$meta.name + ' is not valid identifier';
 			}
 		}
 
-		return function(opts){
+		return function(opts) {
 			var $meta, clazz, bindTo, ignoredKeys = { $meta: 1 };
 
 			// Check parameters for errors
 			defCheck(opts);
 
 			// Collect ignored keys in jsface.def.plugins (skip to copy to actual class)
-			jsface.each(jsface.def.plugins, function(key){
+			jsface.each(jsface.def.plugins, function(key) {
 				ignoredKeys[key] = 1;
 			});
 
-			$meta = opts.$meta;               // fast shortcut
-			ignoredKeys[$meta.name] = 1;      // ignore $meta and constructor
+			$meta = opts.$meta;                // fast shortcut
+			ignoredKeys[$meta.name] = 1;       // ignore $meta and constructor
 
-			if ($meta.singleton === true){    // a singleton class
-				clazz = {};                   // initial class structure of a singleton is a map
+			if ($meta.singleton === true) {    // a singleton class
+				clazz = {};                    // initial class structure of a singleton is a map
 				bindTo = clazz;
 			} else {
-				clazz = opts[$meta.name] ? jsface.overload($meta.name, opts[$meta.name]) : function(){};
+				clazz = opts[$meta.name] ? jsface.overload($meta.name, opts[$meta.name]) : function() {};
 				clazz.$meta = $meta;
 				bindTo = clazz.prototype;
 			}
 
 			// Loop over opts, copy all methods/properties which are not in ignoredKeys
-			jsface.each(opts, function(key, value){
-				if (ignoredKeys[key]){
+			jsface.each(opts, function(key, value) {
+				if (ignoredKeys[key]) {
 					return;
 				}
 				bindTo[key] = jsface.overload(clazz[key], value);
@@ -733,16 +729,17 @@ jsface = {
 			inherit($meta.parent, clazz);
 
 			// Bind clazz to namespace if it exists, otherwise, make the class global
-			if ($meta.namespace){
+			if ($meta.namespace) {
 				$meta.namespace[$meta.name] = clazz;
 			} else {
 				jsface.global($meta.name, clazz);
 			}
 
 			// Pass control to plugins
-			jsface.each(jsface.def.plugins, function(name, fn){
+			jsface.each(jsface.def.plugins, function(name, fn) {
 				fn(clazz, opts);
 			});
+			return clazz;
 		};
 	}(),
 
@@ -754,12 +751,13 @@ jsface = {
 	 * @param {Function} after
 	 * @param {Boolean} seq sequential mode (true) or curly mode (other).
 	 */
-	wrap: function(fn, before, after, seq){
-		return function(){
+	wrap: function(fn, before, after, seq) {
+		var ignoredKeys = { $meta: 1, prototype: 1 },
+			closure = function() {
 			// sequential mode. fn = before();r = fn();after();return r;
-			if (seq === true){
+			if (seq === true) {
 				// Invoke before, if it returns false, skip fn() and after()
-				if (before.apply(this, arguments) === false){
+				if (before.apply(this, arguments) === false) {
 					return;
 				}
 
@@ -775,6 +773,14 @@ jsface = {
 				return after.apply(this, [fn.apply(this, [before.apply(this, arguments)])]);
 			}
 		};
+
+		// Wrap fn but keep its properties
+		jsface.each(fn, function(key, value) {
+			if ( !ignoredKeys[key]) {
+				closure[key] = value;
+			}
+		});
+		return closure;
 	},
 
 	/**
@@ -783,8 +789,8 @@ jsface = {
 	 * opts.as: pointcuts.
 	 * @param {Object} opts
 	 */
-	pointcuts: function(clazz, opts){
-		if (jsface.isEmpty(clazz) || jsface.isEmpty(opts)){
+	pointcuts: function(clazz, opts) {
+		if (jsface.isEmpty(clazz) || jsface.isEmpty(opts)) {
 			throw 'jsface.pointcuts: Invalid parameters.';
 		}
 
@@ -792,33 +798,33 @@ jsface = {
 			isInstance = !isClass,
 			bindTo = isClass ? clazz.prototype : clazz;
 
-		jsface.each(opts, function(method, pointcuts){
+		jsface.each(opts, function(method, pointcuts) {
 			var	seq = ((pointcuts.seq === false) ? false : true),  // default seq is true
-				before = (pointcuts.before || jsface.emptyFn),
-				after = (pointcuts.after || jsface.emptyFn);
+				before = (pointcuts.before || jsface.noop),
+				after = (pointcuts.after || jsface.noop);
 
 			// Checking
-			if ( !jsface.isFunction(before)){
+			if ( !jsface.isFunction(before)) {
 				throw 'jsface.pointcuts: Invalid ' + method + '.before() pointcut. Must be a function';
 			}
-			if ( !jsface.isFunction(after)){
+			if ( !jsface.isFunction(after)) {
 				throw 'jsface.pointcuts: Invalid ' + method + '.after() pointcut. Must be a function';
 			}
 
-			if (isInstance){
-				if (jsface.isFunction(bindTo[method])){
+			if (isInstance) {
+				if (jsface.isFunction(bindTo[method])) {
 					bindTo[method] = jsface.wrap(bindTo[method], before, after, seq);
 				} else {
 					throw 'jsface.pointcuts: ' + method + ' is not a function, cannot be pointcut';
 				}
 			} else {
-				if (jsface.isMap(clazz.$meta) && jsface.isIdentifier(clazz.$meta.name) && method === clazz.$meta.name){
+				if (jsface.isMap(clazz.$meta) && jsface.isIdentifier(clazz.$meta.name) && method === clazz.$meta.name) {
 					//  Backup prototype
 					var proto = clazz.prototype, cls = clazz,                  // cls: backup
 						constructor = jsface.wrap(clazz, before, after, seq);  // new constructor
 
 					// Restore prototype, no data lost
-					if (clazz.$meta.namespace){
+					if (clazz.$meta.namespace) {
 						clazz = clazz.$meta.namespace[method] = constructor;
 					} else {
 						clazz = jsface.global(method, constructor);
@@ -828,17 +834,17 @@ jsface = {
 					clazz.prototype.constructor = constructor;
 
 					// Re-bind static properties, except prototype
-					jsface.each(cls, function(property, value){
-						if (property !== 'prototype'){
+					jsface.each(cls, function(property, value) {
+						if (property !== 'prototype') {
 							clazz[property] = value;
 						}
 					});
 				} else {
-					if (jsface.isFunction(bindTo[method])){
+					if (jsface.isFunction(bindTo[method])) {
 						bindTo[method] = jsface.wrap(bindTo[method], before, after, seq);
 
 						// Also is a static function? Update static pointer
-						if (jsface.isFunction(clazz[method])){
+						if (jsface.isFunction(clazz[method])) {
 							clazz[method] = bindTo[method];
 						}
 					} else {
@@ -847,6 +853,102 @@ jsface = {
 				}
 			}
 		});
+	},
+
+	/**
+	 * Inject plugins from object to subject.
+	 * @param {Class/Object} subject subject to be injected.
+	 * @param {Class/Object} object where APIs come out.
+	 */
+	plugins: function(subject, object) {
+		var ignoredKeys = { $meta: 1, prototype: 1 }, bindTo, isClass;
+
+		// Quitely quit if subject or object is empty
+		if (jsface.isNullOrUndefined(subject) || jsface.isEmpty(object)) {
+			return;
+		}
+
+		if (jsface.isArray(object)) {
+			jsface.each(object, function(obj) {
+				jsface.plugins(subject, obj);
+			})
+		}
+
+		bindTo = jsface.isClass(subject) ? subject.prototype : subject;
+
+		// Loop over static properties of object
+		jsface.each(object, function(key, value) {
+			if ( !ignoredKeys[key]) {
+				bindTo[key] = value;
+			}
+		});
+
+		// If object is a class, plug its prototype.* properties also
+		if (jsface.isClass(object)) {
+			jsface.each(object.prototype, function(key, value) {
+				if ( !ignoredKeys[key]) {
+					bindTo[key] = value;
+				}
+			});
+		}
+	},
+
+	/**
+	 * Profiling a subject.
+	 * @param {Class/Object} subject subject to profiling.
+	 * @param {Map} repository where to save profiling result.
+	 */
+	profiling: function(subject, repository) {
+		// Util function to make a pointcut data structure
+		function makeOne(name, repository) {
+			return {
+				before: function() {
+					repository[name] = (repository[name] || {});
+					if (repository[name].begin) {
+						repository[name].begin.push(new Date());
+					} else {
+						repository[name].begin = [ new Date() ];
+					}
+				},
+				after: function() {
+					repository[name].count = (repository[name].count || 0) + 1;
+					var begin = repository[name].begin.pop();
+					repository[name].time = (repository[name].time || 0) + (new Date() - begin);
+					if ( !repository[name].begin.length) {
+						delete repository[name].begin;
+					}
+				}
+			};
+		}
+
+		// Util function to make pointcuts data structure for the whole subject
+		function makePointcuts(subject, repository) {
+			var pointcuts = {}, sub = subject, name;
+
+			if (jsface.isClass(subject)) {
+				sub = subject.prototype;
+				if (subject.$meta && subject.$meta.name) {
+					name = subject.$meta.name;
+					pointcuts[subject.$meta.name]  = makeOne(name, repository);
+				}
+			}
+			jsface.each(sub, function(key, fn) {
+				if (jsface.isFunction(fn)) {
+					pointcuts[key] = makeOne(key, repository);
+				}
+			});
+			return pointcuts;
+		}
+
+		// Rebind jsface.profile
+		jsface.profile = function profile(subject, repository) {
+			if ( !jsface.isMap(repository)) {
+				throw 'jsface.profile: profiling repository must be a map';
+			}
+			// Simply invoke jsface.pointcuts
+			jsface.pointcuts(subject, makePointcuts(subject, repository));
+		};
+		return jsface.profile(subject, repository);
 	}
 };
 
@@ -859,10 +961,10 @@ jsface.def.plugins = {
 	 * Purpose: Making static methods/properties. They are available in both class and instance
 	 * levels. I.e: Both jsface.Element.get() and jsface.Element element.get() are valid.
 	 */
-	statics: function(clazz, opts){
-		if ( !opts.$meta.singleton){
-			jsface.each(opts.$meta.statics, function(fnName){
-				if (jsface.isIdentifier(fnName) && opts[fnName]){
+	statics: function(clazz, opts) {
+		if ( !opts.$meta.singleton) {
+			jsface.each(opts.$meta.statics, function(fnName) {
+				if (jsface.isIdentifier(fnName) && opts[fnName]) {
 					clazz[fnName] = opts[fnName];
 				} else {
 					throw 'jsface.def: Invalid static method/property ' + fnName;
@@ -875,8 +977,8 @@ jsface.def.plugins = {
 	 * Plug-in: ready
 	 * Purpose: Class level initialization.
 	 */
-	ready: function(clazz, opts){
-		if (jsface.isFunction(opts.$meta.ready)){
+	ready: function(clazz, opts) {
+		if (jsface.isFunction(opts.$meta.ready)) {
 			opts.$meta.ready(clazz, opts);
 			delete opts.$meta.ready;
 		}
@@ -885,13 +987,25 @@ jsface.def.plugins = {
 	/*
 	 * Plug-in: pointcuts.
 	 * Purpose: Support Aspect Oriented Programming in def().
-	 * Note: Create an adapter to bind jsface.def.plugins.pointcuts and pointcuts().
 	 */
-	pointcuts: function(clazz, opts){
-		if (jsface.isMap(opts.$meta.pointcuts)){
+	pointcuts: function(clazz, opts) {
+		if (jsface.isMap(opts.$meta.pointcuts)) {
 			jsface.pointcuts(clazz, opts.$meta.pointcuts);
+		}
+	},
+
+	/*
+	 * Plug-in: plugins.
+	 * Purpose: Inject APIs from plugins into class.
+	 */
+	plugins: function(clazz, opts) {
+		if (opts.$meta.plugins) {
+			jsface.plugins(clazz, opts.$meta.plugins);
 		}
 	}
 };
+
+// Make jsface available on global scope
+jsface.global('jsface', jsface);
 
 })();
