@@ -669,7 +669,61 @@ var jsface = {
 					jsface.each(parent.prototype, function(key, fn) {
 						child.prototype[key] = fn;
 					});
+
+					// Set constructor to prototype
 					child.prototype.constructor = child;
+
+					/*
+					 * Bind $super method to each instance of child
+					 * $super(arguments): Invoke constructor
+					 * $super(): Invoke normal method
+					 * Note: this method makes the code cleaner but less efficient than invoking
+					 * directly from constructor or prototype (i.e: Foo.apply(this, arguments),
+					 * Foo.prototype.sayHi.apply(this, arguments).
+					 */
+					child.prototype.$super = function(){
+						var caller = arguments.callee.caller,          // get the context
+							fromConstructor = (arguments.length > 0),  // $super(params): constructor
+							entryPoint, root;
+
+						// If context/caller is constructor: return parent constructor
+						if (fromConstructor) {
+							entryPoint = (caller === child) ? parent : undefined;
+						} else {
+							// Look up in child.prototype to find out who's the caller
+							jsface.each(child.prototype, function(key, fn) {
+								if (caller === fn) {                // found you at key:fn
+									entryPoint = parent.prototype;  // return parent.prototype
+									return true;                    // skip jsface.each
+								}
+							});
+						}
+
+						if ( !entryPoint) {    // context can't be found on child
+							root = parent;     // start looking up on the nearer parent
+							while (root) {
+								if (fromConstructor) {
+									if (caller === root) {               // found context at a parent's constructor
+										entryPoint = root.$meta.parent;  // so super is parent's parent
+									}
+								} else {
+									// Look up in parent.prototype to find out who's the caller
+									jsface.each(root.prototype, function(key, fn) {
+										if (caller === fn) {                           // found you at key:fn
+											entryPoint = root.$meta.parent.prototype;  // return parent's parent.prototype
+											return true;                               // skip jsface.each
+										}
+									});
+								}
+								// Found you, break while. Still not: move up to grandpa
+								root = !entryPoint ? root.$meta.parent : undefined;
+							}
+						}
+						if (fromConstructor) {                          // context is a constructor
+							return entryPoint.apply(this, arguments);   // so call the right entry point with arguments
+						}
+						return entryPoint;                              // otherwise, return the entry point
+					};
 				}
 			}
 			return child;
@@ -716,6 +770,9 @@ var jsface = {
 				bindTo = clazz.prototype;
 			}
 
+			// Inherit APIs from parent
+			inherit($meta.parent, clazz);
+
 			// Loop over opts, copy all methods/properties which are not in ignoredKeys
 			jsface.each(opts, function(key, value) {
 				if (ignoredKeys[key]) {
@@ -723,9 +780,6 @@ var jsface = {
 				}
 				bindTo[key] = jsface.overload(clazz[key], value);
 			});
-
-			// Inherit APIs from parent
-			inherit($meta.parent, clazz);
 
 			// Bind clazz to namespace if it exists, otherwise, make the class global
 			if ($meta.namespace) {
