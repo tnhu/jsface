@@ -1,5 +1,5 @@
 /*
- * jsFace JavaScript Object Oriented Library
+ * jsFace JavaScript Object Oriented Programming Library
  *
  * https://github.com/tannhu/jsface
  *
@@ -298,7 +298,7 @@ var jsface = {
 
 	/**
 	 * Check a name is a valid JavaScript identifier. Note that this function does not support Unicode name but English only.
-	 * It also does not check for JavaScript resevred keywords.
+	 * It also does not check for JavaScript reserved keywords.
 	 * @param {String} id identifier to check.
 	 * @return {Boolean} true if id is a valid JavaScript literal.
 	 */
@@ -680,8 +680,11 @@ var jsface = {
 					 * Note: this method makes the code cleaner but less efficient than invoking
 					 * directly from constructor or prototype (i.e: Foo.apply(this, arguments),
 					 * Foo.prototype.sayHi.apply(this, arguments).
+					 *
+					 * Foo.prototype.sayHi.apply(...) is more verbose but more efficient
+					 * @Deprecated : Will be removed soon
 					 */
-					child.prototype.$super = function(){
+					/*child.prototype.$super = function(){
 						var caller = arguments.callee.caller,          // get the context
 							fromConstructor = (arguments.length > 0),  // $super(params): constructor
 							entryPoint, root;
@@ -723,7 +726,7 @@ var jsface = {
 							return entryPoint.apply(this, arguments);   // so call the right entry point with arguments
 						}
 						return entryPoint;                              // otherwise, return the entry point
-					};
+					};*/
 				}
 			}
 			return child;

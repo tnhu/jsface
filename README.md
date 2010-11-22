@@ -1,10 +1,9 @@
-jsFace is another framework to facilitate Object Oriented Programming (OOP)
+jsFace is a framework to facilitate Object Oriented Programming (OOP)
 in JavaScript. It is designed to work on both server and client side JavaScript.
 
 jsFace has some cool features like method overloading, type checking, Aspect
 Oriented Programming (AOP), and profiling. It came out when I developed an ExtJS-liked
-UI framework using jQuery. The combination of jsFace and jQuery results a solid
-foundation to build reusable UI components.
+UI framework using jQuery.
 
 Get started
 -----------

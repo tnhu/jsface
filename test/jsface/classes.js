@@ -22,61 +22,42 @@ test('jsface.def with invalid params.$meta.name', function() {
 	}, 'An exception must be thrown for invalid params.$meta.name');
 });
 
-test('Define a singleton class', function() {
+test('Define a class without any API - default contructor will be generated', function() {
 	jsface.namespace('jsface.tests');
 
 	jsface.def({
 		$meta: {
 			name: 'Foo',
-			namespace: jsface.tests,
-			singleton: true
-		},
-
-		sayHi: function() {
-			return 'Hello World';
+			namespace: jsface.tests
 		}
 	});
 
-	var Foo = jsface.tests.Foo;
+	var foo = new jsface.tests.Foo();
 
-	ok(jsface.isMap(Foo), 'Singleton class must be a map object');
-	ok(Foo.sayHi() === 'Hello World', 'Error invoking method on singleton class');
+	ok(jsface.isClass(jsface.tests.Foo), 'Class defination must be a class');
+	ok(jsface.isMap(foo), 'Class instance must be a map');
 	delete jsface.tests;
 });
 
-test('Inherit a singleton class', function() {
+test('Define a class with only constructor', function() {
 	jsface.namespace('jsface.tests');
 
 	jsface.def({
 		$meta: {
 			name: 'Foo',
-			namespace: jsface.tests,
-			singleton: true
+			namespace: jsface.tests
 		},
 
-		sayHi: function() {
-			return 'Hello World';
+		Foo: function(msg) {
+			this.msg = msg;
 		}
 	});
 
-	jsface.def({
-		$meta: {
-			name: 'Bar',
-			namespace: jsface.tests,
-			parent: jsface.tests.Foo,
-			singleton: true
-		},
+	var foo = new jsface.tests.Foo('Hi');
 
-		sayBye: function() {
-			return 'Bye!';
-		}
-	});
-
-	var Bar = jsface.tests.Bar;
-
-	ok(jsface.isMap(Bar), 'Singleton class must be a map object');
-	ok(Bar.sayHi() === 'Hello World', 'Error invoking method on singleton class');
-	ok(Bar.sayBye() === 'Bye!', 'Error invoking method on singleton class');
+	ok(jsface.isClass(jsface.tests.Foo), 'Class defination must be a class');
+	ok(jsface.isMap(foo), 'Class instance must be a map');
+	equals(foo.msg, 'Hi', 'Constructor works incorrectly');
 	delete jsface.tests;
 });
 
@@ -202,6 +183,64 @@ test('Static methods', function() {
 	ok(jsface.tests.Bar.sayBye() === 'Bye!', 'Error invoking static method');
 	ok(bar.sayBye() === 'Bye!', 'Error invoking static method from class instance');
 	ok(bar.sayBye === jsface.tests.Bar.sayBye, 'Static method must be the same on both class and class instance');
+	delete jsface.tests;
+});
+
+test('Define a singleton class', function() {
+	jsface.namespace('jsface.tests');
+
+	jsface.def({
+		$meta: {
+			name: 'Foo',
+			namespace: jsface.tests,
+			singleton: true
+		},
+
+		sayHi: function() {
+			return 'Hello World';
+		}
+	});
+
+	var Foo = jsface.tests.Foo;
+
+	ok(jsface.isMap(Foo), 'Singleton class must be a map object');
+	ok(Foo.sayHi() === 'Hello World', 'Error invoking method on singleton class');
+	delete jsface.tests;
+});
+
+test('Inherit a singleton class', function() {
+	jsface.namespace('jsface.tests');
+
+	jsface.def({
+		$meta: {
+			name: 'Foo',
+			namespace: jsface.tests,
+			singleton: true
+		},
+
+		sayHi: function() {
+			return 'Hello World';
+		}
+	});
+
+	jsface.def({
+		$meta: {
+			name: 'Bar',
+			namespace: jsface.tests,
+			parent: jsface.tests.Foo,
+			singleton: true
+		},
+
+		sayBye: function() {
+			return 'Bye!';
+		}
+	});
+
+	var Bar = jsface.tests.Bar;
+
+	ok(jsface.isMap(Bar), 'Singleton class must be a map object');
+	ok(Bar.sayHi() === 'Hello World', 'Error invoking method on singleton class');
+	ok(Bar.sayBye() === 'Bye!', 'Error invoking method on singleton class');
 	delete jsface.tests;
 });
 
