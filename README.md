@@ -162,7 +162,7 @@ Community
     Website ........ https://github.com/tannhu/jsface
     Mailing List ... to be defined
     Wiki ........... to be defined
-    Twitter ........ to be defined
+    Twitter ........ http://www.twitter.com/tannhu
     Issues ......... to be defined
 
 License
