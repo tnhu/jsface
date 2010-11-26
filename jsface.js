@@ -229,7 +229,7 @@ var jsface = {
 	 * @return true if obj is a string, false if not.
 	 */
 	isString: function(obj) {
-		return (obj === '' || (obj && typeof obj === 'string'));
+		return Object.prototype.toString.apply(obj) === '[object String]';
 	},
 
 	/**
@@ -238,7 +238,7 @@ var jsface = {
 	 * @return true if obj is a boolean object, false if not.
 	 */
 	isBoolean: function(obj) {
-		return (typeof obj === 'boolean');
+		return Object.prototype.toString.apply(obj) === '[object Boolean]';
 	},
 
 	/**
@@ -247,7 +247,7 @@ var jsface = {
 	 * @return true if obj is a number, false if not.
 	 */
 	isNumber: function(obj) {
-		return (typeof obj === 'number');
+		return Object.prototype.toString.apply(obj) === '[object Number]';
 	},
 
 	/**
