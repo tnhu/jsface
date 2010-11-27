@@ -1,0 +1,5 @@
+Version 1.2b                                    November 26 2010
+----------------------------------------------------------------
+
+* Initial release. A complete new look from version 1.2a which
+  was developed for browsers.
