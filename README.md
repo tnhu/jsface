@@ -5,13 +5,15 @@ jsFace has some cool features like method overloading, type checking, Aspect
 Oriented Programming (AOP), and profiling. It came out when I developed an ExtJS-liked
 UI framework using jQuery.
 
+To see how jsFace was designed and works. Take a look on the [[Wiki https://github.com/tannhu/jsface/wiki]] page.
+
 Community
 ---------
 
-    Website ........ https://github.com/tannhu/jsface
-    Wiki ........... https://github.com/tannhu/jsface/wiki
-    Twitter ........ http://www.twitter.com/tannhu
-    Issues ......... https://github.com/tannhu/jsface/issues
+    Website ........ [[https://github.com/tannhu/jsface]]
+    Wiki ........... [[https://github.com/tannhu/jsface/wiki]]
+    Twitter ........ [[http://www.twitter.com/tannhu]]
+    Issues ......... [[https://github.com/tannhu/jsface/issues]]
     Mailing List ... to be defined
 
 License
