@@ -341,6 +341,24 @@ var jsface = {
 	},
 
 	/**
+	 * Capitalize a string.
+	 * @param String str source string
+	 * @return Capitalized version of str.
+	 */
+	capitalize: function(str) {
+		 return jsface.isString(str) ? str.charAt(0).toUpperCase() + str.slice(1).toLowerCase() : str;
+	},
+
+	/**
+	 * Get actual object from its name.
+	 * @param String name object's string representation.
+	 * @return Object object's actual representation or undefined.
+	 */
+	fromString: function(name) {
+		return new Function('try { return ' + name + '; } catch (e) {} return undefined;')();
+	},
+
+	/**
 	 * Make overloading methods.
 	 *
 	 * @param {Object} methodName method name or description, for debugging.
@@ -781,7 +799,7 @@ var jsface = {
 				if (ignoredKeys[key]) {
 					return;
 				}
-				bindTo[key] = jsface.overload(clazz[key], value);
+				bindTo[key] = jsface.overload($meta.name + "." + key, value);
 			});
 
 			// Bind clazz to namespace if it exists, otherwise, make the class global
@@ -1023,7 +1041,7 @@ jsface.def.plugins = {
 				if (jsface.isIdentifier(fnName) && opts[fnName]) {
 					clazz[fnName] = opts[fnName];
 				} else {
-					throw 'jsface.def: Invalid static method/property ' + fnName;
+					throw 'jsface.def: Invalid static method/property ' + fnName + " in declaring class " + opts.$meta.name;
 				}
 			});
 		}
