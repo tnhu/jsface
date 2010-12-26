@@ -1,6 +1,3 @@
-jsFace JavaScript Object Oriented Programming Framework
-=======================================================
-
 jsFace is a framework to facilitate Object Oriented Programming (OOP)
 in JavaScript. It is designed to work on both server and client side JavaScript.
 
@@ -103,7 +100,7 @@ A sub-class is defined by specifying its parent class in $meta.
 
 ### Static methods
 
-Static methods are class level methods which you can invoke from both class or class instance. jsFace
+Static methods are class level methods which you can invoke from both class or class instances. jsFace
 allows you to specify static methods by declaring them in $meta.statics.
 
 	jsface.def({
@@ -153,7 +150,7 @@ jsFace gives you two ways to overload constructor/method. By parameter length or
 
 	jsface.def({
 		$meta: {
-			name: 'Foo'
+			name: "Foo"
 		},
 
 		Foo: [
@@ -177,7 +174,7 @@ jsFace gives you two ways to overload constructor/method. By parameter length or
 
 	jsface.def({
 		$meta: {
-			name: 'Foo'
+			name: "Foo"
 		},
 
 		Foo: {
@@ -195,11 +192,12 @@ jsFace gives you two ways to overload constructor/method. By parameter length or
 	var rika24 = new Foo("Rika", 24);
 
 Overloading by parameter type has two cool things:
-* Parameter types will be checked at runtime to match with declaration.
+
+##### Parameter types will be checked at runtime to match with declaration.
 
 	var rika   = new Foo(1);              // Exception: type not matched, expect String
 
-* Parameters can be validated.
+##### Parameters can be validated.
 
 	jsface.def({
 		$meta: {
@@ -215,6 +213,10 @@ Overloading by parameter type has two cool things:
 	});
 
 	var rika24 = new Foo("Rika", 0);  // Exception: Validating error at parameter 2
+
+### Pointcuts
+
+
 
 ## License
 
