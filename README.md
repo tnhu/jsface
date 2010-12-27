@@ -18,7 +18,7 @@ jsFace introduces only one namespace to public: jsface namespace. This ensures t
 jsFace does not have any conflict working with other frameworks. The framework exposes
 very basic APIs for accelerating your daily OOP development. It does not cover things
 which other frameworks do excellently such as DOM manipulating (like [jQuery](http://jquery.com/)),
-templating (like [EJS](http://embeddedjs.com/)), etc.
+template (like [EJS](http://embeddedjs.com/)), etc.
 
 jsFace does not add any information into JavaScript standard objects (like Array, Function,
 Date, Number, String, etc) like other frameworks. You can consider jsFace as a JavaScript
@@ -216,9 +216,94 @@ Overloading by parameter type has two cool things:
 
 ### Pointcuts
 
+jsFace supports [Aspect Oriented Programming](http://en.wikipedia.org/wiki/Aspect-oriented_programming)
+(AOP) via simple before()/after() mechanism. You can inject before() and after() functions for any class
+or class instance created by jsface.def(). Code inside before() and after() are executed in the same context
+of the class or class instance that you inject.
 
+Pointcuts can be injected directly when you define a class by jsface.def(). For example:
+
+	var pointcuts = {
+		Foo: {
+			before: function() {
+				this.before = true;
+			},
+			after: function() {
+				this.after = true;
+			}
+		}
+	};
+
+	jsface.def({
+		$meta: {
+			name: 'Foo',
+			pointcuts: pointcuts
+		},
+
+		Foo: function() {
+		},
+
+		sayHi: function() {
+		}
+	});
+
+	var foo = new Foo();
+	foo.before === true;
+	foo.after  === true;
+
+Or after class definition by using jsface.pointcuts():
+
+	jsface.def({
+		$meta: {
+			name: 'Foo'
+		},
+
+		Foo: function() {
+		},
+
+		sayHi: function() {
+			this.say = true;
+		}
+	});
+
+	var foo = new Foo();
+
+	// Apply pointcut to sayHi method on foo instance
+	jsface.pointcuts(foo, {
+		sayHi: {
+			before: function() {
+				this.before = true;
+			},
+			after: function() {
+				this.after = true;
+			}
+		}
+	});
+
+	foo.sayHi();
+	foo.before === true;
+	foo.say    === true;
+	foo.after  === true;
+
+If you want to skip method executing, return false in before(). For example:
+
+	jsface.pointcuts(foo, {
+		sayHi: {
+			before: function() {
+				this.before = true;
+				return false;
+			},
+			after: function() {
+				this.after = true;
+			}
+		}
+	});
+
+	foo.sayHi();
+	foo.before === true;
+	foo.after  === undefined;
 
 ## License
 
-jsFace is available under either the terms of the MIT license (see MIT-LICENSE.txt)
-or the GPL license version 2 (http://www.gnu.org/licenses/gpl-2.0.txt).
+jsFace is available under either the terms of the [MIT license](https://github.com/tannhu/jsface/blob/master/MIT-LICENSE.txt)
+or the [GPL license version 2](http://www.gnu.org/licenses/gpl-2.0.txt).
