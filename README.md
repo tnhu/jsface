@@ -301,6 +301,7 @@ If you want to skip method executing, return false in before(). For example:
 
 	foo.sayHi();
 	foo.before === true;
+	foo.say    === undefined;
 	foo.after  === undefined;
 
 ## License
