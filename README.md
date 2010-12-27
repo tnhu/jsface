@@ -20,10 +20,15 @@ very basic APIs for accelerating your daily OOP development. It does not cover t
 which other frameworks do excellently such as DOM manipulating (like [jQuery](http://jquery.com/)),
 template (like [EJS](http://embeddedjs.com/)), etc.
 
-jsFace does not add any information into JavaScript standard objects (like Array, Function,
-Date, Number, String, etc) like other frameworks. You can consider jsFace as a JavaScript
+Unlike other frameworks, jsFace does not add any information into JavaScript standard objects
+(like Array, Function, Date, Number, String, etc). You can consider jsFace as a JavaScript
 prototype helper. It helps you to deal with JavaScript prototype more easily, more elegantly
-and precisely. It keep things as they are respectfully.
+and precisely. It keeps things as they are respectfully.
+
+## License
+
+jsFace is available under either the terms of the [MIT license](https://github.com/tannhu/jsface/blob/master/MIT-LICENSE.txt)
+or the [GPL license version 2](http://www.gnu.org/licenses/gpl-2.0.txt).
 
 ## Usage
 
@@ -303,8 +308,3 @@ If you want to skip method executing, return false in before(). For example:
 	foo.before === true;
 	foo.say    === undefined;
 	foo.after  === undefined;
-
-## License
-
-jsFace is available under either the terms of the [MIT license](https://github.com/tannhu/jsface/blob/master/MIT-LICENSE.txt)
-or the [GPL license version 2](http://www.gnu.org/licenses/gpl-2.0.txt).
