@@ -364,3 +364,39 @@ Multiple plugins:
 
 ### Profiling
 
+jsFace gives you the ability to profile your class/instance via jsface.profiling(). All
+you need to go is to give jsface.profiling() a subject and a repository to store the profiling
+data. APIs in subject will be monitored.
+
+	jsface.def({
+		$meta: {
+			name: 'Options'
+		},
+
+		setOptions: function(attrs){
+			jsface.bindProperties(this, attrs);
+		}
+	});
+
+	var repository = {};
+	jsface.profiling(Options, repository);
+
+	for (var i = 0; i < 1000; i++) {
+		new Options().setOptions({});
+	}
+
+Finally, you have profiling data in the repository like this:
+
+	repository:
+		Options:
+			count: 1000
+			time:  3
+		setOptions:
+			count: 1000
+			time:  4
+
+Means constructor Options is executed 1000 times in 3ms, setOptions is executed 1000 times
+in 4ms.
+
+Please note that jsface.profiling writes profiling data to given repository. It does not render
+the data for you on browsers. This ensures jsface to work on both server and client side JavaScript.

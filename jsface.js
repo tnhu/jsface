@@ -1003,7 +1003,7 @@ var jsface = {
 				sub = subject.prototype;
 				if (subject.$meta && subject.$meta.name) {
 					name = subject.$meta.name;
-					pointcuts[subject.$meta.name]  = makeOne(name, repository);
+					pointcuts[subject.$meta.name] = makeOne(name, repository);
 				}
 			}
 			jsface.each(sub, function(key, fn) {
@@ -1014,15 +1014,15 @@ var jsface = {
 			return pointcuts;
 		}
 
-		// Rebind jsface.profile
-		jsface.profile = function profile(subject, repository) {
+		// Rebind jsface.profiling
+		jsface.profiling = function profile(subject, repository) {
 			if ( !jsface.isMap(repository)) {
 				throw 'jsface.profile: profiling repository must be a map/object';
 			}
 			// Simply invoke jsface.pointcuts
 			jsface.pointcuts(subject, makePointcuts(subject, repository));
 		};
-		return jsface.profile(subject, repository);
+		return jsface.profiling(subject, repository);
 	}
 };
 
