@@ -365,7 +365,7 @@ Multiple plugins:
 ### Profiling
 
 jsFace gives you the ability to profile your class/instance via jsface.profiling(). All
-you need to go is to give jsface.profiling() a subject and a repository to store the profiling
+you need to do is to give jsface.profiling() a subject and a repository to store the profiling
 data. APIs in subject will be monitored.
 
 	jsface.def({
