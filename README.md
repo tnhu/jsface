@@ -296,7 +296,7 @@ If you want to skip method executing, return false in before(). For example:
 		sayHi: {
 			before: function() {
 				this.before = true;
-				return false;
+				return false;           // Skip invoking actual sayHi() and after()
 			},
 			after: function() {
 				this.after = true;
@@ -308,3 +308,59 @@ If you want to skip method executing, return false in before(). For example:
 	foo.before === true;
 	foo.say    === undefined;
 	foo.after  === undefined;
+
+### Plugins
+
+A class can inherit APIs from other classes via $meta.plugins (shortcut of jsface.plugins). A class can
+extend from only one parent class but it can inherit multiple classes.
+
+	jsface.def({
+		$meta: {
+			name: 'Options'
+		},
+
+		setOptions: function(attrs){
+			jsface.bindProperties(this, attrs);
+		}
+	});
+
+	jsface.def({
+		$meta: {
+			name: 'Foo',
+			plugins: Options
+		},
+
+		Foo: function(opts) {
+			this.setOptions(opts);
+		}
+	});
+
+	var foo = new Foo({ name : "Rika", age: 24 });
+	foo.name === "Rika";
+	foo.age  === 24;
+
+Multiple plugins:
+
+	jsface.def({
+		$meta: {
+			name: 'Events'
+		},
+
+		bind: function(eventName, fn){
+		}
+	});
+
+	jsface.def({
+		$meta: {
+			name: 'Foo',
+			plugins: [ Options, Events ]
+		},
+
+		Foo: function(opts) {
+			this.setOptions(opts);
+			this.bind("click", jsface.noop);
+		}
+	});
+
+### Profiling
+
