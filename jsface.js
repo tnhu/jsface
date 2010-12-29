@@ -945,7 +945,7 @@ var jsface = {
 		if (jsface.isArray(object)) {
 			jsface.each(object, function(obj) {
 				jsface.plugins(subject, obj);
-			})
+			});
 		}
 
 		bindTo = jsface.isClass(subject) ? subject.prototype : subject;

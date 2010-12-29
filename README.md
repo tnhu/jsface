@@ -407,4 +407,4 @@ Almost all use cases of jsFace are covered in [unit tests](https://github.com/ta
 (I'm using [QUnit](https://github.com/jquery/qunit)). Take a look on them if you can't find
 the thing you need in this short readme.
 
-Comments and feedbacks please come to [jsFace Group](http://groups.google.com/group/jsface).
+Comments and feedbacks please go to [jsFace Group](http://groups.google.com/group/jsface).
