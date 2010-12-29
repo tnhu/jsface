@@ -398,8 +398,8 @@ Finally, you have profiling data in the repository like this:
 Means constructor Options is executed 1000 times in 3ms, setOptions is executed 1000 times
 in 4ms.
 
-Please note that jsface.profiling() writes profiling data to given repository. It does not render
-the data for you on browsers. This ensures jsface to work on both server and client side JavaScript.
+Please note that jsface.profiling() writes profiling data to the given repository. It does not render
+the data for you on browsers.
 
 ## Some more thing
 
@@ -407,4 +407,4 @@ Almost all use cases of jsFace are covered in [unit tests](https://github.com/ta
 (I'm using [QUnit](https://github.com/jquery/qunit)). Take a look on them if you can't find
 the thing you need in this short readme.
 
-Comments and feedbacks please go to [jsFace Group](http://groups.google.com/group/jsface).
+Question, comments, feedbacks please go to [jsFace Group](http://groups.google.com/group/jsface).
