@@ -601,7 +601,7 @@ var jsface = {
 			// Pre-check, and process types during the checking time
 			for (var key in api) {
 				// Check for sure that the whole contents are key:function
-				if (!jsface.isFunction(api[key])) {
+				if ( !jsface.isFunction(api[key])) {
 					return api;
 				}
 
@@ -611,6 +611,11 @@ var jsface = {
 				}
 
 				var typeDefs = key.split(','), f = api[key];
+
+				// If there is only one typeDef, and it's not a type, skip processing: return AS IS
+				if (typeDefs.length === 1 && !jsface.fromString(key)) {
+					return api;
+				}
 
 				// Check, types length != function parameters length
 				if (typeDefs.length !== f.length) {
