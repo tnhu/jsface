@@ -9,31 +9,31 @@
  */
 (function() {
 
-'use strict';
+"use strict";
 
 var jsface = {
 
-	version: '1.2b',
+	version: "1.2b",
 
 	/**
 	 * Create a namespace hierarchy. If one namespace in chain exists, it will be reused.
 	 * @param {String} namespace
 	 * @return null if namespace is invalid. otherwise, return the namespace object.
-	 * Example: var ns = jsface.namespace('com.jsface.widgets'); // ns becomes com.jsface.widgets
+	 * Example: var ns = jsface.namespace("com.jsface.widgets"); // ns becomes com.jsface.widgets
 	 */
 	namespace: function(namespace) {
 		if (jsface.isString(namespace)) {
-			var names = namespace.split('.'), len = names.length, root, i;
+			var names = namespace.split("."), len = names.length, root, i;
 
 			// Check each name using regular expression
 			// Condition: Begin with an alphabet character, follow by alphabets or numbers
 			for (i in names) {
 				if ( !jsface.isIdentifier(names[i])) {
-					throw names[i] + ' is not a valid namespace alias';
+					throw names[i] + " is not a valid namespace alias";
 				}
 			}
 
-			root = new Function('try { return ' + names[0] + '; } catch (e) { return ' + names[0] + ' = {}; }')();
+			root = new Function("try { return " + names[0] + "; } catch (e) { return " + names[0] + " = {}; }")();
 
 			for (i = 1; i < len; i++) {
 				if ( !root[names[i]]) {   // Create if namespace does not exist
@@ -177,9 +177,9 @@ var jsface = {
 	 */
 	global: function(name, value) {
 		if (jsface.isIdentifier(name)) {
-			return new Function('value', 'return ' + name + ' = value;')(value);
+			return new Function("value", "return " + name + " = value;")(value);
 		} else {
-			throw 'jsface.global: Invalid global name ' + name;
+			throw "jsface.global: Invalid global name " + name;
 		}
 	},
 
@@ -202,7 +202,7 @@ var jsface = {
 	 * @return true if obj is a map, false if not.
 	 */
 	isMap: function(obj) {
-		return (obj && typeof obj === 'object' && !(typeof obj.length === 'number' && !(obj.propertyIsEnumerable('length'))));
+		return (obj && typeof obj === "object" && !(typeof obj.length === "number" && !(obj.propertyIsEnumerable("length"))));
 	},
 
 	/**
@@ -211,7 +211,7 @@ var jsface = {
 	 * @return true if obj is an array, false if not.
 	 */
 	isArray: function(obj) {
-		return (obj && typeof obj === 'object' && typeof obj.length === 'number' && !(obj.propertyIsEnumerable('length')));
+		return (obj && typeof obj === "object" && typeof obj.length === "number" && !(obj.propertyIsEnumerable("length")));
 	},
 
 	/**
@@ -220,7 +220,7 @@ var jsface = {
 	 * @return true if obj is a function, false if not.
 	 */
 	isFunction: function(obj) {
-		return (obj && typeof obj === 'function');
+		return (obj && typeof obj === "function");
 	},
 
 	/**
@@ -229,7 +229,7 @@ var jsface = {
 	 * @return true if obj is a string, false if not.
 	 */
 	isString: function(obj) {
-		return Object.prototype.toString.apply(obj) === '[object String]';
+		return Object.prototype.toString.apply(obj) === "[object String]";
 	},
 
 	/**
@@ -238,7 +238,7 @@ var jsface = {
 	 * @return true if obj is a boolean object, false if not.
 	 */
 	isBoolean: function(obj) {
-		return Object.prototype.toString.apply(obj) === '[object Boolean]';
+		return Object.prototype.toString.apply(obj) === "[object Boolean]";
 	},
 
 	/**
@@ -247,7 +247,7 @@ var jsface = {
 	 * @return true if obj is a number, false if not.
 	 */
 	isNumber: function(obj) {
-		return Object.prototype.toString.apply(obj) === '[object Number]';
+		return Object.prototype.toString.apply(obj) === "[object Number]";
 	},
 
 	/**
@@ -278,13 +278,13 @@ var jsface = {
 	},
 
 	/**
-	 * Check an object is empty or not. An empty object is either null, undefined, '', [], or {}.
+	 * Check an object is empty or not. An empty object is either null, undefined, "", [], or {}.
 	 * A string contains blank spaces (blank, tab, etc.) also is treated as an empty string.
 	 * @param {Object} obj object to check
 	 * @return true if the object is empty.
 	 */
 	isEmpty: function(obj) {
-		return (obj === undefined || obj === null || (jsface.isString(obj) && jsface.trim(obj) === '') || (jsface.isArray(obj) && obj.length === 0) || (jsface.isMap(obj) && (function(ob) { for (var i in ob) { return false; } return true; })(obj)));
+		return (obj === undefined || obj === null || (jsface.isString(obj) && jsface.trim(obj) === "") || (jsface.isArray(obj) && obj.length === 0) || (jsface.isMap(obj) && (function(ob) { for (var i in ob) { return false; } return true; })(obj)));
 	},
 
 	/**
@@ -318,7 +318,7 @@ var jsface = {
 	 * @see http://tinyurl.com/yl934kz
 	 */
 	trim: function(str) {
-		var	chars = ' \n\r\t\v\f\u00a0\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200a\u200b\u2028\u2029\u3000',
+		var	chars = " \n\r\t\v\f\u00a0\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200a\u200b\u2028\u2029\u3000",
 			ws = {}, len = chars.length;
 
 		while (len--) {
@@ -355,7 +355,7 @@ var jsface = {
 	 * @return Object object's actual representation or undefined.
 	 */
 	fromString: function(name) {
-		return new Function('try { return ' + name + '; } catch (e) {} return undefined;')();
+		return new Function("try { return " + name + "; } catch (e) {} return undefined;")();
 	},
 
 	/**
@@ -408,7 +408,7 @@ var jsface = {
 				if (defaultFn) {
 					return defaultFn.apply(this, arguments);
 				} else { // No method supports arguments.length? Throw an exception
-					throw 'jsface.overload: ' + methodName + '() does not accept ' + len + ' arguments';
+					throw "jsface.overload: " + methodName + "() does not accept " + len + " arguments";
 				}
 			};
 		}
@@ -425,19 +425,19 @@ var jsface = {
 			 * Make evaluator function for an argument of a overriding function.
 			 */
 			function makeEvaluator(expression, typeDefsString) {
-				var s = '(function() { return function(it) { return (' + expression + ') === true; }})();';
+				var s = "(function() { return function(it) { return (" + expression + ") === true; }})();";
 				try {
 					return eval(s);
 				} catch (error) {
-					throw 'jsface.overload: Invalid validating expression: ' + expression + ' on overloading method ' + methodName + '(' + typeDefsString + ')';
+					throw "jsface.overload: Invalid validating expression: " + expression + " on overloading method " + methodName + "(" + typeDefsString + ")";
 				}
 			}
 
 			/*
 			 * Transform types definition for a overriding function.
-			 * typeDefs ~ ['string', 'string: it != null']
-			 *	>>: [{ name: 'string', type: String },
-			 *		   { name: 'String', type: String, expression: 'it != null', evaluator: function(it) { return (it != null) === true; }]
+			 * typeDefs ~ ["string", "string: it != null"]
+			 *	>>: [{ name: "string", type: String },
+			 *		   { name: "String", type: String, expression: "it != null", evaluator: function(it) { return (it != null) === true; }]
 			 * @param typeDefs array of type definitions.
 			 * @param typeDefsString the whole string represent types definition of the method.
 			 */
@@ -446,7 +446,7 @@ var jsface = {
 
 				jsface.each(typeDefs, function(typeDef, index) {
 					typeDef = jsface.trim(typeDef);
-					var name, type, expression, evaluator, colon = typeDef.indexOf(':');
+					var name, type, expression, evaluator, colon = typeDef.indexOf(":");
 
 					if (colon === -1) {
 						name = typeDef;
@@ -458,7 +458,7 @@ var jsface = {
 					try {
 						type = eval(name);
 					} catch (error) {
-						throw 'jsface.overload: Type ' + name + ' is not defined on overloading method ' + methodName + '(' + typeDefsString + ')';
+						throw "jsface.overload: Type " + name + " is not defined on overloading method " + methodName + "(" + typeDefsString + ")";
 					}
 					result.push({
 						name: name,
@@ -522,11 +522,11 @@ var jsface = {
 			 * Build method signature for debugging.
 			 */
 			function buildMethodSignature(typeItem, args, len) {
-				var s = methodName + '(', i;
+				var s = methodName + "(", i;
 				for (i = 0; i < len - 1; i++) {
-					s += typeItem.types[i].name + ': ' + args[i] + ', ';
+					s += typeItem.types[i].name + ": " + args[i] + ", ";
 				}
-				s += typeItem.types[len - 1].name + ': ' + args[len - 1] + ')';
+				s += typeItem.types[len - 1].name + ": " + args[len - 1] + ")";
 				return s;
 			}
 
@@ -565,7 +565,7 @@ var jsface = {
 						if (evaluator) {
 							if (evaluator.call(context, args[i]) !== true) {
 								throw buildMethodSignature(typeItem, args, len) +
-									'. Validating error at parameter ' + (i + 1) + ', expression: ' +
+									". Validating error at parameter " + (i + 1) + ", expression: " +
 									typeItem.types[i].expression;
 							}
 						}
@@ -574,17 +574,17 @@ var jsface = {
 				}
 
 				// Prepare error message
-				s = methodName + '(';
+				s = methodName + "(";
 				for (i = 0; i < len - 1; i++) {
-					s += args[i] + ', ';
+					s += args[i] + ", ";
 				}
-				s += args[len - 1] + '). Check argument types and values.';
+				s += args[len - 1] + "). Check argument types and values.";
 
 				// Something wrong here
 				if (matches.length === 0) {
-					throw 'No overloading method matches the call ' + s;
+					throw "No overloading method matches the call " + s;
 				} else {
-					throw 'Vague arguments on calling ' + s;
+					throw "Vague arguments on calling " + s;
 				}
 			}
 
@@ -592,9 +592,9 @@ var jsface = {
 			var overloadingsMeta = {};
 
 			// Push default overloadingsMeta
-			if (jsface.isFunction(api['0'])) {
-				overloadingsMeta['0'] = [{
-					fn: api['0']
+			if (jsface.isFunction(api["0"])) {
+				overloadingsMeta["0"] = [{
+					fn: api["0"]
 				}];
 			}
 
@@ -606,21 +606,23 @@ var jsface = {
 				}
 
 				// Skip checking default handler
-				if (key === '0') {
+				if (key === "0") {
 					continue;
 				}
 
-				var typeDefs = key.split(','), f = api[key];
+				var typeDefs = key.split(","), f = api[key];
 
 				// If there is only one typeDef, and it's not a type, skip processing: return AS IS
-				if (typeDefs.length === 1 && !jsface.fromString(key)) {
-					return api;
+				if (typeDefs.length === 1) {
+					if ( !jsface.fromString(typeDefs[0].split(":")[0])){
+						return api;
+					}
 				}
 
 				// Check, types length != function parameters length
 				if (typeDefs.length !== f.length) {
-					throw 'jsface.def: Invalid method declaration for ' + methodName + '() at overloading "' + key +
-					'". Actual overloading parameters do not match with their types declaration.';
+					throw "jsface.def: Invalid method declaration for " + methodName + "() at overloading \"" + key +
+						"\". Actual overloading parameters do not match with their types declaration.";
 				}
 
 				// Prepare overloadingsMeta[] for this function
@@ -648,7 +650,7 @@ var jsface = {
 					} else if (overloadings[0] !== undefined) {    // Default handler
 						return overloadings[0][0].fn.apply(this, arguments);
 					} else {                                       // No one matched, throw an exception
-						throw methodName + '() does not accept ' + len + ' arguments';
+						throw methodName + "() does not accept " + len + " arguments";
 					}
 				};
 			}(overloadingsMeta);
@@ -681,7 +683,7 @@ var jsface = {
 			if (parent && child) {
 				// Copy static properties from parent to child
 				jsface.each(parent, function(key, fn) {
-					if (key !== 'prototype' && key !== 'constructor' && key !== '$meta') {
+					if (key !== "prototype" && key !== "constructor" && key !== "$meta") {
 						child[key] = fn;
 					}
 				});
@@ -761,15 +763,15 @@ var jsface = {
 		 */
 		function defCheck(params) {
 			if ( !jsface.isMap(params)) {
-				throw 'jsface.def: Class parameters must be a map object';
+				throw "jsface.def: Class parameters must be a map object";
 			}
 			if ( !jsface.isMap(params.$meta)) {
-				throw 'jsface.def: Invalid parameter $meta, must be a map';
+				throw "jsface.def: Invalid parameter $meta, must be a map";
 			}
 			if ( !jsface.isString(params.$meta.name)) {
-				throw 'jsface.def: Class name is not valid string';
+				throw "jsface.def: Class name is not valid string";
 			} else if ( !jsface.isIdentifier(params.$meta.name)) {
-				throw 'jsface.def: Class name ' + params.$meta.name + ' is not valid identifier';
+				throw "jsface.def: Class name " + params.$meta.name + " is not valid identifier";
 			}
 		}
 
@@ -870,7 +872,7 @@ var jsface = {
 	 */
 	pointcuts: function(clazz, opts) {
 		if (jsface.isEmpty(clazz) || jsface.isEmpty(opts)) {
-			throw 'jsface.pointcuts: Invalid parameters.';
+			throw "jsface.pointcuts: Invalid parameters.";
 		}
 
 		var	isClass = jsface.isFunction(clazz),
@@ -884,17 +886,17 @@ var jsface = {
 
 			// Checking
 			if ( !jsface.isFunction(before)) {
-				throw 'jsface.pointcuts: Invalid ' + method + '.before() pointcut. Must be a function';
+				throw "jsface.pointcuts: Invalid " + method + ".before() pointcut. Must be a function";
 			}
 			if ( !jsface.isFunction(after)) {
-				throw 'jsface.pointcuts: Invalid ' + method + '.after() pointcut. Must be a function';
+				throw "jsface.pointcuts: Invalid " + method + ".after() pointcut. Must be a function";
 			}
 
 			if (isInstance) {
 				if (jsface.isFunction(bindTo[method])) {
 					bindTo[method] = jsface.wrap(bindTo[method], before, after, seq);
 				} else {
-					throw 'jsface.pointcuts: ' + method + ' is not a function, cannot be pointcut';
+					throw "jsface.pointcuts: " + method + " is not a function, cannot be pointcut";
 				}
 			} else {
 				if (jsface.isMap(clazz.$meta) && jsface.isIdentifier(clazz.$meta.name) && method === clazz.$meta.name) {
@@ -914,7 +916,7 @@ var jsface = {
 
 					// Re-bind static properties, except prototype
 					jsface.each(cls, function(property, value) {
-						if (property !== 'prototype') {
+						if (property !== "prototype") {
 							clazz[property] = value;
 						}
 					});
@@ -927,7 +929,7 @@ var jsface = {
 							clazz[method] = bindTo[method];
 						}
 					} else {
-						throw 'jsface.pointcuts: ' + method + ' is not a function, cannot be pointcut';
+						throw "jsface.pointcuts: " + method + " is not a function, cannot be pointcut";
 					}
 				}
 			}
@@ -1022,7 +1024,7 @@ var jsface = {
 		// Rebind jsface.profiling
 		jsface.profiling = function profile(subject, repository) {
 			if ( !jsface.isMap(repository)) {
-				throw 'jsface.profile: profiling repository must be a map/object';
+				throw "jsface.profile: profiling repository must be a map/object";
 			}
 			// Simply invoke jsface.pointcuts
 			jsface.pointcuts(subject, makePointcuts(subject, repository));
@@ -1046,7 +1048,7 @@ jsface.def.plugins = {
 				if (jsface.isIdentifier(fnName) && opts[fnName]) {
 					clazz[fnName] = opts[fnName];
 				} else {
-					throw 'jsface.def: Invalid static method/property ' + fnName + " in declaring class " + opts.$meta.name;
+					throw "jsface.def: Invalid static method/property " + fnName + " in declaring class " + opts.$meta.name;
 				}
 			});
 		}
@@ -1085,6 +1087,6 @@ jsface.def.plugins = {
 };
 
 // Make jsface available on global scope
-jsface.global('jsface', jsface);
+jsface.global("jsface", jsface);
 
 })();
