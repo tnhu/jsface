@@ -776,7 +776,7 @@ var jsface = {
 		}
 
 		return function(opts) {
-			var $meta, clazz, bindTo, ignoredKeys = { $meta: 1 };
+			var $meta, clazz, bindTo, ignoredKeys = { $meta: 1 }, parent;
 
 			// Check parameters for errors
 			defCheck(opts);
@@ -799,7 +799,11 @@ var jsface = {
 			}
 
 			// Inherit APIs from parent
-			inherit($meta.parent, clazz);
+			parent = jsface.isArray(parent) ? $meta.parent : [ $meta.parent ];
+
+			jsface.each(parent, function(item) {
+				jsface.inherit(clazz, item);
+			});
 
 			// Loop over opts, copy all methods/properties which are not in ignoredKeys
 			jsface.each(opts, function(key, value) {
@@ -937,11 +941,11 @@ var jsface = {
 	},
 
 	/**
-	 * Inject plugins from object to subject.
-	 * @param {Class/Object} subject subject to be injected.
-	 * @param {Class/Object} object where APIs come out.
+	 * Inherit properties from an object.
+	 * @param {Class/Object} subject inherit subject (child).
+	 * @param {Class/Object} object where properties come out (parent).
 	 */
-	plugins: function(subject, object) {
+	inherit: function(subject, object) {
 		var ignoredKeys = { $meta: 1, prototype: 1 }, bindTo, isClass;
 
 		// Quitely quit if subject or object is empty
@@ -951,7 +955,7 @@ var jsface = {
 
 		if (jsface.isArray(object)) {
 			jsface.each(object, function(obj) {
-				jsface.plugins(subject, obj);
+				jsface.inherit(subject, obj);
 			});
 		}
 
@@ -1072,16 +1076,6 @@ jsface.def.plugins = {
 	pointcuts: function(clazz, opts) {
 		if (jsface.isMap(opts.$meta.pointcuts)) {
 			jsface.pointcuts(clazz, opts.$meta.pointcuts);
-		}
-	},
-
-	/*
-	 * Plug-in: plugins.
-	 * Purpose: Inject APIs from plugins into class.
-	 */
-	plugins: function(clazz, opts) {
-		if (opts.$meta.plugins) {
-			jsface.plugins(clazz, opts.$meta.plugins);
 		}
 	}
 };

@@ -244,6 +244,253 @@ test('Inherit a singleton class', function() {
 	delete jsface.tests;
 });
 
+
+test('Inheritance: anonymous API', function() {
+	jsface.namespace('jsface.tests');
+
+	jsface.def({
+		$meta: {
+			name: 'Foo',
+			namespace: jsface.tests
+		}
+	});
+
+	var api = {
+		setName: function(name){
+			this.name = name;
+		}
+	};
+
+	jsface.inherit(jsface.tests.Foo, api);
+
+	var foo = new jsface.tests.Foo();
+	foo.setName('John');
+
+	ok(foo.name === 'John', 'APIs must be plugged into class');
+	ok(foo.setName === api.setName, 'APIs must be plugged into class');
+	ok(jsface.tests.Foo.prototype.setName === api.setName, 'APIs must be plugged into class');
+	delete jsface.tests;
+});
+
+test('Inheritance: instance inherits from anonymous api', function() {
+	jsface.namespace('jsface.tests');
+
+	jsface.def({
+		$meta: {
+			name: 'Foo',
+			namespace: jsface.tests
+		}
+	});
+
+	var api = {
+		setName: function(name){
+			this.name = name;
+		}
+	};
+
+	var foo = new jsface.tests.Foo();
+
+	jsface.inherit(foo, api);
+
+	foo.setName('John');
+
+	ok(foo.name === 'John', 'APIs must be plugged into class instance');
+	ok(foo.setName === api.setName, 'APIs must be plugged into class instance');
+	ok( !jsface.tests.Foo.prototype.setName, 'APIs must be plugged into class instance and not class');
+	delete jsface.tests;
+});
+
+test('Inheritance: class to class', function() {
+	jsface.namespace('jsface.tests');
+
+	jsface.def({
+		$meta: {
+			name: 'Foo',
+			namespace: jsface.tests
+		}
+	});
+
+	jsface.def({
+		$meta: {
+			name: 'Bar',
+			namespace: jsface.tests
+		},
+
+		setName: function(name){
+			this.name = name;
+		}
+	});
+
+	jsface.inherit(jsface.tests.Foo, jsface.tests.Bar);
+
+	var foo = new jsface.tests.Foo();
+	foo.setName('John');
+
+	ok(foo.name === 'John', 'APIs must be plugged into class');
+	ok(foo.setName === jsface.tests.Bar.prototype.setName, 'APIs must be plugged into class');
+	ok(jsface.tests.Foo.prototype.setName === jsface.tests.Bar.prototype.setName, 'APIs must be plugged into class');
+	delete jsface.tests;
+});
+
+test('Inheritance: class to instance', function() {
+	jsface.namespace('jsface.tests');
+
+	jsface.def({
+		$meta: {
+			name: 'Foo',
+			namespace: jsface.tests
+		}
+	});
+
+	jsface.def({
+		$meta: {
+			name: 'Bar',
+			namespace: jsface.tests
+		},
+
+		setName: function(name){
+			this.name = name;
+		}
+	});
+
+	var foo = new jsface.tests.Foo();
+	jsface.inherit(foo, jsface.tests.Bar);
+	foo.setName('John');
+
+	ok(foo.name === 'John', 'APIs must be plugged into class instance');
+	ok(foo.setName === jsface.tests.Bar.prototype.setName, 'APIs must be plugged into class instance');
+	ok( !jsface.tests.Foo.prototype.setName, 'APIs must be plugged into class instance and not the class');
+	delete jsface.tests;
+});
+
+test('Inheritance: multiplicity', function() {
+	jsface.namespace('jsface.tests');
+
+	jsface.def({
+		$meta: {
+			name: 'Foo',
+			namespace: jsface.tests
+		}
+	});
+
+	jsface.def({
+		$meta: {
+			name: 'Events',
+			namespace: jsface.tests
+		},
+
+		bind: function(name){
+			this.event = name;
+		}
+	});
+
+	jsface.def({
+		$meta: {
+			name: 'Options',
+			namespace: jsface.tests
+		},
+
+		setOptions: function(attrs){
+			jsface.bindProperties(this, attrs);
+		}
+	});
+
+	jsface.inherit(jsface.tests.Foo, [ jsface.tests.Events, jsface.tests.Options ]);
+
+	var foo = new jsface.tests.Foo();
+
+	foo.bind('click');
+	foo.setOptions({ name: 'John', age: 58 });
+
+	ok(foo.event === 'click', 'APIs must be plugged into class');
+	ok(foo.name === 'John', 'APIs must be plugged into class');
+	ok(foo.age === 58, 'APIs must be plugged into class');
+	ok(foo.bind === jsface.tests.Events.prototype.bind, 'APIs must be plugged into class');
+	ok(foo.setOptions === jsface.tests.Options.prototype.setOptions, 'APIs must be plugged into class');
+	ok(jsface.tests.Foo.prototype.bind === jsface.tests.Events.prototype.bind, 'APIs must be plugged into class');
+	ok(jsface.tests.Foo.prototype.setOptions === jsface.tests.Options.prototype.setOptions, 'APIs must be plugged into class');
+	delete jsface.tests;
+});
+
+test('Inheritance: via $meta.parent', function() {
+	jsface.namespace('jsface.tests');
+
+	jsface.def({
+		$meta: {
+			name: 'Bar',
+			namespace: jsface.tests
+		},
+
+		setName: function(name){
+			this.name = name;
+		}
+	});
+
+	jsface.def({
+		$meta: {
+			name: 'Foo',
+			namespace: jsface.tests,
+			parent: jsface.tests.Bar
+		}
+	});
+
+	var foo = new jsface.tests.Foo();
+	foo.setName('John');
+
+	ok(foo.name === 'John', 'APIs must be plugged into class');
+	ok(foo.setName === jsface.tests.Bar.prototype.setName, 'APIs must be plugged into class');
+	ok(jsface.tests.Foo.prototype.setName === jsface.tests.Bar.prototype.setName, 'APIs must be plugged into class');
+	delete jsface.tests;
+});
+
+test('Inheritance: multiplicity via $meta.parent', function() {
+	jsface.namespace('jsface.tests');
+
+	jsface.def({
+		$meta: {
+			name: 'Events',
+			namespace: jsface.tests
+		},
+
+		bind: function(name){
+			this.event = name;
+		}
+	});
+
+	jsface.def({
+		$meta: {
+			name: 'Options',
+			namespace: jsface.tests
+		},
+
+		setOptions: function(attrs){
+			jsface.bindProperties(this, attrs);
+		}
+	});
+
+	jsface.def({
+		$meta: {
+			name: 'Foo',
+			namespace: jsface.tests,
+			parent: [ jsface.tests.Events, jsface.tests.Options ]
+		}
+	});
+
+	var foo = new jsface.tests.Foo();
+
+	foo.bind('click');
+	foo.setOptions({ name: 'John', age: 58 });
+
+	equals(foo.event, 'click', 'APIs must be plugged into class');
+	equals(foo.name, 'John', 'APIs must be plugged into class');
+	equals(foo.age, 58, 'APIs must be plugged into class');
+	equals(foo.bind, jsface.tests.Events.prototype.bind, 'APIs must be plugged into class');
+	equals(foo.setOptions, jsface.tests.Options.prototype.setOptions, 'APIs must be plugged into class');
+	equals(jsface.tests.Foo.prototype.bind, jsface.tests.Events.prototype.bind, 'APIs must be plugged into class');
+	equals(jsface.tests.Foo.prototype.setOptions, jsface.tests.Options.prototype.setOptions, 'APIs must be plugged into class');
+	delete jsface.tests;
+});
+
 test('Class level initialization', function() {
 	jsface.namespace('jsface.tests');
 
@@ -620,251 +867,5 @@ test('Pointcuts on jsface itself', function() {
 
 	ok(before, 'before pointcut on jsface.namespace must get called');
 	ok(after, 'after pointcut on jsface.namespace must get called');
-	delete jsface.tests;
-});
-
-test('Add plugins (import methods) from a map to a class', function() {
-	jsface.namespace('jsface.tests');
-
-	jsface.def({
-		$meta: {
-			name: 'Foo',
-			namespace: jsface.tests
-		}
-	});
-
-	var plugins = {
-		setName: function(name){
-			this.name = name;
-		}
-	};
-
-	jsface.plugins(jsface.tests.Foo, plugins); // Plug plugins to class
-
-	var foo = new jsface.tests.Foo();
-	foo.setName('John');
-
-	ok(foo.name === 'John', 'Plugins APIs must be plugged into class');
-	ok(foo.setName === plugins.setName, 'Plugins APIs must be plugged into class');
-	ok(jsface.tests.Foo.prototype.setName === plugins.setName, 'Plugins APIs must be plugged into class');
-	delete jsface.tests;
-});
-
-test('Add plugins (import methods) from a map to an instance', function() {
-	jsface.namespace('jsface.tests');
-
-	jsface.def({
-		$meta: {
-			name: 'Foo',
-			namespace: jsface.tests
-		}
-	});
-
-	var plugins = {
-		setName: function(name){
-			this.name = name;
-		}
-	};
-
-	var foo = new jsface.tests.Foo();
-
-	jsface.plugins(foo, plugins); // Plug plugins to class instance
-
-	foo.setName('John');
-
-	ok(foo.name === 'John', 'Plugins APIs must be plugged into class instance');
-	ok(foo.setName === plugins.setName, 'Plugins APIs must be plugged into class instance');
-	ok( !jsface.tests.Foo.prototype.setName, 'Plugins APIs must be plugged into class instance and not class');
-	delete jsface.tests;
-});
-
-test('Add plugins (import methods) from a class to a class', function() {
-	jsface.namespace('jsface.tests');
-
-	jsface.def({
-		$meta: {
-			name: 'Foo',
-			namespace: jsface.tests
-		}
-	});
-
-	jsface.def({
-		$meta: {
-			name: 'Bar',
-			namespace: jsface.tests
-		},
-
-		setName: function(name){
-			this.name = name;
-		}
-	});
-
-	jsface.plugins(jsface.tests.Foo, jsface.tests.Bar);
-
-	var foo = new jsface.tests.Foo();
-	foo.setName('John');
-
-	ok(foo.name === 'John', 'Plugins APIs must be plugged into class');
-	ok(foo.setName === jsface.tests.Bar.prototype.setName, 'Plugins APIs must be plugged into class');
-	ok(jsface.tests.Foo.prototype.setName === jsface.tests.Bar.prototype.setName, 'Plugins APIs must be plugged into class');
-	delete jsface.tests;
-});
-
-test('Add plugins (import methods) from a class to a class instance', function() {
-	jsface.namespace('jsface.tests');
-
-	jsface.def({
-		$meta: {
-			name: 'Foo',
-			namespace: jsface.tests
-		}
-	});
-
-	jsface.def({
-		$meta: {
-			name: 'Bar',
-			namespace: jsface.tests
-		},
-
-		setName: function(name){
-			this.name = name;
-		}
-	});
-
-	var foo = new jsface.tests.Foo();
-	jsface.plugins(foo, jsface.tests.Bar);
-	foo.setName('John');
-
-	ok(foo.name === 'John', 'Plugins APIs must be plugged into class instance');
-	ok(foo.setName === jsface.tests.Bar.prototype.setName, 'Plugins APIs must be plugged into class instance');
-	ok( !jsface.tests.Foo.prototype.setName, 'Plugins APIs must be plugged into class instance and not the class');
-	delete jsface.tests;
-});
-
-test('Add multiple plugins', function() {
-	jsface.namespace('jsface.tests');
-
-	jsface.def({
-		$meta: {
-			name: 'Foo',
-			namespace: jsface.tests
-		}
-	});
-
-	jsface.def({
-		$meta: {
-			name: 'Events',
-			namespace: jsface.tests
-		},
-
-		bind: function(name){
-			this.event = name;
-		}
-	});
-
-	jsface.def({
-		$meta: {
-			name: 'Options',
-			namespace: jsface.tests
-		},
-
-		setOptions: function(attrs){
-			jsface.bindProperties(this, attrs);
-		}
-	});
-
-	jsface.plugins(jsface.tests.Foo, [ jsface.tests.Events, jsface.tests.Options ]);
-
-	var foo = new jsface.tests.Foo();
-
-	foo.bind('click');
-	foo.setOptions({ name: 'John', age: 58 });
-
-	ok(foo.event === 'click', 'Plugins APIs must be plugged into class');
-	ok(foo.name === 'John', 'Plugins APIs must be plugged into class');
-	ok(foo.age === 58, 'Plugins APIs must be plugged into class');
-	ok(foo.bind === jsface.tests.Events.prototype.bind, 'Plugins APIs must be plugged into class');
-	ok(foo.setOptions === jsface.tests.Options.prototype.setOptions, 'Plugins APIs must be plugged into class');
-	ok(jsface.tests.Foo.prototype.bind === jsface.tests.Events.prototype.bind, 'Plugins APIs must be plugged into class');
-	ok(jsface.tests.Foo.prototype.setOptions === jsface.tests.Options.prototype.setOptions, 'Plugins APIs must be plugged into class');
-	delete jsface.tests;
-});
-
-test('Add plugins (import methods) via $meta.plugins', function() {
-	jsface.namespace('jsface.tests');
-
-	jsface.def({
-		$meta: {
-			name: 'Bar',
-			namespace: jsface.tests
-		},
-
-		setName: function(name){
-			this.name = name;
-		}
-	});
-
-	jsface.def({
-		$meta: {
-			name: 'Foo',
-			namespace: jsface.tests,
-			plugins: jsface.tests.Bar
-		}
-	});
-
-	var foo = new jsface.tests.Foo();
-	foo.setName('John');
-
-	ok(foo.name === 'John', 'Plugins APIs must be plugged into class');
-	ok(foo.setName === jsface.tests.Bar.prototype.setName, 'Plugins APIs must be plugged into class');
-	ok(jsface.tests.Foo.prototype.setName === jsface.tests.Bar.prototype.setName, 'Plugins APIs must be plugged into class');
-	delete jsface.tests;
-});
-
-test('Add multiple plugins via $meta.plugins', function() {
-	jsface.namespace('jsface.tests');
-
-	jsface.def({
-		$meta: {
-			name: 'Events',
-			namespace: jsface.tests
-		},
-
-		bind: function(name){
-			this.event = name;
-		}
-	});
-
-	jsface.def({
-		$meta: {
-			name: 'Options',
-			namespace: jsface.tests
-		},
-
-		setOptions: function(attrs){
-			jsface.bindProperties(this, attrs);
-		}
-	});
-
-	jsface.def({
-		$meta: {
-			name: 'Foo',
-			namespace: jsface.tests,
-			plugins: [ jsface.tests.Events, jsface.tests.Options ]
-		}
-	});
-
-	var foo = new jsface.tests.Foo();
-
-	foo.bind('click');
-	foo.setOptions({ name: 'John', age: 58 });
-
-	equals(foo.event, 'click', 'Plugins APIs must be plugged into class');
-	equals(foo.name, 'John', 'Plugins APIs must be plugged into class');
-	equals(foo.age, 58, 'Plugins APIs must be plugged into class');
-	equals(foo.bind, jsface.tests.Events.prototype.bind, 'Plugins APIs must be plugged into class');
-	equals(foo.setOptions, jsface.tests.Options.prototype.setOptions, 'Plugins APIs must be plugged into class');
-	equals(jsface.tests.Foo.prototype.bind, jsface.tests.Events.prototype.bind, 'Plugins APIs must be plugged into class');
-	equals(jsface.tests.Foo.prototype.setOptions, jsface.tests.Options.prototype.setOptions, 'Plugins APIs must be plugged into class');
 	delete jsface.tests;
 });
