@@ -791,9 +791,8 @@ var jsface = {
 
 	/**
 	 * Apply Aspect Oriented Programming into a class.
-	 * opts.on: the class or object.
-	 * opts.as: pointcuts.
-	 * @param {Object} opts
+	 * @param {Object} clazz pointcuts subject.
+	 * @param {Object} opts pointcuts API.
 	 */
 	pointcuts: function(clazz, opts) {
 		if (jsface.isEmpty(clazz) || jsface.isEmpty(opts)) {
