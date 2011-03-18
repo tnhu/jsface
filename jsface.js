@@ -707,6 +707,7 @@ var jsface = (function() {
 					bindTo = clazz;
 				} else {
 					clazz = opts[$meta.name] ? jsface.overload($meta.name, opts[$meta.name]) : function() {};
+					clazz.name = $meta.name;
 					clazz.$meta = $meta;
 					bindTo = clazz.prototype;
 				}
@@ -724,6 +725,11 @@ var jsface = (function() {
 						return;
 					}
 					bindTo[key] = jsface.overload($meta.name + "." + key, value);
+
+					// add function name into function (make it easier for debugging)
+					if (jsface.isFunction(bindTo[key])) {
+						bindTo[key].name = key;
+					}
 				});
 
 				// Bind clazz to namespace if it exists, otherwise, make the class global
