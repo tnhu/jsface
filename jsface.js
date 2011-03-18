@@ -8,7 +8,7 @@
  * $Date: Saturday, March 07 2009 $
  */
 var jsface = (function() {
-	return {
+	var jsfaceAPI = {
 		version: "1.2b",
 
 		/**
@@ -956,7 +956,7 @@ var jsface = (function() {
 	/**
 	 * jsface.def()'s plugins. The repository for jsface.def()'s processing plugins.
 	 */
-	jsface.def.plugins = {
+	jsfaceAPI.def.plugins = {
 		/*
 		 * Plug-in: statics.
 		 * Purpose: Making static methods/properties. They are available in both class and instance
@@ -995,4 +995,6 @@ var jsface = (function() {
 			}
 		}
 	};
+
+	return jsfaceAPI;
 })();
