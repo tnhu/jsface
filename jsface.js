@@ -7,7 +7,7 @@
  * Dual licensed under the MIT and GPL version 2 licenses.
  * $Date: Saturday, March 07 2009 $
  */
-var jsface = (function() {
+var jsface = (function(globalContext) {
 	var jsfaceAPI = {
 		version: "1.2b",
 
@@ -19,22 +19,19 @@ var jsface = (function() {
 		 */
 		namespace: function(namespace) {
 			if (jsface.isString(namespace)) {
-				var names = namespace.split("."), len = names.length, root, i;
+				var	names = namespace.split("."), len = names.length, i,
+					root = globalContext[names[0]] ? globalContext[names[0]] : (globalContext[names[0]] = {});
 
 				// Check each name using regular expression
 				// Condition: Begin with an alphabet character, follow by alphabets or numbers
-				for (i in names) {
+				for (i = 0; i < len; i++) {
 					if ( !jsface.isIdentifier(names[i])) {
 						throw names[i] + " is not a valid namespace alias";
 					}
 				}
 
-				root = new Function("try { return " + names[0] + "; } catch (e) { return " + names[0] + " = {}; }")();
-
 				for (i = 1; i < len; i++) {
-					if ( !root[names[i]]) {   // Create if namespace does not exist
-						root[names[i]] = {};
-					}
+					root[names[i]] = root[names[i]] ? root[names[i]] : {};
 					root = root[names[i]];
 				}
 				return root;
@@ -173,7 +170,7 @@ var jsface = (function() {
 		 */
 		global: function(name, value) {
 			if (jsface.isIdentifier(name)) {
-				return new Function("value", "return " + name + " = value;")(value);
+				return globalContext[name] = value;
 			} else {
 				throw "jsface.global: Invalid global name " + name;
 			}
@@ -351,7 +348,16 @@ var jsface = (function() {
 		 * @return Object object's actual representation or undefined.
 		 */
 		fromString: function(name) {
-			return new Function("try { return " + name + "; } catch (e) {} return undefined;")();
+			var names = name.split("."), root = globalContext, i = 0, len = names.length - 1;
+
+			while (i <= len) {
+				root = root[names[i]];
+				if ( !root) {
+					return root;
+				}
+				i++;
+			}
+			return root;
 		},
 
 		/**
@@ -1003,4 +1009,4 @@ var jsface = (function() {
 	};
 
 	return jsfaceAPI;
-})();
+})(this);
