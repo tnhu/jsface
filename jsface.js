@@ -172,7 +172,11 @@ var jsface = (function(globalContext) {
 			if (jsface.isIdentifier(name)) {
 				return globalContext[name] = value;
 			} else {
-				throw "jsface.global: Invalid global name " + name;
+				if (jsface.isMap(name)) {
+					jsface.each(name, function(key, value) {
+						jsface.global(key, value);
+					});
+				} else throw "jsface.global: Invalid global name " + name;
 			}
 		},
 
@@ -296,7 +300,7 @@ var jsface = (function(globalContext) {
 		 * @return {Boolean} true if id is a valid JavaScript literal.
 		 */
 		isIdentifier: function(id) {
-			return /^[a-zA-Z_$]+[0-9a-zA-Z_$]+$/.test(id);
+			return /^[a-zA-Z_$]+[0-9a-zA-Z_$]*$/.test(id);
 		},
 
 		/**
