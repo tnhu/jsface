@@ -9,7 +9,7 @@
  */
 var jsface = (function(globalContext) {
    var jsfaceAPI = {
-      version: "1.2",
+       version: "1.2",
 
       /**
        * Create a namespace hierarchy. If one namespace in chain exists, it will be reused.
@@ -19,8 +19,8 @@ var jsface = (function(globalContext) {
        */
       namespace: function(namespace) {
          if (jsface.isString(namespace)) {
-            var   names = namespace.split("."), len = names.length, i,
-                  root = globalContext[names[0]] ? globalContext[names[0]] : (globalContext[names[0]] = {});
+            var names = namespace.split("."), len = names.length, i,
+                root = globalContext[names[0]] ? globalContext[names[0]] : (globalContext[names[0]] = {});
 
             // Check each name using regular expression
             // Condition: Begin with an alphabet character, follow by alphabets or numbers
@@ -134,8 +134,8 @@ var jsface = (function(globalContext) {
        * right parameter will be used.
        */
       merge: function() {
-         var   args   = [].concat(Array.prototype.slice.apply(arguments)),
-               result = null, first, second;
+         var args   = [].concat(Array.prototype.slice.apply(arguments)),
+             result = null, first, second;
 
          switch (args.length) {
             case 0:
@@ -315,8 +315,8 @@ var jsface = (function(globalContext) {
        * @see http://tinyurl.com/yl934kz
        */
       trim: function(str) {
-         var   chars = " \n\r\t\v\f\u00a0\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200a\u200b\u2028\u2029\u3000",
-               ws    = {}, len = chars.length;
+         var chars = " \n\r\t\v\f\u00a0\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200a\u200b\u2028\u2029\u3000",
+             ws    = {}, len = chars.length;
 
          while (len--) {
             ws[chars.charAt(len)] = true;
@@ -842,9 +842,9 @@ var jsface = (function(globalContext) {
             throw "jsface.pointcuts: Invalid parameters.";
          }
 
-         var   isClass = jsface.isFunction(clazz),
-            isInstance = !isClass,
-            bindTo = isClass ? clazz.prototype : clazz;
+         var isClass = jsface.isFunction(clazz),
+             isInstance = !isClass,
+             bindTo = isClass ? clazz.prototype : clazz;
 
          jsface.each(opts, function(method, pointcuts) {
             var seq    = ((pointcuts.seq === false) ? false : true),  // default seq is true
