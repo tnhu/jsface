@@ -330,8 +330,8 @@ var jsface = (function(globalContext) {
                return String.prototype.trim.apply(str);
             }
             var s = -1, e = str.length;
-            while (ws[str.charAt(--e)]);
-            while (s++ !== e && ws[str.charAt(s)]);
+            while (ws[str.charAt(--e)]) {};
+            while (s++ !== e && ws[str.charAt(s)]) {};
             return str.substring(s, e + 1);
          };
          return jsface.trim(str);
