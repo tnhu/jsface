@@ -38,11 +38,7 @@ It's quite easy to define a class. Unlike other frameworks like [MooTools](http:
 or [JS.Class](http://jsclass.jcoglan.com/) where you get your class as a result of a function
 call, in jsFace everything happens inside jsface.def.
 
-	jsface.def({
-		$meta: {
-			name: "Foo"
-		},
-
+	jsface.def("Foo", {
 		/**
 		 * Constructor.
 		 */
@@ -58,21 +54,11 @@ call, in jsFace everything happens inside jsface.def.
 	var foo = new Foo("Rika");
 	foo.sayHi();
 
-jsFace uses $meta as the location for class meta data such as class name, parent class, namespace,
-singleton flag, static methods declaration, etc. You will learn more about them later. Everything
-other than $meta are class properties or methods.
-
 Practically, you should group your classes in a namespace. I recommend to apply Java layout in which
 you put your classes in structured folders. For example, you define a class in Dialog.js:
 
-	jsface.namespace("com.example.ui");
-
-	jsface.def({
-		$meta: {
-			name: "Dialog",
-			namespace: com.example.ui
-		}
-	}
+	jsface.def("com.example.ui.Dialog", {
+	});
 
 	var dialog = new com.example.ui.Dialog();
 
@@ -86,13 +72,9 @@ In your hard drive:
 
 ### Define a sub-class
 
-A sub-class is defined by specifying its parent class in $meta.
+A sub-class is defined by specifying its parent class as the second parameter.
 
-	jsface.def({
-		$meta: {
-			name: "Bar",
-			parent: Foo
-		},
+	jsface.def("Bar", Foo, {
 
 		Bar: function(name) {
 			Foo.apply(this, arguments);                   // Invoke parent's constructor
@@ -107,31 +89,18 @@ A sub-class is defined by specifying its parent class in $meta.
 
 A sub class can inherit API from multiple parents.
 
-	jsface.def({
-		$meta: {
-			name: 'Options'
-		},
-
+	jsface.def("Options", {
 		setOptions: function(attrs){
 			jsface.bindProperties(this, attrs);
 		}
 	});
 
-	jsface.def({
-		$meta: {
-			name: 'Events'
-		},
-
+	jsface.def("Event", {
 		bind: function(eventName, fn){
 		}
 	});
 
-	jsface.def({
-		$meta: {
-			name: 'Foo',
-			parent: [ Options, Events ]
-		},
-
+	jsface.def("Foo", [ Options, Events ], {
 		Foo: function(opts) {
 			this.setOptions(opts);
 			this.bind("click", jsface.noop);
@@ -140,12 +109,12 @@ A sub class can inherit API from multiple parents.
 
 ### Static methods
 
-Static methods are class level methods which you can invoke from both class or class instances. jsFace
-allows you to specify static methods by declaring them in $meta.statics.
+jsFace uses $meta as the location for class meta data. Static methods are class level methods which you 
+can invoke from both class or class instances. jsFace allows you to specify static methods by declaring 
+them in $meta.statics.
 
-	jsface.def({
+	jsface.def("Foo", {
 		$meta: {
-			name: "Foo",
 			statics: [ 'sayHi' ]
 		},
 
@@ -164,9 +133,8 @@ When you want to restrict instantiation of a class to only one object, you need 
 singleton class. jsFace ensures that there will be no instance of the singleton class instantiated
 as runtime. The APIs of the singleton class are exposed from the class itself only.
 
-	jsface.def({
+	jsface.def("Utils", {
 		$meta: {
-			name: "Utils",
 			singleton: true
 		},
 
@@ -188,11 +156,7 @@ jsFace gives you two ways to overload constructor/method. By parameter length or
 
 #### By parameter length
 
-	jsface.def({
-		$meta: {
-			name: "Foo"
-		},
-
+	jsface.def("Foo", {
 		Foo: [
 			function() {               // Default constructor
 			},
@@ -212,11 +176,7 @@ jsFace gives you two ways to overload constructor/method. By parameter length or
 
 #### By parameter type
 
-	jsface.def({
-		$meta: {
-			name: "Foo"
-		},
-
+	jsface.def("Foo", {
 		Foo: {
 			"String": function(name) {                 // Constructor with one String parameter
 				this.name = name;
@@ -239,11 +199,7 @@ Overloading by parameter type has two cool things:
 
 ##### Parameters can be validated.
 
-	jsface.def({
-		$meta: {
-			name: 'Foo'
-		},
-
+	jsface.def("Foo", {
 		Foo: {
 			"String, Number: it > 0": function(name, age) {
 				this.name = name;
@@ -274,9 +230,8 @@ Pointcuts can be injected directly when you define a class by jsface.def(). For 
 		}
 	};
 
-	jsface.def({
+	jsface.def("Foo", {
 		$meta: {
-			name: 'Foo',
 			pointcuts: pointcuts
 		},
 
@@ -293,11 +248,7 @@ Pointcuts can be injected directly when you define a class by jsface.def(). For 
 
 Or after class definition by using jsface.pointcuts():
 
-	jsface.def({
-		$meta: {
-			name: 'Foo'
-		},
-
+	jsface.def("Foo", {
 		Foo: function() {
 		},
 
@@ -350,11 +301,7 @@ jsFace gives you the ability to profile your class/instance via jsface.profiling
 you need to do is to give jsface.profiling() a subject and a repository to store the profiling
 data. APIs in subject will be monitored.
 
-	jsface.def({
-		$meta: {
-			name: 'Options'
-		},
-
+	jsface.def("Options", {
 		setOptions: function(attrs){
 			jsface.bindProperties(this, attrs);
 		}
@@ -381,7 +328,7 @@ Means constructor Options is executed 1000 times in 3ms, setOptions is executed 
 in 4ms.
 
 Please note that jsface.profiling() writes profiling data to the given repository. It does not render
-the data for you on browsers.
+the data on browsers.
 
 ## Some more thing
 
