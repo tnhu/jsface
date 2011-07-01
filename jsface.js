@@ -904,35 +904,37 @@ var jsface = (function(globalContext) {
 
       /**
        * Inherit properties from an object.
-       * @param {Class/Object} subject inherit subject (child).
-       * @param {Class/Object} object where properties come out (parent).
+       * @param {Class/Object} child sub-class.
+       * @param {Class/Object} parent super class.
        */
-      inherit: function(subject, object) {
+      inherit: function(child, parent) {
          var ignoredKeys = { $meta: 1, prototype: 1 }, bindTo, isClass;
 
-         // Quitely quit if subject or object is empty
-         if (jsface.isNullOrUndefined(subject) || jsface.isEmpty(object)) {
+         // Quitely quit if child or parent is empty
+         if (jsface.isNullOrUndefined(child) || jsface.isEmpty(parent)) {
             return;
          }
 
-         if (jsface.isArray(object)) {
-            jsface.each(object, function(obj) {
-               jsface.inherit(subject, obj);
+         if (jsface.isArray(parent)) {
+            jsface.each(parent, function(obj) {
+               jsface.inherit(child, obj);
             });
          }
 
-         bindTo = jsface.isClass(subject) ? subject.prototype : subject;
+         bindTo = jsface.isClass(child) ? child.prototype : child;
 
          // Loop over static properties of object
-         jsface.each(object, function(key, value) {
+         jsface.each(parent, function(key, value) {
             if ( !ignoredKeys[key]) {
-               bindTo[key] = value;
+               if (parent.hasOwnProperty(key) && !(jsface.isClass(parent) && key === "name")) {
+                  bindTo[key] = value;                  
+               }
             }
          });
 
          // If object is a class, plug its prototype.* properties also
-         if (jsface.isClass(object)) {
-            jsface.each(object.prototype, function(key, value) {
+         if (jsface.isClass(parent)) {
+            jsface.each(parent.prototype, function(key, value) {
                if ( !ignoredKeys[key]) {
                   bindTo[key] = value;
                }
