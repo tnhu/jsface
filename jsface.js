@@ -9,7 +9,7 @@
  */
 var jsface = (function(globalContext) {
    var jsfaceAPI = {
-      version: "1.2b",
+      version: "1.2",
 
       /**
        * Create a namespace hierarchy. If one namespace in chain exists, it will be reused.

@@ -1,3 +1,9 @@
+Version 1.2                                         June 30 2011
+----------------------------------------------------------------
+
+* More elegant syntax.
+* Remove unnecessary meta data copying on class inheritance. 
+
 Version 1.2b                                    November 26 2010
 ----------------------------------------------------------------
 
