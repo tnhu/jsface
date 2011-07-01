@@ -20,7 +20,7 @@ var jsface = (function(globalContext) {
       namespace: function(namespace) {
          if (jsface.isString(namespace)) {
             var   names = namespace.split("."), len = names.length, i,
-               root = globalContext[names[0]] ? globalContext[names[0]] : (globalContext[names[0]] = {});
+                  root = globalContext[names[0]] ? globalContext[names[0]] : (globalContext[names[0]] = {});
 
             // Check each name using regular expression
             // Condition: Begin with an alphabet character, follow by alphabets or numbers
@@ -74,8 +74,8 @@ var jsface = (function(globalContext) {
                return;
          }
 
-         isArray = jsface.isArray(collection) || jsface.isString(collection);
-         isMap = jsface.isMap(collection);
+         isArray    = jsface.isArray(collection) || jsface.isString(collection);
+         isMap      = jsface.isMap(collection);
          isFunction = jsface.isFunction(collection);
 
          // Skip processing if collection is not String, Array, or Map
@@ -800,8 +800,9 @@ var jsface = (function(globalContext) {
        * @param {Boolean} seq sequential mode (true) or curly mode (other).
        */
       wrap: function(fn, before, after, seq) {
-         var ignoredKeys = { $meta: 1, prototype: 1 },
-            closure = function() {
+         var ignoredKeys = { $meta: 1, prototype: 1 };
+
+         function closure() {
             // sequential mode. fn = before();r = fn();after();return r;
             if (seq === true) {
                // Invoke before, if it returns false, skip fn() and after()
@@ -846,9 +847,9 @@ var jsface = (function(globalContext) {
             bindTo = isClass ? clazz.prototype : clazz;
 
          jsface.each(opts, function(method, pointcuts) {
-            var   seq = ((pointcuts.seq === false) ? false : true),  // default seq is true
-               before = (pointcuts.before || jsface.noop),
-               after = (pointcuts.after || jsface.noop);
+            var seq    = ((pointcuts.seq === false) ? false : true),  // default seq is true
+                before = (pointcuts.before || jsface.noop),
+                after  = (pointcuts.after || jsface.noop);
 
             // Checking
             if ( !jsface.isFunction(before)) {
@@ -867,8 +868,8 @@ var jsface = (function(globalContext) {
             } else {
                if (jsface.isMap(clazz.$meta) && jsface.isIdentifier(clazz.$meta.name) && method === clazz.$meta.name) {
                   //  Backup prototype
-                  var proto = clazz.prototype, cls = clazz,                  // cls: backup
-                     constructor = jsface.wrap(clazz, before, after, seq);  // new constructor
+                  var proto       = clazz.prototype, cls = clazz,                  // cls: backup
+                      constructor = jsface.wrap(clazz, before, after, seq);  // new constructor
 
                   // Restore prototype, no data lost
                   if (clazz.$meta.namespace) {
