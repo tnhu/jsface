@@ -54,21 +54,12 @@ call, in jsFace everything happens inside jsface.def.
 	var foo = new Foo("Rika");
 	foo.sayHi();
 
-Practically, you should group your classes in a namespace. I recommend to apply Java layout in which
-you put your classes in structured folders. For example, you define a class in Dialog.js:
+You can specify a namespace directly in class name. For example, a Dialog class under com.example.ui:
 
 	jsface.def("com.example.ui.Dialog", {
 	});
 
 	var dialog = new com.example.ui.Dialog();
-
-In your hard drive:
-
-	./
-	 |-com
-	    |-example
-	       |-ui
-	          Dialog.js
 
 ### Define a sub-class
 
