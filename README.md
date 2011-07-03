@@ -95,7 +95,7 @@ A sub class can inherit API from multiple parents.
 		}
 	});
 
-	jsface.def("Event", {
+	jsface.def("Events", {
 		bind: function(eventName, fn){
 		}
 	});
