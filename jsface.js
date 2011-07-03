@@ -7,8 +7,8 @@
  * Dual licensed under the MIT and GPL version 2 licenses.
  * $Date: Saturday, March 07 2009 $
  */
-var jsface = (function(globalContext) {
-   var jsfaceAPI = {
+(function(globalContext) {
+   var jsface = {
        version: "1.2",
 
       /**
@@ -999,13 +999,51 @@ var jsface = (function(globalContext) {
             jsface.pointcuts(subject, makePointcuts(subject, repository));
          };
          return jsface.profiling(subject, repository);
-      }
+      },
+
+		/**
+		 * Execute ready funtions in inheritance hierarchy. 
+		*/
+		fireParentReady: function(clazz, opts) {
+			var entries = [], entry;
+			
+			function collectReady(p) {
+				var parent;
+				
+				if (jsface.isArray(p)) {
+					jsface.each(p, function(pa) {
+						collectReady(pa);
+					});
+				}
+				
+				if (p && p.$meta) {
+					if (p.$meta.ready) {
+						entries.push({ clazz: p, ready: p.$meta.ready });
+					}
+				
+					if (parent = p.$meta.parent) {
+						parent = jsface.isArray(parent) ? parent : [parent];
+				
+						jsface.each(parent, function(pa) {
+							collectReady(pa);
+						});
+					}
+				}
+			}
+			
+			collectReady(opts.$meta.parent);
+			
+			while (entries.length) {
+				entry = entries.pop();
+				entry.ready.call(entry.clazz, clazz, opts);
+			}
+		}
    };
 
    /**
     * jsface.def()'s plugins. The repository for jsface.def()'s processing plugins.
     */
-   jsfaceAPI.def.plugins = {
+   jsface.def.plugins = {
       /*
        * Plug-in: statics.
        * Purpose: Making static methods/properties. They are available in both class and instance
@@ -1028,9 +1066,11 @@ var jsface = (function(globalContext) {
        * Purpose: Class level initialization.
        */
       ready: function(clazz, opts) {
+         // ready functions are inherited
+         jsface.fireParentReady(clazz, opts);
+         
          if (jsface.isFunction(opts.$meta.ready)) {
-            opts.$meta.ready(clazz, opts);
-            delete opts.$meta.ready;
+            opts.$meta.ready.call(clazz, clazz, opts);
          }
       },
 
@@ -1045,5 +1085,6 @@ var jsface = (function(globalContext) {
       }
    };
 
-   return jsfaceAPI;
+	// Bind jsface to global context
+   globalContext.jsface = jsface;
 })(this);
