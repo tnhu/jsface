@@ -745,6 +745,8 @@
             if ($meta.singleton === true) {    // a singleton class
                clazz  = {};                    // initial class structure of a singleton is a map
                bindTo = clazz;
+               clazz.name  = $meta.name;
+               clazz.$meta = $meta;
             } else {
                clazz       = opts[$meta.name] ? jsface.overload($meta.name, opts[$meta.name]) : function() {};
                clazz.name  = $meta.name;
