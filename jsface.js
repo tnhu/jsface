@@ -20,7 +20,7 @@
       namespace: function(namespace) {
          if (jsface.isString(namespace)) {
             var names = namespace.split("."), len = names.length, i,
-                root = globalContext[names[0]] ? globalContext[names[0]] : (globalContext[names[0]] = {});
+                root  = globalContext[names[0]] ? globalContext[names[0]] : (globalContext[names[0]] = {});
 
             // Check each name using regular expression
             // Condition: Begin with an alphabet character, follow by alphabets or numbers
