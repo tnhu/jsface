@@ -7,7 +7,7 @@
  * Dual licensed under the MIT and GPL version 2 licenses.
  * $Date: Saturday, March 07 2009 $
  */
-(function(globalContext) {
+(function(globalContext, undefined) {
    var jsface = {
        version: "1.2",
 
