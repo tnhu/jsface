@@ -1,3 +1,5 @@
+var print = this["print"] ? this["print"] : ((console && console.log) ? console.log : alert);
+
 jsface.def("Foo", {
     Foo: [
         function() {               // Default constructor
@@ -5,7 +7,7 @@ jsface.def("Foo", {
         function(name) {           // Constructor with one parameter
             this.name = name;
         },
-        function(name, age) {      // Constructor with one parameter
+        function(name, age) {      // Constructor with two parameters
             this.name = name;
             this.age = age;
         }

@@ -1,3 +1,5 @@
+var print = this["print"] ? this["print"] : ((console && console.log) ? console.log : alert);
+
 jsface.def("Utils", {
 	$meta: {
 		singleton: true

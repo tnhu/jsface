@@ -1,3 +1,5 @@
+var print = this["print"] ? this["print"] : ((console && console.log) ? console.log : alert);
+
 // Basic class
 jsface.def("sample.Foo", { 
    /** 

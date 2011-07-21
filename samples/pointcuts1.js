@@ -1,3 +1,5 @@
+var print = this["print"] ? this["print"] : ((console && console.log) ? console.log : alert);
+
 // Apply pointcuts before declaring a class
 var pointcuts = {
     Foo: {
