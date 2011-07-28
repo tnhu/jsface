@@ -251,11 +251,8 @@ test('Inherit a singleton class', function() {
       }
    });
 
-   jsface.def({
+   jsface.def('jsface.tests.Bar', jsface.tests.Foo, {
       $meta: {
-         name: 'Bar',
-         namespace: jsface.tests,
-         parent: jsface.tests.Foo,
          singleton: true
       },
 
@@ -274,14 +271,7 @@ test('Inherit a singleton class', function() {
 
 
 test('Inheritance: anonymous API', function() {
-   jsface.namespace('jsface.tests');
-
-   jsface.def({
-      $meta: {
-         name: 'Foo',
-         namespace: jsface.tests
-      }
-   });
+   jsface.def('jsface.tests.Foo');
 
    var api = {
       setName: function(name){
@@ -301,14 +291,7 @@ test('Inheritance: anonymous API', function() {
 });
 
 test('Inheritance: instance inherits from anonymous api', function() {
-   jsface.namespace('jsface.tests');
-
-   jsface.def({
-      $meta: {
-         name: 'Foo',
-         namespace: jsface.tests
-      }
-   });
+   jsface.def('jsface.tests.Foo');
 
    var api = {
       setName: function(name){
@@ -329,21 +312,14 @@ test('Inheritance: instance inherits from anonymous api', function() {
 });
 
 test('Inheritance: class to class', function() {
-   jsface.namespace('jsface.tests');
-
-   jsface.def({
+   jsface.def('jsface.tests.Foo', {
       $meta: {
          name: 'Foo',
          namespace: jsface.tests
       }
    });
 
-   jsface.def({
-      $meta: {
-         name: 'Bar',
-         namespace: jsface.tests
-      },
-
+   jsface.def('jsface.tests.Bar', {
       setName: function(name){
          this.name = name;
       }
@@ -361,21 +337,9 @@ test('Inheritance: class to class', function() {
 });
 
 test('Inheritance: class to instance', function() {
-   jsface.namespace('jsface.tests');
+   jsface.def('jsface.tests.Foo');
 
-   jsface.def({
-      $meta: {
-         name: 'Foo',
-         namespace: jsface.tests
-      }
-   });
-
-   jsface.def({
-      $meta: {
-         name: 'Bar',
-         namespace: jsface.tests
-      },
-
+   jsface.def('jsface.tests.Bar', {
       setName: function(name){
          this.name = name;
       }
@@ -392,32 +356,20 @@ test('Inheritance: class to instance', function() {
 });
 
 test('Inheritance: multiplicity', function() {
-   jsface.namespace('jsface.tests');
-
-   jsface.def({
+   jsface.def('jsface.tests.Foo', {
       $meta: {
          name: 'Foo',
          namespace: jsface.tests
       }
    });
 
-   jsface.def({
-      $meta: {
-         name: 'Events',
-         namespace: jsface.tests
-      },
-
+   jsface.def('jsface.tests.Events', {
       bind: function(name){
          this.event = name;
       }
    });
 
-   jsface.def({
-      $meta: {
-         name: 'Options',
-         namespace: jsface.tests
-      },
-
+   jsface.def('jsface.tests.Options', {
       setOptions: function(attrs){
          jsface.bindProperties(this, attrs);
       }
@@ -441,26 +393,13 @@ test('Inheritance: multiplicity', function() {
 });
 
 test('Inheritance: via $meta.parent', function() {
-   jsface.namespace('jsface.tests');
-
-   jsface.def({
-      $meta: {
-         name: 'Bar',
-         namespace: jsface.tests
-      },
-
+   jsface.def('jsface.tests.Bar', {
       setName: function(name){
          this.name = name;
       }
    });
 
-   jsface.def({
-      $meta: {
-         name: 'Foo',
-         namespace: jsface.tests,
-         parent: jsface.tests.Bar
-      }
-   });
+   jsface.def('jsface.tests.Foo', jsface.tests.Bar, {});
 
    var foo = new jsface.tests.Foo();
    foo.setName('John');
@@ -472,37 +411,19 @@ test('Inheritance: via $meta.parent', function() {
 });
 
 test('Inheritance: multiplicity via $meta.parent', function() {
-   jsface.namespace('jsface.tests');
-
-   jsface.def({
-      $meta: {
-         name: 'Events',
-         namespace: jsface.tests
-      },
-
+   jsface.def('jsface.tests.Events', {
       bind: function(name){
          this.event = name;
       }
    });
 
-   jsface.def({
-      $meta: {
-         name: 'Options',
-         namespace: jsface.tests
-      },
-
+   jsface.def('jsface.tests.Options', {
       setOptions: function(attrs){
          jsface.bindProperties(this, attrs);
       }
    });
 
-   jsface.def({
-      $meta: {
-         name: 'Foo',
-         namespace: jsface.tests,
-         parent: [ jsface.tests.Events, jsface.tests.Options ]
-      }
-   });
+   jsface.def('jsface.tests.Foo', [ jsface.tests.Events, jsface.tests.Options ], {});
 
    var foo = new jsface.tests.Foo();
 
@@ -520,12 +441,8 @@ test('Inheritance: multiplicity via $meta.parent', function() {
 });
 
 test('Class level initialization', function() {
-   jsface.namespace('jsface.tests');
-
-   jsface.def({
+   jsface.def('jsface.tests.Bar', {
       $meta: {
-         name: 'Bar',
-         namespace: jsface.tests,
          ready: function(clazz, opts) {
             ok(jsface.isFunction(jsface.tests.Bar), 'Class defination must be defined before class initialization');
             ok(clazz.$meta.name === 'Bar', 'Invalid class name');
@@ -541,14 +458,7 @@ test('Class level initialization', function() {
 });
 
 test('Sub classes method call chain', function() {
-   jsface.namespace('jsface.tests');
-
-   jsface.def({
-      $meta: {
-         name: 'Foo',
-         namespace: jsface.tests
-      },
-
+   jsface.def('jsface.tests.Foo', {
       Foo: function(name) {
          this.name = name;
       },
@@ -558,13 +468,7 @@ test('Sub classes method call chain', function() {
       }
    });
 
-   jsface.def({
-      $meta: {
-         name: 'Bar',
-         namespace: jsface.tests,
-         parent: jsface.tests.Foo
-      },
-
+   jsface.def('jsface.tests.Bar', jsface.tests.Foo, {
       Bar: function(name) {
          jsface.tests.Foo.apply(this, arguments);
       },
@@ -574,13 +478,7 @@ test('Sub classes method call chain', function() {
       }
    });
 
-   jsface.def({
-      $meta: {
-         name: 'Child',
-         namespace: jsface.tests,
-         parent: jsface.tests.Bar
-      },
-
+   jsface.def('jsface.tests.Child', jsface.tests.Bar, {
       Child: function(name) {
          jsface.tests.Bar.apply(this, arguments);
       },
@@ -598,14 +496,7 @@ test('Sub classes method call chain', function() {
 });
 
 test('Constructor overloading (Array)', function() {
-   jsface.namespace('jsface.tests');
-
-   jsface.def({
-      $meta: {
-         name: 'Foo',
-         namespace: jsface.tests
-      },
-
+   jsface.def('jsface.tests.Foo', {
       Foo: [
          function(name) {
             this.name = name;
@@ -618,7 +509,7 @@ test('Constructor overloading (Array)', function() {
    });
 
    var foo1 = new jsface.tests.Foo('John Rambo'),
-      foo2 = new jsface.tests.Foo('John Rambo', 55);
+       foo2 = new jsface.tests.Foo('John Rambo', 55);
 
    ok(foo1.name === 'John Rambo', 'Invalid constructor overloading');
    ok(!foo1.age, 'Invalid constructor overloading');
@@ -628,14 +519,7 @@ test('Constructor overloading (Array)', function() {
 });
 
 test('Constructor overloading (Array) - default constructor', function() {
-   jsface.namespace('jsface.tests');
-
-   jsface.def({
-      $meta: {
-         name: 'Foo',
-         namespace: jsface.tests
-      },
-
+   jsface.def('jsface.tests.Foo', {
       Foo: [
          // Default constructor
          function() {
@@ -667,14 +551,7 @@ test('Constructor overloading (Array) - default constructor', function() {
 });
 
 test('Method overloading (Array)', function() {
-   jsface.namespace('jsface.tests');
-
-   jsface.def({
-      $meta: {
-         name: 'Foo',
-         namespace: jsface.tests
-      },
-
+   jsface.def('jsface.tests.Foo', {
       count: [
          function() {
             return 0;
@@ -724,13 +601,7 @@ test('Method overloading (Array) with static method', function() {
 });
 
 test('Constructor overloading (Map)', function() {
-   jsface.namespace('jsface.tests');
-   jsface.def({
-      $meta: {
-         name: 'Foo',
-         namespace: jsface.tests
-      },
-
+   jsface.def('jsface.tests.Foo', {
       Foo: {
          'String': function(name) {
             this.name = name;
@@ -774,14 +645,7 @@ test('Constructor overloading (Map) with static method', function() {
 });
 
 test('Pointcuts over constructor and method', function() {
-   jsface.namespace('jsface.tests');
-
-   jsface.def({
-      $meta: {
-         name: 'Foo',
-         namespace: jsface.tests
-      },
-
+   jsface.def('jsface.tests.Foo', {
       Foo: function() {
          this.count++;
       },
