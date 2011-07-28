@@ -14,23 +14,19 @@ test('jsface.def with invalid params.$meta', function() {
 
 test('jsface.def with invalid params.$meta.name', function() {
    raises(function() {
-      jsface.def({
-         $meta: {
-            name: 'Hello World'
-         }
-      });
+      jsface.def('Hello World', {});
    }, 'An exception must be thrown for invalid params.$meta.name');
 });
 
-test('Define a class without any API - default contructor will be generated', function() {
-   jsface.namespace('jsface.tests');
+test('Define a class with just class name', function() {
+   jsface.def('jsface.tests.Foo');
 
-   jsface.def({
-      $meta: {
-         name: 'Foo',
-         namespace: jsface.tests
-      }
-   });
+   ok(jsface.isClass(jsface.tests.Foo), 'Class defination must be a class');
+   delete jsface.tests;
+});
+
+test('Define a class without any API - default contructor will be generated', function() {
+   jsface.def('jsface.tests.Foo', {});
 
    var foo = new jsface.tests.Foo();
 
@@ -40,14 +36,9 @@ test('Define a class without any API - default contructor will be generated', fu
 });
 
 test('Define a class with only constructor', function() {
-   jsface.namespace('jsface.tests');
+   jsface.namespace();
 
-   jsface.def({
-      $meta: {
-         name: 'Foo',
-         namespace: jsface.tests
-      },
-
+   jsface.def('jsface.tests.Foo', {
       Foo: function(msg) {
          this.msg = msg;
       }
@@ -62,14 +53,7 @@ test('Define a class with only constructor', function() {
 });
 
 test('Define a simple class', function() {
-   jsface.namespace('jsface.tests');
-
-   jsface.def({
-      $meta: {
-         name: 'Foo',
-         namespace: jsface.tests
-      },
-
+   jsface.def('jsface.tests.Foo', {
       Foo: function(name) {
          this.name = name;
       },
@@ -88,13 +72,7 @@ test('Define a simple class', function() {
 });
 
 test('Specify class name directly on jsface.def', function() {
-   jsface.namespace('jsface.tests');
-
-   jsface.def("Foo", {
-      $meta: {
-         namespace: jsface.tests
-      },
-
+   jsface.def("jsface.tests.Foo", {
       Foo: function(name) {
          this.name = name;
       },
@@ -114,10 +92,6 @@ test('Specify class name directly on jsface.def', function() {
 
 test('Specify class namespace directly on jsface.def', function() {
    jsface.def("jsface.tests.Foo", {
-      $meta: {
-         namespace: jsface.tests
-      },
-
       Foo: function(name) {
          this.name = name;
       },
@@ -136,14 +110,7 @@ test('Specify class namespace directly on jsface.def', function() {
 });
 
 test('Define a class with default constructor', function() {
-   jsface.namespace('jsface.tests');
-
-   jsface.def({
-      $meta: {
-         name: 'Foo',
-         namespace: jsface.tests
-      },
-
+   jsface.def('jsface.tests.Foo', {
       sayBye: function() {
          return 'Bye!';
       }
@@ -157,14 +124,7 @@ test('Define a class with default constructor', function() {
 });
 
 test('Define a sub class', function() {
-   jsface.namespace('jsface.tests');
-
-   jsface.def({
-      $meta: {
-         name: 'Foo',
-         namespace: jsface.tests
-      },
-
+   jsface.def('jsface.tests.Foo', {
       Foo: function(name) {
          this.name = name;
       },
@@ -178,13 +138,7 @@ test('Define a sub class', function() {
       }
    });
 
-   jsface.def({
-      $meta: {
-         name: 'Bar',
-         namespace: jsface.tests,
-         parent: jsface.tests.Foo
-      },
-
+   jsface.def('jsface.tests.Bar', jsface.tests.Foo, {
       Bar: function(name) {
          jsface.tests.Foo.apply(this, arguments);
       },
@@ -208,13 +162,7 @@ test('Define a sub class', function() {
 });
 
 test('Specify class name and super class directly on jsface.def', function() {
-   jsface.namespace('jsface.tests');
-
-   jsface.def("Foo", {
-      $meta: {
-         namespace: jsface.tests
-      },
-
+   jsface.def("jsface.tests.Foo", {
       Foo: function(name) {
          this.name = name;
       },
@@ -228,11 +176,7 @@ test('Specify class name and super class directly on jsface.def', function() {
       }
    });
 
-   jsface.def("Bar", jsface.tests.Foo, {
-      $meta: {
-         namespace: jsface.tests
-      },
-
+   jsface.def("jsface.tests.Bar", jsface.tests.Foo, {
       Bar: function(name) {
          jsface.tests.Foo.apply(this, arguments);
       },
@@ -256,12 +200,8 @@ test('Specify class name and super class directly on jsface.def', function() {
 });
 
 test('Define a class with static methods', function() {
-   jsface.namespace('jsface.tests');
-
-   jsface.def({
+   jsface.def('jsface.tests.Bar', {
       $meta: {
-         name: 'Bar',
-         namespace: jsface.tests,
          statics: ['sayBye']
       },
 
@@ -283,12 +223,8 @@ test('Define a class with static methods', function() {
 });
 
 test('Define a singleton class', function() {
-   jsface.namespace('jsface.tests');
-
-   jsface.def({
+   jsface.def('jsface.tests.Foo', {
       $meta: {
-         name: 'Foo',
-         namespace: jsface.tests,
          singleton: true
       },
 
@@ -305,12 +241,8 @@ test('Define a singleton class', function() {
 });
 
 test('Inherit a singleton class', function() {
-   jsface.namespace('jsface.tests');
-
-   jsface.def({
+   jsface.def('jsface.tests.Foo', {
       $meta: {
-         name: 'Foo',
-         namespace: jsface.tests,
          singleton: true
       },
 
@@ -765,6 +697,32 @@ test('Method overloading (Array)', function() {
    delete jsface.tests;
 });
 
+test('Method overloading (Array) with static method', function() {
+   jsface.def("jsface.tests.Foo", {
+      $meta: {
+         statics: [ "count" ]
+      },
+
+      count: [
+         function() {
+            return 0;
+         },
+         function(num) {
+            return num;
+         },
+         function(num1, num2) {
+            return num1 + num2;
+         }
+      ]
+   });
+
+   ok(jsface.tests.Foo.count() === 0, 'Default overloading must get called');
+   ok(jsface.tests.Foo.count(1, 2, 3) === 0, 'Default overloading must get called');
+   ok(jsface.tests.Foo.count(1) == 1, 'Second overloading must get called');
+   ok(jsface.tests.Foo.count(1, 2) == 3, 'Third overloading must get called');
+   delete jsface.tests;
+});
+
 test('Constructor overloading (Map)', function() {
    jsface.namespace('jsface.tests');
    jsface.def({
@@ -791,6 +749,27 @@ test('Constructor overloading (Map)', function() {
    ok(!foo1.age, 'First constructor must get called');
    ok(foo2.name === 'John Rambo', 'Second constructor must get called');
    ok(foo2.age == 55, 'Second constructor must get called');
+   delete jsface.tests;
+});
+
+test('Constructor overloading (Map) with static method', function() {
+   jsface.def("jsface.tests.Foo", {
+      $meta: {
+         statics: [ "echo" ]
+      },
+
+      echo: {
+         'String': function(str) {
+            return str;
+         },
+         'Number': function(num) {
+            return num;
+         }
+      }
+   });
+
+   ok(jsface.tests.Foo.echo('John Rambo') === 'John Rambo', 'First constructor must get called');
+   ok(jsface.tests.Foo.echo(1000) === 1000, 'First constructor must get called');
    delete jsface.tests;
 });
 

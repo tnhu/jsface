@@ -689,7 +689,12 @@
           */
          function normalize(params) {
             var name;
-            
+
+            // Define class with just a name. I.e: jsface.def("Foo");
+            if (jsface.isString(params)) {
+               params = { $meta: { name: params }};
+            }
+
             if ( !jsface.isMap(params)) {
                throw "jsface.def: Class parameters must be a map object";
             }
@@ -708,6 +713,8 @@
                   throw "jsface.def: Class name " + params.$meta.name + " is not valid identifier";                  
                }
             }
+            
+            return params;
          }
 
          return function() {
@@ -732,7 +739,7 @@
             }
   
             // normalize parameters
-            normalize(opts);
+            opts = normalize(opts);
 
             // Collect ignored keys in jsface.def.plugins (skip to copy to actual class)
             jsface.each(jsface.def.plugins, function(key) {
@@ -1003,43 +1010,43 @@
          return jsface.profiling(subject, repository);
       },
 
-		/**
-		 * Execute ready funtions in inheritance hierarchy. 
-		*/
-		fireParentReady: function(clazz, opts) {
-			var entries = [], entry;
-			
-			function collectReady(p) {
-				var parent;
-				
-				if (jsface.isArray(p)) {
-					jsface.each(p, function(pa) {
-						collectReady(pa);
-					});
-				}
-				
-				if (p && p.$meta) {
-					if (p.$meta.ready) {
-						entries.push({ clazz: p, ready: p.$meta.ready });
-					}
-				
-					if (parent = p.$meta.parent) {
-						parent = jsface.isArray(parent) ? parent : [parent];
-				
-						jsface.each(parent, function(pa) {
-							collectReady(pa);
-						});
-					}
-				}
-			}
-			
-			collectReady(opts.$meta.parent);
-			
-			while (entries.length) {
-				entry = entries.pop();
-				entry.ready.call(entry.clazz, clazz, opts);
-			}
-		}
+      /**
+       * Execute ready funtions in inheritance hierarchy. 
+      */
+      fireParentReady: function(clazz, opts) {
+         var entries = [], entry;
+         
+         function collectReady(p) {
+            var parent;
+            
+            if (jsface.isArray(p)) {
+               jsface.each(p, function(pa) {
+                  collectReady(pa);
+               });
+            }
+            
+            if (p && p.$meta) {
+               if (p.$meta.ready) {
+                  entries.push({ clazz: p, ready: p.$meta.ready });
+               }
+            
+               if (parent = p.$meta.parent) {
+                  parent = jsface.isArray(parent) ? parent : [parent];
+            
+                  jsface.each(parent, function(pa) {
+                     collectReady(pa);
+                  });
+               }
+            }
+         }
+         
+         collectReady(opts.$meta.parent);
+         
+         while (entries.length) {
+            entry = entries.pop();
+            entry.ready.call(entry.clazz, clazz, opts);
+         }
+      }
    };
 
    /**
@@ -1055,7 +1062,7 @@
          if ( !opts.$meta.singleton) {
             jsface.each(opts.$meta.statics, function(fnName) {
                if (jsface.isIdentifier(fnName) && opts[fnName]) {
-                  clazz[fnName] = opts[fnName];
+                  clazz[fnName] = clazz.prototype[fnName];
                } else {
                   throw "jsface.def: Invalid static method/property " + fnName + " in declaring class " + opts.$meta.name;
                }
@@ -1087,6 +1094,6 @@
       }
    };
 
-	// Bind jsface to global context
+   // Bind jsface to global context
    globalContext.jsface = jsface;
 })(this);
