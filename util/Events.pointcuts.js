@@ -8,5 +8,3 @@ jsface.pointcuts(jsface.util.Events, {
       console.log("EVENTS: Trigger " + args.shift() + " with params: " + args);
    }
 });
-
-alert(1);
