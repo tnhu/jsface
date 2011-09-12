@@ -856,6 +856,9 @@
              bindTo = isClass ? clazz.prototype : clazz;
 
          jsface.each(opts, function(method, pointcuts) {
+            // Support sugar syntax for before
+            pointcuts = jsface.isFunction(pointcuts) ? { before: pointcuts } : pointcuts;
+
             var seq    = ((pointcuts.seq === false) ? false : true),  // default seq is true
                 before = (pointcuts.before || jsface.noop),
                 after  = (pointcuts.after || jsface.noop);
