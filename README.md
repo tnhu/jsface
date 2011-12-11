@@ -5,7 +5,7 @@ JSFace is a library designed to facilitate object-oriented programming in JavaSc
 * Small footprint, no dependency, only 1K minimized+gzip.
 * Work on both server and client side.
 * Support CommonJS.
-* Support singleton, trait, private properties.
+* Support singleton, mixin, private properties.
 * Plugins mechanism to extend itself.
 
 # Usage
