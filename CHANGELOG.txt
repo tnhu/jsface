@@ -1,18 +1,19 @@
 Version 2.0.0                                       Dec 10, 2011
 ----------------------------------------------------------------
-* Get rid of $meta (cleaner class structure).
-* Introduce $super, extend (mixin, trait).
-* Overloading support as a standalone plugin (TBD).
-* AOP support as a standalone plugin (TBD).
+* Get rid of $meta (cleaner class structure)
+* Introduce $super, extend (mixin, trait)
+* Overloading support as a standalone plugin (TBD)
+* AOP support as a standalone plugin (TBD)
 * Anonymous class (without name) (i.e: var Animal = Class({});)
 * constructor instead of java style ClassName
+* noConflict() mode
 * support private method (class body is a function)
 * Single constructor inheritance, multiple trails (Scala style)
 * Sugar syntax Class(), pointcuts()
 * CommonJS support
 * Make jsFace private methods not exposed via jsFace namespace
 * Remove unneccessary code
-* Optimization
+* Size optimization
 * More unit tests
 
 Version 1.2                                         June 30 2011

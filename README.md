@@ -206,6 +206,28 @@ Mixin with instance:
 
    "   Hello World    ".trim();                // "Hello World"
 ```
+## No conflict
+
+In browser environment, you might be using another library which also introduces the global namespace Class. JSFace can return the original Class back to the library claims it with a call to jsface.noConflict().
+
+``` javascript
+jsface.noConflict();
+
+// Code that uses other library's Class can follow here
+```
+
+Actually, Class is an alias of jsface.Class:
+
+``` javascript
+   jsface.noConflict();
+   
+   // Code that uses other library's Class can follow here
+
+   // Define classes by using jsface.Class directly
+   var Person = jsface.Class({
+   });
+```
+
 # Bug tracker
 
 Have a bug? Please [create an issue here](https://github.com/tannhu/jsface/issues) on GitHub!
