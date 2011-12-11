@@ -113,7 +113,7 @@ JSFace supports Java-style static properties. Meaning they are accessible on bot
 
 ``` javascript
    var Person = Class(function() {
-      var MIN_AGE =   0,                       // private variables
+      var MIN_AGE =   1,                       // private variables
           MAX_AGE = 150;
 
       function isValidAge(age) {               // private method
@@ -164,7 +164,7 @@ Mixin can be bound when you define classes:
 
    // Student inherits Person and extends properties from Options and Events
    var Student = Class([ Person, Options, Events ], {
-      constructor: function(id, name, age) {
+      constructor: function(id, name, age) {}
    });
 
    var student = new Student(1, "Rika", 20);
