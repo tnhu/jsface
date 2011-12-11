@@ -1,36 +1,45 @@
-var print = this["print"] ? this["print"] : ((console && console.log) ? console.log : alert);
-
-// Basic class
-jsface.def("sample.Foo", { 
-   /** 
-    * Constructor. 
-    */ 
-   Foo: function(name) { 
-      this.name = name; 
-   }, 
-   getName: function() { 
-      return "Hello " + this.name; 
-   } 
+var Events = Class({
+   bind: function(type, fn) {
+   }
 });
 
-// A sub class
-jsface.def("sample.Bar", sample.Foo, { 
-   /** 
-    * Constructor. 
-    */ 
-   Bar: function(name) { 
-      sample.Foo.apply(this, arguments); 
+var Options = Class({
+   setOptions: function(opts) {
+      this.opts = opts;
+   },
+   getOptions: function() {
+      return this.opts;
+   }
+});
+
+var Foo = Class({
+   $statics: {
+      VERSION: "1.3"
    },
 
-   getName: function() { 
-      return sample.Foo.prototype.getName.apply(this);
-   } 
+   constructor: function(name) {
+      this.name = name;
+   },
+
+   welcome: function() {
+      return "Welcome " + this.name;
+   },
+
+   version: function() {
+      return this.VERSION;  // same as Foo.VERSION
+   }
 });
 
+var Bar = Class([ Foo, Events, Options ], {
+   constructor: function(name) {
+      this.$super(name);
+   },
 
-var foo = new sample.Foo("John");
-print(foo.getName());
+   sayHi: function() {
+      return this.$super();
+   },
 
-
-var bar = new sample.Bar("Mary");
-print(bar.getName());
+   sayBye: function() {
+      return "Bye!";
+   }
+});

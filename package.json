@@ -1,0 +1,22 @@
+{
+   "name"           : "jsface",
+   "main"           : "jsface.js",
+   "description"    : "JsFace JavaScript Object-Oriented Programming library",
+   "author"         : "Tan Nhu <tnhu AT me . com>",
+   "version"        : "2.0.0",
+   "keywords"       : [ "jsface", "JsFace", "OOP", "JavaScript OOP", "JavaScript Object Oriented Programming" ],
+   "homepage"       : "https://github.com/tannhu/jsface",
+   "licenses"       : [{
+      "type"        : "MIT",
+      "url"         : "https://github.com/tannhu/jsface/blob/master/MIT-LICENSE.txt"
+   }],
+   "repository"     : {
+     "type"         : "git",
+     "url"          : "git://github.com/tannhu/jsface.git"
+   },
+   "engines"        : {
+      "node"        : "~0.4.12"
+   },
+   "dependencies"   : {},
+   "devDependencies": {}
+}
