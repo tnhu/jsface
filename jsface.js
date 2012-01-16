@@ -22,11 +22,12 @@
     * Return Infinity on fn will stop the iteration. each returns an array of results returned by fn.
     */
    function each(collection, fn) {
-      var iArray, iMap, iFunction, item, i, r, len, result = [];
+      var iArray, iMap, iString, iFunction, item, i, r, v, len, result = [];
 
       if ( !collection || !fn) { return; }
 
-      iArray    = isArray(collection) || isString(collection);
+      iString   = isString(collection);
+      iArray    = isArray(collection) || iString;
       iMap      = isMap(collection);
       iFunction = isFunction(collection);
 
@@ -38,7 +39,8 @@
 
       if (iArray) {
          for (i = 0, len = collection.length; i < len; i++) {
-            if ((r = fn(collection[i], i, collection)) === Infinity) { break; }
+            v = iString ? collection.charAt(i) : collection[i];
+            if ((r = fn(v, i, collection)) === Infinity) { break; }
             result.push(r);
          }
       } else {

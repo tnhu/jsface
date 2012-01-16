@@ -11,7 +11,7 @@ var context    = this,
 
 test("Loop with each over a string", function() {
    each("123456", function(e, index, st) {
-      ok(st[index] === e, "invalid each loop behavior over a string");
+      ok(st.charAt(index) === e, "invalid each loop behavior over a string");
    });
 });
 
@@ -78,15 +78,23 @@ test("Check type with isMap", function() {
    ok( !isMap("Hello"), "jsface.isMap works incorrectly");
    ok( !isMap([]), "jsface.isMap works incorrectly");
    ok( !isMap([ 1, 2, 3 ]), "jsface.isMap works incorrectly");
-   ok( !isMap(1), "jsface.isMap works incorrectly");
+   ok( !isMap(1234), "jsface.isMap works incorrectly");
 });
 
 test("Check type with jsface.isMap on iframe", function() {
-   var iframe, IObject;
+   var frame, iframe, IObject;
 
    iframe = document.createElement("iframe");
    document.body.appendChild(iframe);
-   IObject = window.frames[window.frames.length - 1].Object;
+
+   frame = window.frames[window.frames.length - 1];
+
+   // getObject returns JavaScript Object in iframe context
+   frame.getObject = function() {
+      return Object;
+   };
+
+   IObject = frame.getObject();
 
    var map = new IObject();
    map.one = 1;
@@ -110,11 +118,17 @@ test("Check type with jsface.isArray", function() {
 });
 
 test("Check type with jsface.isArray on iframe", function() {
-   var iframe, IArray, array;
+   var frame, iframe, IArray, array;
 
    iframe = document.createElement("iframe");
    document.body.appendChild(iframe);
-   IArray = window.frames[window.frames.length - 1].Array;
+
+   frame = window.frames[window.frames.length - 1];
+   frame.getArray = function() {
+      return Array;
+   };
+
+   IArray = frame.getArray();
 
    array = new IArray(1, 2, 3);
 
@@ -135,11 +149,17 @@ test("Check type with jsface.isFunction", function() {
 });
 
 test("Check type with jsface.isFunction on iframe", function() {
-   var iframe, IFunction, fn;
+   var frame, iframe, IFunction, fn;
 
    iframe = document.createElement("iframe");
    document.body.appendChild(iframe);
-   IFunction = window.frames[window.frames.length - 1].Function;
+
+   frame = window.frames[window.frames.length - 1];
+   frame.getFunction = function() {
+      return Function;
+   };
+
+   IFunction = frame.getFunction();
 
    fn = new IFunction();
    ok(isFunction(fn), "jsface.isFunction works incorrectly");
@@ -176,7 +196,32 @@ test("Check type with jsface.isClass", function() {
    ok( !isClass(Util), "jsface.isClass works incorrectly a singleton class (singleton is a map, not a class)");
 });
 
+// Helper to inject a script and execute a callback when it's fully loaded
+// Note: Old versions of Opera don't work well with this method (11.60 works perfectly).
+function getScript(url, callback) {
+   var head   = document.getElementsByTagName("head")[0],
+       script = document.createElement("script"),
+       done   = false;
+
+   script.src  = url;
+   script.type = "text/javascript";
+
+   script.onload = script.onreadystatechange = function() {
+      if ( !done && ( !this.readyState || this.readyState == "loaded" || this.readyState == "complete")) {
+         done = true;
+         callback();
+
+         script.onload = script.onreadystatechange = null;
+         head.removeChild(script);
+      }
+   }
+
+   head.appendChild(script);
+}
+
 asyncTest("CommonJS support", function() {
+   var head = document.getElementsByTagName("head")[0];
+
    // this unit test is run on browsers for sure
    ok(jsface, "jsface must be available globally");
    ok(extend, "extend must be available globally");
@@ -185,12 +230,7 @@ asyncTest("CommonJS support", function() {
    // simulate CommonJS
    context.module = { exports: {} };
 
-   // reload jsface.js
-   var script  = document.createElement("script");
-   script.src  = "../jsface.js";
-   script.type = "text/javascript";
-
-   script.onload = function() {
+   getScript("../jsface.js", function() {
       var exports = context.module.exports;
       start();
 
@@ -202,32 +242,28 @@ asyncTest("CommonJS support", function() {
       ok(exports.isString, "isString must be available in exports");
       ok(exports.isClass, "isClass must be available in exports");
 
-      script.onload = null;
-      delete context.module;
-   }
-
-   document.body.appendChild(script);
+      try {
+         delete context.module; // IE is so damn stupid! It throws an exception here.
+      } catch (e) {
+         context.module = undefined;
+      }
+   });
 });
 
 asyncTest("noConflict support", function() {
-   var clazz     = context.Class;
+   var head  = document.getElementsByTagName("head")[0],
+       clazz = context.Class;
+
    context.Class = function() { return 1; };
 
-   // reload jsface.js
-   var script  = document.createElement("script");
-   script.src  = "../jsface.js";
-   script.type = "text/javascript";
-
-   script.onload = function() {
+   getScript("../jsface.js", function() {
       jsface.noConflict();
-      ok(Class() === 1, "noConflict works incorrectly");
 
       start();
-      script.onload = null;
-      context.Class = clazz;
-   }
+      ok(Class() === 1, "noConflict works incorrectly");
 
-   document.body.appendChild(script);
+      context.Class = jsface.Class;
+   });
 });
 
 // --------- CLASS --------- //
@@ -595,7 +631,7 @@ test("Mixin: class extends multiple classes", function() {
    var Foo = Class({
       constructor: function(name) {
          this.name = name;
-      },
+      }
    });
 
    extend(Foo, [ Options, Events ]);
@@ -629,7 +665,7 @@ test("Mixin: class extends both class and instance", function() {
    var Foo = Class({
       constructor: function(name) {
          this.name = name;
-      },
+      }
    });
 
    extend(Foo, [ Options, new Events() ]);
