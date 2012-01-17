@@ -8,7 +8,7 @@
  * Date: Saturday, March 07 2009
  * Version: 2.0.1
  */
-!function(context, undefined) {
+(function(context, undefined) {
    var OBJECT      = "object",
        NUMBER      = "number",
        LENGTH      = "length",
@@ -233,4 +233,4 @@
          context.Class = oldClass;
       }
    }
-}(this);
+})(this);
