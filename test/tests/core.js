@@ -242,11 +242,7 @@ asyncTest("CommonJS support", function() {
       ok(exports.isString, "isString must be available in exports");
       ok(exports.isClass, "isClass must be available in exports");
 
-      try {
-         delete context.module; // IE is so damn stupid! It throws an exception here.
-      } catch (e) {
-         context.module = undefined;
-      }
+      context.module = undefined;
    });
 });
 
@@ -539,6 +535,147 @@ test("Mixin: class extends class", function() {
    ok(bar.sayBye() === "Bye!", "Invalid extend() behavior");
 });
 
+test("Mixin: instance extends class", function() {
+   var Foo = Class({
+      constructor: function(name) {
+         this.name = name;
+      },
+
+      welcome: function() {
+         return "Welcome " + this.name;
+      },
+
+      sayHi: function() {
+         return "Hello World " + this.name;
+      }
+   });
+
+   var Bar = Class({
+      constructor: function(name) {
+         this.name = name;
+      },
+
+      welcome: function() {
+         return "invalid";
+      },
+
+      sayBye: function() {
+         return "Bye!";
+      }
+   });
+
+   var bar = new Bar("John Rambo");
+
+   extend(bar, Foo);
+
+   ok(bar.name === "John Rambo", "Invalid extend() behavior, constructor must be bound correctly");
+   ok(bar.welcome() === "Welcome John Rambo", "Invalid extend() behavior, property must be overriden properly");
+   ok(bar.sayHi() === "Hello World John Rambo", "Invalid extend() behavior");
+   ok(bar.sayBye() === "Bye!", "Invalid extend() behavior");
+});
+
+test("Mixin: instance extends multiple classes", function() {
+   var Foo = Class({
+      constructor: function(name) {
+         this.name = name;
+      },
+
+      welcome: function() {
+         return "Welcome " + this.name;
+      },
+
+      sayHi: function() {
+         return "Hello World " + this.name;
+      }
+   });
+
+   var Properties = Class({
+      setProperty: function(key, value) {
+         this[key] = value;
+      },
+      getProperty: function(key) {
+         return this[key];
+      }
+   });
+
+   var Bar = Class({
+      constructor: function(name) {
+         this.name = name;
+      },
+
+      welcome: function() {
+         return "invalid";
+      },
+
+      sayBye: function() {
+         return "Bye!";
+      }
+   });
+
+   var bar = new Bar("John Rambo");
+
+   extend(bar, [ Foo, Properties ]);
+   bar.setProperty("fooKey", "fooValue");
+
+   ok(bar.name === "John Rambo", "Invalid extend() behavior, constructor must be bound correctly");
+   ok(bar.welcome() === "Welcome John Rambo", "Invalid extend() behavior, property must be overriden properly");
+   ok(bar.sayHi() === "Hello World John Rambo", "Invalid extend() behavior");
+   ok(bar.sayBye() === "Bye!", "Invalid extend() behavior");
+   ok(bar.getProperty("fooKey") === "fooValue", "Invalid extend() behavior");
+});
+
+
+test("Mixin: instance extends class and instance", function() {
+   var Foo = Class({
+      constructor: function(name) {
+         this.name = name;
+      },
+
+      welcome: function() {
+         return "Welcome " + this.name;
+      },
+
+      sayHi: function() {
+         return "Hello World " + this.name;
+      }
+   });
+
+   var Properties = Class({
+      setProperty: function(key, value) {
+         this[key] = value;
+      },
+      getProperty: function(key) {
+         return this[key];
+      }
+   });
+
+   var Bar = Class({
+      constructor: function(name) {
+         this.name = name;
+      },
+
+      welcome: function() {
+         return "invalid";
+      },
+
+      sayBye: function() {
+         return "Bye!";
+      }
+   });
+
+   var bar = new Bar("John Rambo");
+
+   extend(bar, [ Foo, new Properties() ]);
+   bar.setProperty("fooKey", "fooValue");
+
+   ok(bar.name === "John Rambo", "Invalid extend() behavior, constructor must be bound correctly");
+   ok(bar.welcome() === "Welcome John Rambo", "Invalid extend() behavior, property must be overriden properly");
+   ok(bar.sayHi() === "Hello World John Rambo", "Invalid extend() behavior");
+   ok(bar.sayBye() === "Bye!", "Invalid extend() behavior");
+   ok(bar.getProperty("fooKey") === "fooValue", "Invalid extend() behavior");
+});
+
+
 test("Mixin: class extends singleton", function() {
    var Foo = Class({
       $singleton: true,
@@ -593,6 +730,7 @@ test("Mixin: singleton extends class", function() {
          sample: 1,
          fn: function() { return 2; }
       },
+
       constructor: function(name) {
          this.name = name;
       },
@@ -682,6 +820,14 @@ test("Mixin: class extends both class and instance", function() {
 });
 
 test("Mixin: extending native objects", function() {
+   extend(String, {
+      trim: function() {
+         return this.replace(/^\s+|\s+$/g, "");
+      }
+   });
+
+   ok("    Hello World   ".trim() === "Hello World", "Invalid extend() binding String.prototype");
+
    extend(Array, {
       sum: function() {
          var s = 0;
@@ -788,5 +934,3 @@ test("Develop a Class plugin", function() {
    ok(isFunction(foo.log), "Class plugins mechanism works incorrectly");
    delete Class.plugins.$log;
 });
-
-

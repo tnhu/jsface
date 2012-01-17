@@ -198,7 +198,7 @@ Mixin with instance:
  Mixin with native classes:
 
 ``` javascript
-   extend(Array.prototype, {
+   extend(String.prototype, {
       trim: function() {
          return this.replace(/^\s+|\s+$/g, "");
       }

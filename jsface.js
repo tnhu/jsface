@@ -1,19 +1,55 @@
 /*
- * JsFace Object Oriented Programming Library v2.0.0
+ * JSFace Object Oriented Programming Library
  * https://github.com/tannhu/jsface
  *
- * Copyright (c) 2011 Tan Nhu
+ * Copyright (c) 2009-2012 Tan Nhu
  * Licensed under MIT license (https://github.com/tannhu/jsface/blob/master/MIT-LICENSE.txt).
  *
  * Date: Saturday, March 07 2009
+ * Version: 2.0.1
  */
-(function(context, undefined) {
+!function(context, undefined) {
    var OBJECT      = "object",
        NUMBER      = "number",
        LENGTH      = "length",
        INVALID     = "Invalid params",
        readyFns    = [],
        oldClass, jsface;
+
+   /**
+    * Check an object is a map or not. A map is something like { key1: value1, key2: value2 }.
+    */
+   function isMap(obj) {
+      return (obj && typeof obj === OBJECT && !(typeof obj.length === NUMBER && !(obj.propertyIsEnumerable(LENGTH))));
+   }
+
+   /**
+    * Check an object is an array or not. An array is something like [].
+    */
+   function isArray(obj) {
+      return (obj && typeof obj === OBJECT && typeof obj.length === NUMBER && !(obj.propertyIsEnumerable(LENGTH)));
+   }
+
+   /**
+    * Check an object is a function or not.
+    */
+   function isFunction(obj) {
+      return (obj && typeof obj === "function");
+   }
+
+   /**
+    * Check an object is a string not.
+    */
+   function isString(obj) {
+      return Object.prototype.toString.apply(obj) === "[object String]";
+   }
+
+   /**
+    * Check an object is a class (not an instance of a class, which is a map) or not.
+    */
+   function isClass(clazz) {
+      return isFunction(clazz) && (clazz === clazz.prototype.constructor);
+   }
 
    /**
     * Loop over a collection (a string, an array, an object (a map with pairs of {key:value})), or a function (over all
@@ -50,41 +86,6 @@
          }
       }
       return result;
-   }
-
-   /**
-    * Check an object is a map or not. A map is something like { key1: value1, key2: value2 }.
-    */
-   function isMap(obj) {
-      return (obj && typeof obj === OBJECT && !(typeof obj.length === NUMBER && !(obj.propertyIsEnumerable(LENGTH))));
-   }
-
-   /**
-    * Check an object is an array or not. An array is something like [].
-    */
-   function isArray(obj) {
-      return (obj && typeof obj === OBJECT && typeof obj.length === NUMBER && !(obj.propertyIsEnumerable(LENGTH)));
-   }
-
-   /**
-    * Check an object is a function or not.
-    */
-   function isFunction(obj) {
-      return (obj && typeof obj === "function");
-   }
-
-   /**
-    * Check an object is a string not.
-    */
-   function isString(obj) {
-      return Object.prototype.toString.apply(obj) === "[object String]";
-   }
-
-   /**
-    * Check an object is a class (not an instance of a class, which is a map) or not.
-    */
-   function isClass(clazz) {
-      return isFunction(clazz) && (clazz === clazz.prototype.constructor);
    }
 
    /**
@@ -140,15 +141,16 @@
           isSubClass  = isClass(subject),
           oPrototype  = object.prototype, supez;
 
-      // first: static properties
-      if (isSubClass || isMap(subject)) {                               // only if meaningful
-         each(subject, function(key, value) {
-            if ( !ignoredKeys || !ignoredKeys.hasOwnProperty(key)) {    // no copy ignored keys
-               object[key] = value;                                     // do copy
-               if (iClass) { oPrototype[key] = value; }                 // class? copy to prototype as well
-            }
-         });
+      function copier(key, value) {
+         if ( !ignoredKeys || !ignoredKeys.hasOwnProperty(key)) {    // no copy ignored keys
+            object[key] = value;                                     // do copy
+            if (iClass) { oPrototype[key] = value; }                 // class? copy to prototype as well
+         }
       }
+
+      // copy static properties and prototype.* to object
+      if (isMap(subject)) { each(subject, copier); }
+      if (isSubClass) { each(subject.prototype, copier); }
 
       // second: prototype properties
       if (iClass && isSubClass) { extend(oPrototype, subject.prototype, ignoredKeys); }
@@ -231,4 +233,4 @@
          context.Class = oldClass;
       }
    }
-})(this);
+}(this);
