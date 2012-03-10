@@ -1,16 +1,16 @@
-JSFace is a library designed to facilitate object-oriented programming in JavaScript.
+JSFace will give you a good taste on your JavaScript OOP development.
 
 # Features
 
-* Small footprint, no dependency, only 1K minimized+gzip.
+* Small footprint, no dependency, less than 1K minimized+gzip!
 * Work on both server and client side.
 * Support CommonJS.
-* Support singleton, mixin, private properties.
+* Support singleton, mixin, private properties, Aspect Oriented Programming.
 * Plugins mechanism to extend itself.
 
 # Usage
 
-JSFace can be used on both server side and client side JavaScript.
+JSFace supports both server side (CommonJS) and client side JavaScript (browser).
 
 In browser environment:
 
@@ -18,66 +18,76 @@ In browser environment:
 <script src="jsface.js" type="text/javascript"></script>
 ```
 
-In NodeJS environment, first you need to install JSFace via npm:
+JSFace introduces two variables in browser global scope: jsface and Class. In case you want to use other APIs such as extend, declare them, for example:
+
+``` javascript
+var extend = jsface.extend;
+```
+
+In NodeJS environment, first install JSFace via npm:
 
 ``` sh
    npm install jsface
 ```
 
-Then use it:
+Then use its APIs, for example:
 
 ``` javascript
-   var Class = require("jsface").Class;
+var jsface = require("jsface"),
+    Class  = jsface.Class,
+    extend = jsface.extend;
 ```
 
-## Define a simple class
+# API
+
+## Define a class
 
 ``` javascript
-   var Person = Class({
-      constructor: function(name, age) {
-         this.name = name;
-         this.age  = age;
-      },
+var Person = Class({
+  constructor: function(name, age) {
+    this.name = name;
+    this.age  = age;
+  },
 
-      toString: function() {
-         return this.name + "/" + this.age;
-      }
-   });
+  toString: function() {
+    return this.name + "/" + this.age;
+  }
+});
 
-   var person = new Person("Rika", 20);
-   person.toString();                           // "Rika/20"
+var person = new Person("Rika", 20);
+person.toString();                           // "Rika/20"
 ```
 
 ## Define a sub-class
 
 ``` javascript
-   var Student = Class(Person, {
-      constructor: function(id, name, age) {
-         this.id = id;
-         this.$super(name, age);               // Invoke parent's constructor
-      },
+var Student = Class(Person, {
+  constructor: function(id, name, age) {
+    this.id = id;
+    this.$super(name, age);               // Invoke parent's constructor
+  },
 
-      toString: function() {
-         return this.id + "/" + this.$super(); // Invoke parent's toString method
-      }
-   });
+  toString: function() {
+    return this.id + "/" + this.$super(); // Invoke parent's toString method
+  }
+});
 
-   var student = new Student(1, "Rika", 20);
-   student.toString();                         // "1/Rika/20"
+var student = new Student(1, "Rika", 20);
+student.toString();                         // "1/Rika/20"
 ```
 
 ## Singleton class
 
 ``` javascript
-   var Util = Class({
-      $singleton: true,
+var Util = Class({
+  $singleton: true,
 
-      echo: function(obj) {
-         return obj;
-      }
-   });
+  echo: function(obj) {
+    return obj;
+  }
+});
 
-   Util.echo(2012);                            // 2012
+Util.echo(2012);                            // 2012
 ```
 
 ## Static properties
@@ -85,126 +95,122 @@ Then use it:
 JSFace supports Java-style static properties. Meaning they are accessible on both class and instance levels.
 
 ``` javascript
-   var Person = Class({
-      $statics: {
-         MIN_AGE:   1,
-         MAX_AGE: 150,
+var Person = Class({
+  $statics: {
+    MIN_AGE:   1,
+    MAX_AGE: 150,
 
-         isValidAge: function(age) {
-            return age >= this.MIN_AGE && age <= this.MAX_AGE;
-         }
-      },
+    isValidAge: function(age) {
+      return age >= this.MIN_AGE && age <= this.MAX_AGE;
+    }
+  },
 
-      constructor: function(name, age) {
-         this.name = name;
-         this.age  = age;
-      }
-   });
+  constructor: function(name, age) {
+    this.name = name;
+    this.age  = age;
+  }
+});
 
-   var person = new Person("Rika", 20);
+var person = new Person("Rika", 20);
 
-   Person.MIN_AGE === person.MIN_AGE;          // true
-   Person.MAX_AGE === person.MAX_AGE;          // true
-   Person.isValidAge(0);                       // false
-   person.isValidAge(person.age);              // true
+Person.MIN_AGE === person.MIN_AGE;          // true
+Person.MAX_AGE === person.MAX_AGE;          // true
+Person.isValidAge(0);                       // false
+person.isValidAge(person.age);              // true
 ```
 
 ## Private properties
 
 ``` javascript
-   var Person = Class(function() {
-      var MIN_AGE =   1,                       // private variables
-          MAX_AGE = 150;
+var Person = Class(function() {
+  var MIN_AGE =   1,                       // private variables
+      MAX_AGE = 150;
 
-      function isValidAge(age) {               // private method
-         return age >= MIN_AGE && age <= MAX_AGE;
+  function isValidAge(age) {               // private method
+    return age >= MIN_AGE && age <= MAX_AGE;
+  }
+
+  return {
+    constructor: function(name, age) {
+      if ( !isValidAge(age)) {
+        throw "Invalid parameter";
       }
 
-      return {
-         constructor: function(name, age) {
-            if ( !isValidAge(age)) {
-               throw "Invalid parameter";
-            }
-
-            this.name = name;
-            this.age  = age;
-         }
-      };
-   });
+      this.name = name;
+      this.age  = age;
+    }
+  };
+});
 ```
 
-## Mixin
+## Mixins
 
-JSFace provides a powerful mechanism to support mixin. Reusable code can be mixed into almost anything.
+JSFace provides a powerful mechanism to support mixins. Reusable code can be mixed into almost anything.
 
 Mixin can be bound when you define classes:
 
 ``` javascript
-   var Options = Class({
-      setOptions: function(opts) {
-         this.opts = opts;
-      }
-   });
+var Options = Class({
+  setOptions: function(opts) {
+    this.opts = opts;
+  }
+});
 
-   var Events = Class({
-      bind: function(event, fn) {
-         return true;
-      },
-      unbind: function(event, fn) {
-         return false;
-      }
-   });
+var Events = Class({
+  bind: function(event, fn) {
+    return true;
+  },
+  unbind: function(event, fn) {
+    return false;
+  }
+});
 
-   var Person = Class({
-      constructor: function(name, age) {
-         this.name = name;
-         this.age  = age;
-      }
-   });
+var Person = Class({
+  constructor: function(name, age) {
+    this.name = name;
+    this.age  = age;
+  }
+});
 
-   // Student inherits Person and extends properties from Options and Events
-   var Student = Class([ Person, Options, Events ], {
-      constructor: function(id, name, age) {}
-   });
+// Student inherits Person and extends properties from Options and Events
+var Student = Class([ Person, Options, Events ], {
+  constructor: function(id, name, age) {}
+});
 
-   var student = new Student(1, "Rika", 20);
-   student.setOptions({ foo: true });          // student.opts === { foo: true }
-   student.bind();                             // true
-   student.unbind();                           // false
+var student = new Student(1, "Rika", 20);
+student.setOptions({ foo: true });          // student.opts === { foo: true }
+student.bind();                             // true
+student.unbind();                           // false
 ```
 
 Or after defining classes:
 
 ``` javascript
-   var extend = jsface.extend;                 // NodeJS environment: var extend = require("jsface").extend;
-```
+var Student = Class(Person, {
+  constructor: function(id, name, age) {
+});
 
-``` javascript
-   var Student = Class(Person, {
-      constructor: function(id, name, age) {
-   });
-
-   extend(Student, [ Options, Events ]);
+extend(Student, [ Options, Events ]);
 ```
 
 Mixin with instance:
 
 ``` javascript
-   var person = new Person("Rika", 20);
+var person = new Person("Rika", 20);
 
-   extend(person, Options);
-   person.setOptions({ foo: true });
+extend(person, Options);
+person.setOptions({ foo: true });
 ```
  Mixin with native classes:
 
 ``` javascript
-   extend(String.prototype, {
-      trim: function() {
-         return this.replace(/^\s+|\s+$/g, "");
-      }
-   });
+extend(String.prototype, {
+  trim: function() {
+    return this.replace(/^\s+|\s+$/g, "");
+  }
+});
 
-   "   Hello World    ".trim();                // "Hello World"
+"   Hello World    ".trim();                // "Hello World"
 ```
 ## No conflict
 
@@ -219,26 +225,184 @@ jsface.noConflict();
 Actually, Class is an alias of jsface.Class:
 
 ``` javascript
-   jsface.noConflict();
-   
-   // Code that uses other library's Class can follow here
+jsface.noConflict();
 
-   // Define classes by using jsface.Class directly
-   var Person = jsface.Class({
-   });
+// Code that uses other library's Class can follow here
+
+// Define classes by using jsface.Class directly
+var Person = jsface.Class({
+});
+```
+
+# Plugins
+
+## Plug and Play pointcut 
+
+JSFace supports Aspect Oriented Programming (AOP) via simple before/after mechanism. You can apply pointcuts over class constructors, class methods, singleton methods, instance methods. You can even apply pointcuts over native classes.
+
+AOP support is implemented as a standalone plugin.
+
+### Setup
+
+Browser:
+
+``` html
+<script src="jsface.pointcut.js" type="text/javascript"></script>
+```
+
+then in your code, make an alias to jsface.pointcut:
+
+``` javascript
+var pointcut = jsface.pointcut;
+```
+
+NodeJS:
+
+``` javascript
+var pointcut = require("jsface.pointcut");
+```
+
+### Applying pointcuts
+
+In JSFace, an advisor is a set of pointcuts you want to apply to a subject. You can apply as many advisors as you want.
+
+``` javascript
+Person = Class({
+  constructor: function(name) {
+    this.name    = name;
+    this.counter = 0;
+  },
+  foo: function(n) {
+  },
+  bar: function(n) {
+  }
+});
+
+var advisor = {
+  constructor: {
+    before: function() {
+      this.age = 20;
+    },
+    after: function() {
+      this.email = "rika@sample.com";
+    }
+  },
+  foo: function(n) {                // sugar syntax, foo:before
+    this.counter++;
+  },
+  bar: {
+    before: function(n) {
+      this.counter++;
+    },
+    after: function(n) {
+      this.counter++;
+    }
+  }
+};
+
+Person = pointcut(Person, advisor);
+
+var person = new Person("Rika");
+
+person.foo();
+person.bar();
+
+person.name    === "Rika";               // true
+person.age     === 20;                   // true
+person.email   === "rika@sample.com";    // true
+person.counter === 3;                    // true
+```
+
+### Removing pointcuts
+
+Using previous apply pointcut example:
+
+``` javascript
+// remove all pointcuts bound to constructor and foo
+Person = poincut(Person, "remove constructor foo");
+
+// remove advisor, other advisors remained
+Person = poincut(Person, "remove", advisor);
+
+// remove all advisors, restore the fresh version of Person
+Person = poincut(Person, "remove");
+```
+
+## $ready
+
+$ready plugin is designed to help parent classes to intercept their subclasses' creation. If a class uses $ready,
+it notified itself.
+
+### Setup
+
+Browser:
+
+``` html
+<script src="jsface.ready.js" type="text/javascript"></script>
+```
+
+NodeJS:
+
+``` javascript
+var ready = require("jsface.ready");
+```
+
+### Sample
+
+``` javascript
+var Service = Class({
+  $ready: function(clazz, api, parent) {
+    var type = (this !== clazz) && api.type;
+
+    switch (type) {
+      case "session":
+        // do something with subclass clazz when its type is session
+        break;
+      case "application":
+        // do something with subclass clazz when its type is application
+        break;
+    }
+  }
+});
+
+var SessionService = Class(Service, {
+  type: "session"
+});
+
+var ApplicationService = Class(Service, {
+  type: "application"
+});
 ```
 
 # Bug tracker
 
 Have a bug? Please [create an issue here](https://github.com/tannhu/jsface/issues) on GitHub!
 
-# Beyond the scope of this readme
+# Some other notes
 
-Method overloadings, type checking and pointcuts (available in versions prior to 2.0.0) are being implemented as plugins.
+Method overloadings, type checking (available in versions prior to 2.0.0) are being implemented as plugins.
 
 More use cases are covered in [unit tests](https://github.com/tannhu/jsface/tree/master/test)
 (I'm using [QUnit](https://github.com/jquery/qunit)).
 
 # License
 
-JSFace is available under the terms of the [MIT license](https://github.com/tannhu/jsface/blob/master/MIT-LICENSE.txt).
+Copyright (c) 2009-2012 Tan Nhu
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.

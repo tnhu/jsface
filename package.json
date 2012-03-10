@@ -1,10 +1,10 @@
 {
    "name"           : "jsface",
    "main"           : "jsface.js",
-   "description"    : "JsFace JavaScript Object-Oriented Programming library",
+   "description"    : "JSFace JavaScript Object-Oriented Programming library",
    "author"         : "Tan Nhu <tnhu AT me . com>",
-   "version"        : "2.0.1",
-   "keywords"       : [ "jsface", "JSFace", "OOP", "JavaScript OOP", "JavaScript Object Oriented Programming" ],
+   "version"        : "2.0.2",
+   "keywords"       : [ "jsface", "JSFace", "OOP", "JavaScript OOP", "JavaScript Object Oriented Programming", "AOP", "Aspect Oriented Programming" ],
    "homepage"       : "https://github.com/tannhu/jsface",
    "licenses"       : [{
       "type"        : "MIT",

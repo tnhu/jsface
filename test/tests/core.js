@@ -10,927 +10,815 @@ var context    = this,
 // --------- UTILITIES --------- //
 
 test("Loop with each over a string", function() {
-   each("123456", function(e, index, st) {
-      ok(st.charAt(index) === e, "invalid each loop behavior over a string");
-   });
+  each("123456", function(e, index, st) {
+    equal(st.charAt(index), e, "invalid each loop behavior over a string");
+  });
 });
 
 test("Loop with each over an array", function() {
-   each([ 1, 2, 3, 4, 5, 6, 7 ], function(e, index, array) {
-      ok(array[index] === e, "invalid each loop behavior over an array");
-   });
+  each([ 1, 2, 3, 4, 5, 6, 7 ], function(e, index, array) {
+    equal(array[index], e, "invalid each loop behavior over an array");
+  });
 });
 
 test("Loop with each over an array", function() {
-   each([ 1, 2, 3, 4, 5, 6, 7 ], function(e, index, array) {
-      ok(array[index] === e, "invalid each loop behavior over an array");
-   });
+  each([ 1, 2, 3, 4, 5, 6, 7 ], function(e, index, array) {
+    equal(array[index], e, "invalid each loop behavior over an array");
+  });
 });
 
 test("Loop with each over a map", function() {
-   each({ a: 1, b: 2, c: 3, d: 4 }, function(key, value, map) {
-      ok(map[key] === value, "invalid each loop behavior over a map");
-   });
+  each({ a: 1, b: 2, c: 3, d: 4 }, function(key, value, map) {
+    equal(map[key], value, "invalid each loop behavior over a map");
+  });
 });
 
 test("each returned value over a string", function() {
-   var result = each("123456", function(e, index, st) {
-      return e + e;
-   });
-   ok(result.join("") === "112233445566", "invalid each returned value over a string");
+  var result = each("123456", function(e, index, st) {
+    return e + e;
+  });
+  equal(result.join(""), "112233445566", "invalid each returned value over a string");
 });
 
 test("each returned value over an array", function() {
-   var result = each([ 1, 2, 3, 4, 5, 6 ], function(e, index, st) {
-      return e*2;
-   });
-   ok(result.join("") === "24681012", "invalid each returned value over an array");
+  var result = each([ 1, 2, 3, 4, 5, 6 ], function(e, index, st) {
+    return e*2;
+  });
+  equal(result.join(""), "24681012", "invalid each returned value over an array");
 });
 
 test("each returned value over a map", function() {
-   var result = each({ a: 1, b: 2, c: 3, d: 4 }, function(key, value, map) {
-      return value*2;
-   });
-   ok(result.join("") === "2468", "invalid each returned value over a map");
+  var result = each({ a: 1, b: 2, c: 3, d: 4 }, function(key, value, map) {
+    return value*2;
+  });
+  equal(result.join(""), "2468", "invalid each returned value over a map");
 });
 
 test("Loop with each over a number", function() {
-   each(1, function(value) {
-      ok(1 === value, "invalid each loop behavior over a single number");
-   });
+  each(1, function(value) {
+    equal(1, value, "invalid each loop behavior over a single number");
+  });
 });
 
 test("Break each loop", function() {
-   var sum = 0;
-   each([ 2, 3, 4, 5, 6, 7 ], function(value) {
-      sum += value;
-      if (value === 4) { return Infinity; }
-   });
-   ok(9 === sum, "invalid each loop break behavior");
+  var sum = 0;
+  each([ 2, 3, 4, 5, 6, 7 ], function(value) {
+    sum += value;
+    if (value === 4) { return Infinity; }
+  });
+  equal(sum, 9, "invalid each loop break behavior");
 });
 
 test("Check type with isMap", function() {
-   ok(isMap({}), "jsface.isMap works incorrectly");
-   ok(isMap({ one: 1, two: 2 }), "jsface.isMap works incorrectly");
+  equal(isMap({}), true, "jsface.isMap works incorrectly");
+  equal(isMap({ one: 1, two: 2 }), true, "jsface.isMap works incorrectly");
 
-   ok( !isMap(), "jsface.isMap works incorrectly");
-   ok( !isMap(""), "jsface.isMap works incorrectly");
-   ok( !isMap("Hello"), "jsface.isMap works incorrectly");
-   ok( !isMap([]), "jsface.isMap works incorrectly");
-   ok( !isMap([ 1, 2, 3 ]), "jsface.isMap works incorrectly");
-   ok( !isMap(1234), "jsface.isMap works incorrectly");
+  equal( !isMap(), true, "jsface.isMap works incorrectly");
+  equal( !isMap(""), true, "jsface.isMap works incorrectly");
+  equal( !isMap("Hello"), true, "jsface.isMap works incorrectly");
+  equal( !isMap([]), true, "jsface.isMap works incorrectly");
+  equal( !isMap([ 1, 2, 3 ]), true, "jsface.isMap works incorrectly");
+  equal( !isMap(1234), true, "jsface.isMap works incorrectly");
 });
 
 test("Check type with jsface.isMap on iframe", function() {
-   var frame, iframe, IObject;
+  var frame, iframe, IObject;
 
-   iframe = document.createElement("iframe");
-   document.body.appendChild(iframe);
+  iframe = document.createElement("iframe");
+  document.body.appendChild(iframe);
 
-   frame = window.frames[window.frames.length - 1];
+  frame = window.frames[window.frames.length - 1];
 
-   // getObject returns JavaScript Object in iframe context
-   frame.getObject = function() {
-      return Object;
-   };
+  // getObject returns JavaScript Object in iframe context
+  frame.getObject = function() {
+    return Object;
+  };
 
-   IObject = frame.getObject();
+  IObject = frame.getObject();
 
-   var map = new IObject();
-   map.one = 1;
-   map.two = 2;
+  var map = new IObject();
+  map.one = 1;
+  map.two = 2;
 
-   ok(isMap(map), "jsface.isMap works incorrectly in iframe");
-   document.body.removeChild(iframe);
+  equal(isMap(map), true, "jsface.isMap works incorrectly in iframe");
+  document.body.removeChild(iframe);
 });
 
 test("Check type with jsface.isArray", function() {
-   ok(isArray([]), "jsface.isArray works incorrectly");
-   ok(isArray([ 1, 2, 3, 4 ]), "jsface.isArray works incorrectly");
-   ok( !isArray(), "jsface.isArray works incorrectly");
+  equal(isArray([]), true, "jsface.isArray works incorrectly");
+  equal(isArray([ 1, 2, 3, 4 ]), true, "jsface.isArray works incorrectly");
+  equal( !isArray(), true, "jsface.isArray works incorrectly");
 
-   // jsface.isArray does not consider String as Array of characters
-   ok( !isArray(""), "jsface.isArray works incorrectly");
-   ok( !isArray("Hello"), "jsface.isArray works incorrectly");
-   ok( !isArray({}), "jsface.isArray works incorrectly");
-   ok( !isArray({ one: 1, two: 2 }), "jsface.isArray works incorrectly");
-   ok( !isArray(1), "jsface.isArray works incorrectly");
+  // jsface.isArray does not consider String as Array of characters
+  equal( !isArray(""), true, "jsface.isArray works incorrectly");
+  equal( !isArray("Hello"), true, "jsface.isArray works incorrectly");
+  equal( !isArray({}), true, "jsface.isArray works incorrectly");
+  equal( !isArray({ one: 1, two: 2 }), true, "jsface.isArray works incorrectly");
+  equal( !isArray(1), true, "jsface.isArray works incorrectly");
 });
 
 test("Check type with jsface.isArray on iframe", function() {
-   var frame, iframe, IArray, array;
+  var frame, iframe, IArray, array;
 
-   iframe = document.createElement("iframe");
-   document.body.appendChild(iframe);
+  iframe = document.createElement("iframe");
+  document.body.appendChild(iframe);
 
-   frame = window.frames[window.frames.length - 1];
-   frame.getArray = function() {
-      return Array;
-   };
+  frame = window.frames[window.frames.length - 1];
+  frame.getArray = function() {
+    return Array;
+  };
 
-   IArray = frame.getArray();
+  IArray = frame.getArray();
 
-   array = new IArray(1, 2, 3);
+  array = new IArray(1, 2, 3);
 
-   ok(isArray(array), "jsface.isArray works incorrectly in iframe");
-   document.body.removeChild(iframe);
+  equal(isArray(array), true, "jsface.isArray works incorrectly in iframe");
+  document.body.removeChild(iframe);
 });
 
 test("Check type with jsface.isFunction", function() {
-   ok(isFunction(function(){}), "jsface.isFunction works incorrectly");
-   ok( !isFunction([]), "jsface.isFunction works incorrectly");
-   ok( !isFunction([ 1, 2, 3, 4 ]), "jsface.isFunction works incorrectly");
-   ok( !isFunction(), "jsface.isFunction works incorrectly");
-   ok( !isFunction(""), "jsface.isFunction works incorrectly");
-   ok( !isFunction("Hello"), "jsface.isFunction works incorrectly");
-   ok( !isFunction({}), "jsface.isFunction works incorrectly");
-   ok( !isFunction({ one: 1, two: 2 }), "jsface.isFunction works incorrectly");
-   ok( !isFunction(1), "jsface.isFunction works incorrectly");
+  equal(isFunction(function(){}), true, "jsface.isFunction works incorrectly");
+  equal( !isFunction([]), true, "jsface.isFunction works incorrectly");
+  equal( !isFunction([ 1, 2, 3, 4 ]), true, "jsface.isFunction works incorrectly");
+  equal( !isFunction(), true, "jsface.isFunction works incorrectly");
+  equal( !isFunction(""), true, "jsface.isFunction works incorrectly");
+  equal( !isFunction("Hello"), true, "jsface.isFunction works incorrectly");
+  equal( !isFunction({}), true, "jsface.isFunction works incorrectly");
+  equal( !isFunction({ one: 1, two: 2 }), true, "jsface.isFunction works incorrectly");
+  equal( !isFunction(1), true, "jsface.isFunction works incorrectly");
 });
 
 test("Check type with jsface.isFunction on iframe", function() {
-   var frame, iframe, IFunction, fn;
+  var frame, iframe, IFunction, fn;
 
-   iframe = document.createElement("iframe");
-   document.body.appendChild(iframe);
+  iframe = document.createElement("iframe");
+  document.body.appendChild(iframe);
 
-   frame = window.frames[window.frames.length - 1];
-   frame.getFunction = function() {
-      return Function;
-   };
+  frame = window.frames[window.frames.length - 1];
+  frame.getFunction = function() {
+    return Function;
+  };
 
-   IFunction = frame.getFunction();
+  IFunction = frame.getFunction();
 
-   fn = new IFunction();
-   ok(isFunction(fn), "jsface.isFunction works incorrectly");
-   document.body.removeChild(iframe);
+  fn = new IFunction();
+  equal(isFunction(fn), true, "jsface.isFunction works incorrectly");
+  document.body.removeChild(iframe);
 });
 
 test("Check type with jsface.isClass", function() {
-   ok(isClass(function(){}), "jsface.isClass works incorrectly on function");
-   ok( !isClass(), "jsface.isClass works incorrectly passing empty param");
-   ok( !isClass(undefined), "jsface.isClass works incorrectly undefined");
-   ok( !isClass(null), "jsface.isClass works incorrectly on null");
-   ok( !isClass(""), "jsface.isClass works incorrectly empty string");
-   ok( !isClass("   "), "jsface.isClass works incorrectly blank string");
-   ok( !isClass({}), "jsface.isClass works incorrectly empty map");
-   ok( !isClass([]), "jsface.isClass works incorrectly empty array");
-   ok( !isClass(0), "jsface.isClass works incorrectly on 0");
-   ok( !isClass(1), "jsface.isClass works incorrectly on 1");
-   ok( !isClass(true), "jsface.isClass works incorrectly on true");
-   ok( !isClass(false), "jsface.isClass works incorrectly on false");
-   ok( !isClass([ 1, 2, 3, 4 ]), "jsface.isClass works incorrectly on array");
-   ok( !isClass("Hello"), "jsface.isClass works incorrectly on string");
-   ok( !isClass({ one: 1, two: 2 }), "jsface.isClass works incorrectly on map");
+  equal(isClass(function(){}), true, "jsface.isClass works incorrectly on function");
+  equal( !isClass(), true, "jsface.isClass works incorrectly passing empty param");
+  equal( !isClass(undefined), true, "jsface.isClass works incorrectly undefined");
+  equal( !isClass(null), true, "jsface.isClass works incorrectly on null");
+  equal( !isClass(""), true, "jsface.isClass works incorrectly empty string");
+  equal( !isClass("   "), true, "jsface.isClass works incorrectly blank string");
+  equal( !isClass({}), true, "jsface.isClass works incorrectly empty map");
+  equal( !isClass([]), true, "jsface.isClass works incorrectly empty array");
+  equal( !isClass(0), true, "jsface.isClass works incorrectly on 0");
+  equal( !isClass(1), true, "jsface.isClass works incorrectly on 1");
+  equal( !isClass(true), true, "jsface.isClass works incorrectly on true");
+  equal( !isClass(false), true, "jsface.isClass works incorrectly on false");
+  equal( !isClass([ 1, 2, 3, 4 ]), true, "jsface.isClass works incorrectly on array");
+  equal( !isClass("Hello"), true,"jsface.isClass works incorrectly on string");
+  equal( !isClass({ one: 1, two: 2 }), true, "jsface.isClass works incorrectly on map");
 
-   // jsface's Class/Singleton
-   var Foo = Class({}),
-       Bar = Class({
-          constructor: function(){}
-       }),
-       Util = Class({
-          $singleton: true
-       });
-   ok(isClass(Foo), "jsface.isClass works incorrectly on an empty class");
-   ok(isClass(Bar), "jsface.isClass works incorrectly on a simple class");
-   ok( !isClass(Util), "jsface.isClass works incorrectly a singleton class (singleton is a map, not a class)");
-});
+  // jsface's Class/Singleton
+  var Foo = Class({}),
+      Bar = Class({
+        constructor: function(){}
+      }),
+      Util = Class({
+        $singleton: true
+      });
 
-// Helper to inject a script and execute a callback when it's fully loaded
-// Note: Old versions of Opera don't work well with this method (11.60 works perfectly).
-function getScript(url, callback) {
-   var head   = document.getElementsByTagName("head")[0],
-       script = document.createElement("script"),
-       done   = false;
-
-   script.src  = url;
-   script.type = "text/javascript";
-
-   script.onload = script.onreadystatechange = function() {
-      if ( !done && ( !this.readyState || this.readyState == "loaded" || this.readyState == "complete")) {
-         done = true;
-         callback();
-
-         script.onload = script.onreadystatechange = null;
-         head.removeChild(script);
-      }
-   }
-
-   head.appendChild(script);
-}
-
-asyncTest("CommonJS support", function() {
-   var head = document.getElementsByTagName("head")[0];
-
-   // this unit test is run on browsers for sure
-   ok(jsface, "jsface must be available globally");
-   ok(extend, "extend must be available globally");
-   ok(Class, "Class must be available globally");
-
-   // simulate CommonJS
-   context.module = { exports: {} };
-
-   getScript("../jsface.js", function() {
-      var exports = context.module.exports;
-      start();
-
-      ok(exports.Class, "Class must be available in exports");
-      ok(exports.each, "each must be available in exports");
-      ok(exports.isMap, "isMap must be available in exports");
-      ok(exports.isArray, "isArray must be available in exports");
-      ok(exports.isFunction, "isFunction must be available in exports");
-      ok(exports.isString, "isString must be available in exports");
-      ok(exports.isClass, "isClass must be available in exports");
-
-      context.module = undefined;
-   });
-});
-
-asyncTest("noConflict support", function() {
-   var head  = document.getElementsByTagName("head")[0],
-       clazz = context.Class;
-
-   context.Class = function() { return 1; };
-
-   getScript("../jsface.js", function() {
-      jsface.noConflict();
-
-      start();
-      ok(Class() === 1, "noConflict works incorrectly");
-
-      context.Class = jsface.Class;
-   });
+  equal(isClass(Foo), true, "jsface.isClass works incorrectly on an empty class");
+  equal(isClass(Bar), true, "jsface.isClass works incorrectly on a simple class");
+  equal( !isClass(Util), true, "jsface.isClass works incorrectly a singleton class (singleton is a map, not a class)");
 });
 
 // --------- CLASS --------- //
 
 test("Class with invalid params", function() {
-   raises(function() {
-      Class(12345);
-   }, "An exception must be thrown for invalid params");
+  raises(function() {
+    Class(12345);
+  }, "An exception must be thrown for invalid params");
 });
 
 test("Special syntax", function() {
-   var Test = Class();
-   ok(isClass(Test), "Class defination must be a class");
+  var Test = Class();
+  equal(isClass(Test), true, "Class defination must be a class");
 
-   var Foo = Class({});
-   ok(isClass(Foo), "Class defination must be a class");
+  var Foo = Class({});
+  equal(isClass(Foo), true, "Class defination must be a class");
 
-   var Bar = Class("Hello World", {});
-   ok(isClass(Bar), "Class defination must be a class");
-
+  var Bar = Class("Hello World", {});
+  equal(isClass(Bar), true, "Class defination must be a class");
 });
 
 test("Create a simple class", function() {
-   var Foo = Class({
-      constructor: function(name) {
-         this.name = name;
-      },
+  var Foo = Class({
+        constructor: function(name) {
+          this.name = name;
+        },
 
-      sayHi: function() {
-         return "Hello World " + this.name;
-      }
-   });
+        sayHi: function() {
+          return "Hello World " + this.name;
+        }
+      });
 
-   var foo = new Foo("John Rambo");
+  var foo = new Foo("John Rambo");
 
-   ok(isFunction(Foo), "Class defination must be a function");
-   ok(isClass(Foo), "Class defination must be a class");
-   ok(isMap(foo), "Class instance must be a map");
-   ok(foo.sayHi() === "Hello World John Rambo", "Error invoking method on class instance");
-   ok(foo.name === "John Rambo", "Invalid constructor initialization");
+  equal(isFunction(Foo), true, "Class defination must be a function");
+  equal(isClass(Foo), true, "Class defination must be a class");
+  equal(isMap(foo), true, "Class instance must be a map");
+  equal(foo.sayHi(), "Hello World John Rambo", "Error invoking method on class instance");
+  equal(foo.name, "John Rambo", "Invalid constructor initialization");
 });
 
 test("Class with default constructor", function() {
-   var Foo = Class({
-      sayBye: function() {
-         return "Bye!";
-      }
-   });
+  var Foo = Class({
+        sayBye: function() {
+          return "Bye!";
+        }
+      });
 
-   var foo = new Foo();
+  var foo = new Foo();
 
-   ok(isFunction(Foo), "Default constructor must be a function");
-   ok(foo.sayBye() === "Bye!", "Error invoking method on class instance");
+  equal(isFunction(Foo), true, "Default constructor must be a function");
+  equal(foo.sayBye(), "Bye!", "Error invoking method on class instance");
 });
 
 test("Private properties and methods", function() {
-   var Foo = Class(function() {
-      var bye = "Bye!";
+  var Foo = Class(function() {
+        var bye = "Bye!";
 
-      function hi() {
-         return "Hi!";
-      }
+        function hi() {
+          return "Hi!";
+        }
 
-      return {
-         sayHi: hi,
+        return {
+          sayHi: hi,
 
-         sayBye: function() {
+          sayBye: function() {
             return bye;
-         }
-      };
-   });
+          }
+        };
+      });
 
-   var foo = new Foo();
+  var foo = new Foo();
 
-   ok(isFunction(Foo), "Default constructor must be a function");
-   ok(foo.sayBye() === "Bye!", "Error invoking method on class instance");
-   ok(foo.sayHi() === "Hi!", "Invalid private implementation");
-   ok( !foo.hi, "Invalid private implementation");
-   ok( !foo.bye, "Invalid private implementation");
+  equal(isFunction(Foo), true, "Default constructor must be a function");
+  equal(foo.sayBye(), "Bye!", "Error invoking method on class instance");
+  equal(foo.sayHi(), "Hi!", "Invalid private implementation");
+  equal( !foo.hi, true, "Invalid private implementation");
+  equal( !foo.bye, true, "Invalid private implementation");
 });
 
 test("Create a sub class", function() {
-   var Foo = Class({
-      constructor: function(name) {
-         this.name = name;
-      },
+  var Foo = Class({
+        constructor: function(name) {
+          this.name = name;
+        },
 
-      welcome: function() {
-         return "Welcome " + this.name;
-      },
+        welcome: function() {
+          return "Welcome " + this.name;
+        },
 
-      sayHi: function() {
-         return "Hello World " + this.name;
-      }
-   });
+        sayHi: function() {
+          return "Hello World " + this.name;
+        }
+      });
 
-   var Bar = Class(Foo, {
-      constructor: function(name) {
-         this.$super(name);
-      },
+  var Bar = Class(Foo, {
+        constructor: function(name) {
+          this.$super(name);
+        },
 
-      sayHi: function() {
-         return this.$super();
-      },
+        sayHi: function() {
+          return this.$super();
+        },
 
-      sayBye: function() {
-         return "Bye!";
-      }
-   });
+        sayBye: function() {
+          return "Bye!";
+        }
+      });
 
-   var bar = new Bar("John Rambo");
+  var bar = new Bar("John Rambo");
 
-   ok(bar.name === "John Rambo", "Subclass must be able to invoke parent constructor");
-   ok(bar.welcome() === "Welcome John Rambo", "Subclass must be able to inherit parent methods");
-   ok(bar.sayHi() === "Hello World John Rambo", "Subclass must be able to invoke parent method");
-   ok(bar.sayBye() === "Bye!", "Error invoking subclass method");
+  equal(bar.name, "John Rambo", "Subclass must be able to invoke parent constructor");
+  equal(bar.welcome(), "Welcome John Rambo", "Subclass must be able to inherit parent methods");
+  equal(bar.sayHi(), "Hello World John Rambo", "Subclass must be able to invoke parent method");
+  equal(bar.sayBye(), "Bye!", "Error invoking subclass method");
 });
 
 test("Multiple level class inheritance", function() {
-   var Foo = Class({
-      constructor: function(name) {
-         this.name = name;
-      },
+  var Foo = Class({
+        constructor: function(name) {
+          this.name = name;
+        },
 
-      sayHi: function() {
-         return "Hello " + this.name;
-      }
-   });
+        sayHi: function() {
+          return "Hello " + this.name;
+        }
+      });
 
-   var Bar = Class(Foo, {
-      constructor: function(name) {
-         this.$super(name);
-      },
+  var Bar = Class(Foo, {
+        constructor: function(name) {
+          this.$super(name);
+        },
 
-      sayHi: function() {
-         return this.$super();
-      }
-   });
+        sayHi: function() {
+          return this.$super();
+        }
+      });
 
-   var Child = Class(Bar, {
-      constructor: function(name) {
-         this.$super(name);
-      },
+  var Child = Class(Bar, {
+        constructor: function(name) {
+          this.$super(name);
+        },
 
-      sayHi: function() {
-         return this.$super();
-      }
-   });
+        sayHi: function() {
+          return this.$super();
+        }
+      });
 
-   var child = new Child("John Rambo");
+  var child = new Child("John Rambo");
 
-   ok(child.name === "John Rambo", "Subclass must be able to invoke parent constructor");
-   ok(child.sayHi() === "Hello John Rambo", "Subclass must be able to invoke parent method");
+  equal(child.name, "John Rambo", "Subclass must be able to invoke parent constructor");
+  equal(child.sayHi(), "Hello John Rambo", "Subclass must be able to invoke parent method");
 });
 
 test("Static methods", function() {
-   var Bar = Class({
-      constructor: function(name) {
-         this.name = name;
-      },
+  var Bar = Class({
+        constructor: function(name) {
+          this.name = name;
+        },
 
-      $statics: {
-         sayBye: function() {
-            return "Bye!";
-         }
-      }
-   });
+        $statics: {
+          sayBye: function() {
+           return "Bye!";
+          }
+        }
+      });
 
-   var bar = new Bar("John Rambo");
+  var bar = new Bar("John Rambo");
 
-   ok(Bar.sayBye() === "Bye!", "Error invoking static method");
-   ok(bar.sayBye() === "Bye!", "Error invoking static method from class instance");
-   ok(bar.sayBye === Bar.sayBye, "Static method must be the same on both class and class instance");
+  equal(Bar.sayBye(), "Bye!", "Error invoking static method");
+  equal(bar.sayBye(), "Bye!", "Error invoking static method from class instance");
+  equal(bar.sayBye, Bar.sayBye, "Static method must be the same on both class and class instance");
 });
 
 test("Singleton class", function() {
-   var Foo = Class({
-      $singleton: true,
+  var Foo = Class({
+        $singleton: true,
 
-      sayHi: function() {
-         return "Hello World";
-      }
-   });
+        sayHi: function() {
+          return "Hello World";
+        }
+      });
 
-   ok(isMap(Foo), "Singleton class must be a map object");
-   ok(Foo.sayHi() === "Hello World", "Error invoking method on singleton class");
+  equal(isMap(Foo), true, "Singleton class must be a map object");
+  equal(Foo.sayHi(), "Hello World", "Error invoking method on singleton class");
 });
 
 test("Singleton inheritance", function() {
-   var Foo = Class({
-      $singleton: true,
+  var Foo = Class({
+        $singleton: true,
 
-      sayHi: function() {
-         return "Hello World";
-      }
-   });
+        sayHi: function() {
+          return "Hello World";
+        }
+      });
 
-   var Bar = Class(Foo, {
-      $singleton: true,
+  var Bar = Class(Foo, {
+        $singleton: true,
 
-      sayBye: function() {
-         return "Bye!";
-      }
-   });
+        sayBye: function() {
+          return "Bye!";
+        }
+      });
 
-   ok(isMap(Bar), "Singleton class must be a map object");
-   ok(Bar.sayHi() === "Hello World", "Error invoking method on singleton class");
-   ok(Bar.sayBye() === "Bye!", "Error invoking method on singleton class");
+  equal(isMap(Bar), true, "Singleton class must be a map object");
+  equal(Bar.sayHi(), "Hello World", "Error invoking method on singleton class");
+  equal(Bar.sayBye(), "Bye!", "Error invoking method on singleton class");
 });
 
 test("Inherit from a singleton", function() {
-   var Foo = Class({
-      $singleton: true,
+  var Foo = Class({
+        $singleton: true,
 
-      sayHi: function() {
-         return "Hello World";
-      }
-   });
+        sayHi: function() {
+          return "Hello World";
+        }
+      });
 
-   var Bar = Class(Foo, {
-      sayBye: function() {
-         return "Bye!";
-      }
-   });
+  var Bar = Class(Foo, {
+        sayBye: function() {
+          return "Bye!";
+        }
+      });
 
-   var bar = new Bar();
+  var bar = new Bar();
 
-   ok(isClass(Bar), "Class defination must be a class");
-   ok(bar.sayHi === Bar.sayHi, "Static method must be the same on both class and class instance");
-   ok(bar.sayHi === Foo.sayHi, "Static method must be the same on both class and class instance");
-   ok(Foo.sayHi === Bar.sayHi, "Static method must be the same on both class");
-   ok(Bar.sayHi() === "Hello World", "Error invoking method on singleton class");
-   ok(bar.sayHi() === "Hello World", "Error invoking method on singleton class");
-   ok(bar.sayBye() === "Bye!", "Error invoking method on class");
+  equal(isClass(Bar), true, "Class defination must be a class");
+  equal(bar.sayHi, Bar.sayHi, "Static method must be the same on both class and class instance");
+  equal(bar.sayHi, Foo.sayHi, "Static method must be the same on both class and class instance");
+  equal(Foo.sayHi, Bar.sayHi, "Static method must be the same on both class");
+  equal(Bar.sayHi(), "Hello World", "Error invoking method on singleton class");
+  equal(bar.sayHi(), "Hello World", "Error invoking method on singleton class");
+  equal(bar.sayBye(), "Bye!", "Error invoking method on class");
 });
 
 test("Mixin: class extends class", function() {
-   var Foo = Class({
-      constructor: function(name) {
-         this.name = name;
-      },
+  var Foo = Class({
+        constructor: function(name) {
+          this.name = name;
+        },
 
-      welcome: function() {
-         return "Welcome " + this.name;
-      },
+        welcome: function() {
+          return "Welcome " + this.name;
+        },
 
-      sayHi: function() {
-         return "Hello World " + this.name;
-      }
-   });
+        sayHi: function() {
+          return "Hello World " + this.name;
+        }
+      });
 
-   var Bar = Class({
-      constructor: function(name) {
-         this.name = name;
-      },
+  var Bar = Class({
+        constructor: function(name) {
+          this.name = name;
+        },
 
-      welcome: function() {
-         return "invalid";
-      },
+        welcome: function() {
+          return "invalid";
+        },
 
-      sayBye: function() {
-         return "Bye!";
-      }
-   });
+        sayBye: function() {
+          return "Bye!";
+        }
+      });
 
-   extend(Bar, Foo); // note: extend is different from inherit: Foo's properties will override Bar's properties
+  extend(Bar, Foo); // note: extend is different from inherit: Foo's properties will override Bar's properties
 
-   var bar = new Bar("John Rambo");
+  var bar = new Bar("John Rambo");
 
-   ok(bar.name === "John Rambo", "Invalid extend() behavior, constructor must be bound correctly");
-   ok(bar.welcome() === "Welcome John Rambo", "Invalid extend() behavior, property must be overriden properly");
-   ok(bar.sayHi() === "Hello World John Rambo", "Invalid extend() behavior");
-   ok(bar.sayBye() === "Bye!", "Invalid extend() behavior");
+  equal(bar.name, "John Rambo", "Invalid extend() behavior, constructor must be bound correctly");
+  equal(bar.welcome(), "Welcome John Rambo", "Invalid extend() behavior, property must be overriden properly");
+  equal(bar.sayHi(), "Hello World John Rambo", "Invalid extend() behavior");
+  equal(bar.sayBye(), "Bye!", "Invalid extend() behavior");
 });
 
 test("Mixin: instance extends class", function() {
-   var Foo = Class({
-      constructor: function(name) {
-         this.name = name;
-      },
+  var Foo = Class({
+        constructor: function(name) {
+          this.name = name;
+        },
 
-      welcome: function() {
-         return "Welcome " + this.name;
-      },
+        welcome: function() {
+          return "Welcome " + this.name;
+        },
 
-      sayHi: function() {
-         return "Hello World " + this.name;
-      }
-   });
+        sayHi: function() {
+          return "Hello World " + this.name;
+        }
+      });
 
-   var Bar = Class({
-      constructor: function(name) {
-         this.name = name;
-      },
+  var Bar = Class({
+        constructor: function(name) {
+          this.name = name;
+        },
 
-      welcome: function() {
-         return "invalid";
-      },
+        welcome: function() {
+          return "invalid";
+        },
 
-      sayBye: function() {
-         return "Bye!";
-      }
-   });
+        sayBye: function() {
+          return "Bye!";
+        }
+      });
 
-   var bar = new Bar("John Rambo");
+  var bar = new Bar("John Rambo");
 
-   extend(bar, Foo);
+  extend(bar, Foo);
 
-   ok(bar.name === "John Rambo", "Invalid extend() behavior, constructor must be bound correctly");
-   ok(bar.welcome() === "Welcome John Rambo", "Invalid extend() behavior, property must be overriden properly");
-   ok(bar.sayHi() === "Hello World John Rambo", "Invalid extend() behavior");
-   ok(bar.sayBye() === "Bye!", "Invalid extend() behavior");
+  equal(bar.name, "John Rambo", "Invalid extend() behavior, constructor must be bound correctly");
+  equal(bar.welcome(), "Welcome John Rambo", "Invalid extend() behavior, property must be overriden properly");
+  equal(bar.sayHi(), "Hello World John Rambo", "Invalid extend() behavior");
+  equal(bar.sayBye(), "Bye!", "Invalid extend() behavior");
 });
 
 test("Mixin: instance extends multiple classes", function() {
-   var Foo = Class({
-      constructor: function(name) {
-         this.name = name;
-      },
+  var Foo = Class({
+        constructor: function(name) {
+          this.name = name;
+        },
 
-      welcome: function() {
-         return "Welcome " + this.name;
-      },
+        welcome: function() {
+          return "Welcome " + this.name;
+        },
 
-      sayHi: function() {
-         return "Hello World " + this.name;
-      }
-   });
+        sayHi: function() {
+          return "Hello World " + this.name;
+        }
+      });
 
-   var Properties = Class({
-      setProperty: function(key, value) {
-         this[key] = value;
-      },
-      getProperty: function(key) {
-         return this[key];
-      }
-   });
+  var Properties = Class({
+        setProperty: function(key, value) {
+          this[key] = value;
+        },
+        getProperty: function(key) {
+          return this[key];
+        }
+      });
 
-   var Bar = Class({
-      constructor: function(name) {
-         this.name = name;
-      },
+  var Bar = Class({
+        constructor: function(name) {
+          this.name = name;
+        },
 
-      welcome: function() {
-         return "invalid";
-      },
+        welcome: function() {
+          return "invalid";
+        },
 
-      sayBye: function() {
-         return "Bye!";
-      }
-   });
+        sayBye: function() {
+          return "Bye!";
+        }
+      });
 
-   var bar = new Bar("John Rambo");
+  var bar = new Bar("John Rambo");
 
-   extend(bar, [ Foo, Properties ]);
-   bar.setProperty("fooKey", "fooValue");
+  extend(bar, [ Foo, Properties ]);
+  bar.setProperty("fooKey", "fooValue");
 
-   ok(bar.name === "John Rambo", "Invalid extend() behavior, constructor must be bound correctly");
-   ok(bar.welcome() === "Welcome John Rambo", "Invalid extend() behavior, property must be overriden properly");
-   ok(bar.sayHi() === "Hello World John Rambo", "Invalid extend() behavior");
-   ok(bar.sayBye() === "Bye!", "Invalid extend() behavior");
-   ok(bar.getProperty("fooKey") === "fooValue", "Invalid extend() behavior");
+  equal(bar.name, "John Rambo", "Invalid extend() behavior, constructor must be bound correctly");
+  equal(bar.welcome(), "Welcome John Rambo", "Invalid extend() behavior, property must be overriden properly");
+  equal(bar.sayHi(), "Hello World John Rambo", "Invalid extend() behavior");
+  equal(bar.sayBye(), "Bye!", "Invalid extend() behavior");
+  equal(bar.getProperty("fooKey"), "fooValue", "Invalid extend() behavior");
 });
 
 
 test("Mixin: instance extends class and instance", function() {
-   var Foo = Class({
-      constructor: function(name) {
-         this.name = name;
-      },
+  var Foo = Class({
+        constructor: function(name) {
+          this.name = name;
+        },
 
-      welcome: function() {
-         return "Welcome " + this.name;
-      },
+        welcome: function() {
+          return "Welcome " + this.name;
+        },
 
-      sayHi: function() {
-         return "Hello World " + this.name;
-      }
-   });
+        sayHi: function() {
+          return "Hello World " + this.name;
+        }
+      });
 
-   var Properties = Class({
-      setProperty: function(key, value) {
-         this[key] = value;
-      },
-      getProperty: function(key) {
-         return this[key];
-      }
-   });
+  var Properties = Class({
+        setProperty: function(key, value) {
+          this[key] = value;
+        },
+        getProperty: function(key) {
+          return this[key];
+        }
+      });
 
-   var Bar = Class({
-      constructor: function(name) {
-         this.name = name;
-      },
+  var Bar = Class({
+        constructor: function(name) {
+          this.name = name;
+        },
 
-      welcome: function() {
-         return "invalid";
-      },
+        welcome: function() {
+          return "invalid";
+        },
 
-      sayBye: function() {
-         return "Bye!";
-      }
-   });
+        sayBye: function() {
+          return "Bye!";
+        }
+      });
 
-   var bar = new Bar("John Rambo");
+  var bar = new Bar("John Rambo");
 
-   extend(bar, [ Foo, new Properties() ]);
-   bar.setProperty("fooKey", "fooValue");
+  extend(bar, [ Foo, new Properties() ]);
+  bar.setProperty("fooKey", "fooValue");
 
-   ok(bar.name === "John Rambo", "Invalid extend() behavior, constructor must be bound correctly");
-   ok(bar.welcome() === "Welcome John Rambo", "Invalid extend() behavior, property must be overriden properly");
-   ok(bar.sayHi() === "Hello World John Rambo", "Invalid extend() behavior");
-   ok(bar.sayBye() === "Bye!", "Invalid extend() behavior");
-   ok(bar.getProperty("fooKey") === "fooValue", "Invalid extend() behavior");
+  equal(bar.name, "John Rambo", "Invalid extend() behavior, constructor must be bound correctly");
+  equal(bar.welcome(), "Welcome John Rambo", "Invalid extend() behavior, property must be overriden properly");
+  equal(bar.sayHi(), "Hello World John Rambo", "Invalid extend() behavior");
+  equal(bar.sayBye(), "Bye!", "Invalid extend() behavior");
+  equal(bar.getProperty("fooKey"), "fooValue", "Invalid extend() behavior");
 });
 
 
 test("Mixin: class extends singleton", function() {
-   var Foo = Class({
-      $singleton: true,
+  var Foo = Class({
+        $singleton: true,
 
-      welcome: function() {
-         return "Welcome " + this.name;
-      },
+        welcome: function() {
+          return "Welcome " + this.name;
+        },
 
-      sayHi: function() {
-         return "Hello World " + this.name;
-      }
-   });
+        sayHi: function() {
+          return "Hello World " + this.name;
+        }
+      });
 
-   var Bar = Class({
-      constructor: function(name) {
-         this.name = name;
-      },
+  var Bar = Class({
+        constructor: function(name) {
+          this.name = name;
+        },
 
-      welcome: function() {
-         return "invalid";
-      },
+        welcome: function() {
+          return "invalid";
+        },
 
-      sayBye: function() {
-         return "Bye!";
-      }
-   });
+        sayBye: function() {
+          return "Bye!";
+        }
+      });
 
-   extend(Bar, Foo);
+  extend(Bar, Foo);
 
-   var bar = new Bar("John Rambo");
+  var bar = new Bar("John Rambo");
 
-   ok(bar.welcome() === "Welcome John Rambo", "Invalid extend() behavior, property must be overriden properly");
-   ok(bar.sayHi() === "Hello World John Rambo", "Invalid extend() behavior");
-   ok(bar.sayBye() === "Bye!", "Invalid extend() behavior");
+  equal(bar.welcome(), "Welcome John Rambo", "Invalid extend() behavior, property must be overriden properly");
+  equal(bar.sayHi(), "Hello World John Rambo", "Invalid extend() behavior");
+  equal(bar.sayBye(), "Bye!", "Invalid extend() behavior");
 });
 
 test("Mixin: singleton extends class", function() {
-   var Foo = Class({
-      $singleton: true,
+  var Foo = Class({
+        $singleton: true,
 
-      welcome: function() {
-         return "Welcome " + this.name;
-      },
+        welcome: function() {
+          return "Welcome " + this.name;
+        },
 
-      sayHi: function() {
-         return "Hello World " + this.name;
-      }
-   });
+        sayHi: function() {
+          return "Hello World " + this.name;
+        }
+      });
 
-   var Bar = Class({
-      $statics: {
-         sample: 1,
-         fn: function() { return 2; }
-      },
+  var Bar = Class({
+        $statics: {
+          sample: 1,
+          fn: function() { return 2; }
+        },
 
-      constructor: function(name) {
-         this.name = name;
-      },
+        constructor: function(name) {
+          this.name = name;
+        },
 
-      welcome: function() {
-         return "invalid";
-      },
+        welcome: function() {
+          return "invalid";
+        },
 
-      sayBye: function() {
-         return "Bye!";
-      }
-   });
+        sayBye: function() {
+          return "Bye!";
+        }
+      });
 
-   extend(Foo, Bar);
+  extend(Foo, Bar);
 
-   ok(Foo.sample === 1, "Invalid extend() behavior, property must be overriden properly");
-   ok(Foo.fn() === 2, "Invalid extend() behavior");
+  equal(Foo.sample, 1, "Invalid extend() behavior, property must be overriden properly");
+  equal(Foo.fn(), 2, "Invalid extend() behavior");
 });
 
 test("Mixin: class extends multiple classes", function() {
-   var Options = Class({
-      setOptions: function(opts) {
-         this.opts = opts;
-      }
-   });
+  var Options = Class({
+        setOptions: function(opts) {
+          this.opts = opts;
+        }
+      });
 
-   var Events = Class({
-      bind: function(event, fn) {
-         return true;
-      },
-      unbind: function(event, fn) {
-         return false;
-      }
-   });
+  var Events = Class({
+        bind: function(event, fn) {
+          return true;
+        },
+        unbind: function(event, fn) {
+          return false;
+        }
+      });
 
-   var Foo = Class({
-      constructor: function(name) {
-         this.name = name;
-      }
-   });
+  var Foo = Class({
+        constructor: function(name) {
+          this.name = name;
+        }
+      });
 
-   extend(Foo, [ Options, Events ]);
+  extend(Foo, [ Options, Events ]);
 
-   var bar = new Foo("Bar");
-   bar.setOptions("nothing");
+  var bar = new Foo("Bar");
+  bar.setOptions("nothing");
 
-   ok(bar.name === "Bar", "Invalid extend() behavior, constructor must be bound correctly");
-   ok(bar.opts === "nothing", "Invalid extend() behavior, constructor must be bound correctly");
-   ok(bar.bind(), "Invalid extend() behavior");
-   ok( !bar.unbind(), "Invalid extend() behavior");
+  equal(bar.name, "Bar", "Invalid extend() behavior, constructor must be bound correctly");
+  equal(bar.opts, "nothing", "Invalid extend() behavior, constructor must be bound correctly");
+  ok(bar.bind(), "Invalid extend() behavior");
+  equal( !bar.unbind(), true, "Invalid extend() behavior");
 });
 
 
 test("Mixin: class extends both class and instance", function() {
-   var Options = Class({
-      setOptions: function(opts) {
-         this.opts = opts;
-      }
-   });
+  var Options = Class({
+        setOptions: function(opts) {
+          this.opts = opts;
+        }
+      });
 
-   var Events = Class({
-      bind: function(event, fn) {
-         return true;
-      },
-      unbind: function(event, fn) {
-         return false;
-      }
-   });
+  var Events = Class({
+        bind: function(event, fn) {
+          return true;
+        },
+        unbind: function(event, fn) {
+          return false;
+        }
+      });
 
-   var Foo = Class({
-      constructor: function(name) {
-         this.name = name;
-      }
-   });
+  var Foo = Class({
+        constructor: function(name) {
+          this.name = name;
+        }
+      });
 
-   extend(Foo, [ Options, new Events() ]);
+  extend(Foo, [ Options, new Events() ]);
 
-   var foo = new Foo("Bar");
-   foo.setOptions("nothing");
+  var foo = new Foo("Bar");
+  foo.setOptions("nothing");
 
-   ok(foo.name === "Bar", "Invalid extend() behavior, constructor must be bound correctly");
-   ok(foo.opts === "nothing", "Invalid extend() behavior, constructor must be bound correctly");
-   ok(Foo.bind(), "Invalid extend() behavior");
-   ok( !Foo.unbind(), "Invalid extend() behavior");
-   ok(foo.bind(), "Invalid extend() behavior");
-   ok( !foo.unbind(), "Invalid extend() behavior");
+  equal(foo.name, "Bar", "Invalid extend() behavior, constructor must be bound correctly");
+  equal(foo.opts, "nothing", "Invalid extend() behavior, constructor must be bound correctly");
+  equal(Foo.bind(), true, "Invalid extend() behavior");
+  equal( !Foo.unbind(), true, "Invalid extend() behavior");
+  equal(foo.bind(), true, "Invalid extend() behavior");
+  equal( !foo.unbind(), true, "Invalid extend() behavior");
 });
 
 test("Mixin: extending native objects", function() {
-   extend(String, {
-      trim: function() {
-         return this.replace(/^\s+|\s+$/g, "");
-      }
-   });
+  extend(String, {
+    trim: function() {
+      return this.replace(/^\s+|\s+$/g, "");
+    }
+  });
 
-   ok("    Hello World   ".trim() === "Hello World", "Invalid extend() binding String.prototype");
+  equal("    Hello World   ".trim(), "Hello World", "Invalid extend() binding String.prototype");
 
-   extend(Array, {
-      sum: function() {
-         var s = 0;
-         each(this, function(value) {
-            s += value;
-         });
-         return s;
-      }
-   });
+  extend(Array, {
+    sum: function() {
+      var s = 0;
+      each(this, function(value) {
+        s += value;
+      });
+      return s;
+    }
+  });
 
-   var a = [ 1, 2, 3, 4, 5 ];
+  var a = [ 1, 2, 3, 4, 5 ];
 
-   ok(a.sum, "Invalid extend() binding native object");
-   ok(Array.sum, "Invalid extend() binding native object");
-   ok(Array.prototype.sum, "Invalid extend() binding native object");
-   ok(a.sum() === 15, "Invalid extend() binding native object");
+  ok(a.sum, "Invalid extend() binding native object");
+  ok(Array.sum, "Invalid extend() binding native object");
+  ok(Array.prototype.sum, "Invalid extend() binding native object");
+  equal(a.sum(), 15, "Invalid extend() binding native object");
 });
 
 test("Mixin: extending native objects (prototype only)", function() {
-   delete Array.sum;
+  delete Array.sum;
 
-   extend(Array.prototype, {
-      sum: function() {
-         var s = 0;
-         each(this, function(value) {
-            s += value;
-         });
-         return s;
-      }
-   });
+  extend(Array.prototype, {
+    sum: function() {
+      var s = 0;
+      each(this, function(value) {
+        s += value;
+      });
+      return s;
+    }
+  });
 
-   var a = [ 1, 2, 3, 4, 5 ];
+  var a = [ 1, 2, 3, 4, 5 ];
 
-   ok(a.sum, "Invalid extend() binding native object");
-   ok( !Array.sum, "Invalid extend() binding native object");
-   ok(Array.prototype.sum, "Invalid extend() binding native object");
-   ok(a.sum() === 15, "Invalid extend() binding native object");
+  ok(a.sum, "Invalid extend() binding native object");
+  ok( !Array.sum, "Invalid extend() binding native object");
+  ok(Array.prototype.sum, "Invalid extend() binding native object");
+  equal(a.sum(), 15, "Invalid extend() binding native object");
+  delete Array.prototype.sum;
 });
 
 // --------- PLUGINS --------- //
 
-test("$ready plugin: class notifies itself", function() {
-   var notified = false;
-
-   var Foo = Class({
-      $ready: function(clazz, api, parent) {
-         notified = true;
-         ok(this === clazz, "$ready works incorrectly");
-         ok(isFunction(api.$ready), "$ready works incorrectly");
-         ok(isFunction(api.echo), "$ready works incorrectly");
-         ok(isFunction(clazz.prototype.echo), "$ready works incorrectly");
-         ok( !parent, "$ready works incorrectly");
-      },
-      echo: function(o) {
-         return o;
-      }
-   });
-
-   ok(notified, "$ready must be executed");
-});
-
-test("$ready plugin: class is notified when its subclass is ready", function() {
-   var notified = false;
-
-   var Foo = Class({
-      $ready: function(clazz, api, parent) {
-         notified = true;
-
-         if (this !== clazz) {
-            ok(api.echo2, "$ready works incorrectly");
-            ok( !api.$ready, "$ready works incorrectly");
-            ok(isFunction(clazz.prototype.echo2), "$ready works incorrectly");
-         }
-      },
-      echo: function(o) {
-         return o;
-      }
-   });
-
-   ok(notified, "$ready must be executed");
-
-   var Bar = Class(Foo, {
-      echo2: function(o) {
-         return o;
-      }
-   });
-});
-
 test("Develop a Class plugin", function() {
-   var Logger = Class({
-      log: function(msg) {
-         console.log(msg);
-      }
-   });
+  var Logger = Class({
+    log: function(msg) {
+      console.log(msg);
+    }
+  });
 
-   Class.plugins.$log = function(clazz, parent, api) {
-      extend(clazz, Logger);
-   }
+  Class.plugins.$log = function(clazz, parent, api) {
+    extend(clazz, Logger);
+  }
 
-   var Foo = Class();
-   var foo = new Foo();
+  var Foo = Class();
+  var foo = new Foo();
 
-   ok(isFunction(Foo.prototype.log), "Class plugins mechanism works incorrectly");
-   ok(isFunction(foo.log), "Class plugins mechanism works incorrectly");
-   delete Class.plugins.$log;
+  equal(isFunction(Foo.prototype.log), true, "Class plugins mechanism works incorrectly");
+  equal(isFunction(foo.log), true, "Class plugins mechanism works incorrectly");
+  delete Class.plugins.$log;
 });
