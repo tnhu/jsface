@@ -15,7 +15,7 @@
      "url"          : "git://github.com/tannhu/jsface.git"
    },
    "engines"        : {
-      "node"        : "~0.4.12"
+      "node"        : ">=0.4.0"
    },
    "dependencies"   : {},
    "devDependencies": {}
