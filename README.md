@@ -378,7 +378,7 @@ var ApplicationService = Class(Service, {
 
 Have a bug? Please [create an issue here](https://github.com/tannhu/jsface/issues) on GitHub!
 
-# Some other notes
+# Some notes
 
 Method overloadings, type checking (available in versions prior to 2.0.0) are being implemented as plugins.
 

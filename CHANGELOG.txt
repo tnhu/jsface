@@ -1,4 +1,4 @@
-Version 2.0.2                                       Mar 09, 2012
+v2.0.2                                              Mar 09, 2012
 ----------------------------------------------------------------
 * Separate $ready as a standalone plugin
 * Fix undefined bug checking class prototype in jsface.isClass
@@ -6,13 +6,13 @@ Version 2.0.2                                       Mar 09, 2012
 * Add pointcut plugin
 * Change code to "2-space convention"
 
-Version 2.0.1                                       Jan 16, 2012
+v2.0.1                                              Jan 16, 2012
 ----------------------------------------------------------------
 * Fix unit tests on IE (extra commas, iframe injection)
 * Fix jsface.isArray works incorrectly over String (IE6, IE5.5)
 * Fix extend(instance, Class)
 
-Version 2.0.0                                       Dec 10, 2011
+v2.0.0                                              Dec 10, 2011
 ----------------------------------------------------------------
 * Get rid of $meta (cleaner class structure)
 * Introduce $super, extend (mixin, trait)
@@ -30,13 +30,13 @@ Version 2.0.0                                       Dec 10, 2011
 * Size optimization
 * More unit tests
 
-Version 1.2                                         June 30 2011
+v1.2                                                June 30 2011
 ----------------------------------------------------------------
 
 * More elegant syntax.
 * Remove unnecessary meta data copying on class inheritance.
 
-Version 1.2b                                    November 26 2010
+v1.2b                                           November 26 2010
 ----------------------------------------------------------------
 
 * Initial release. A complete new look from version 1.2a which
