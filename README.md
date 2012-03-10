@@ -8,11 +8,11 @@ JSFace will give you a good taste on your JavaScript OOP development.
 * Support singleton, mixin, private properties, Aspect Oriented Programming.
 * Plugins mechanism to extend itself.
 
-# Usage
+# Setup
 
 JSFace supports both server side (CommonJS) and client side JavaScript (browser).
 
-In browser environment:
+Browser:
 
 ``` html
 <script src="jsface.js" type="text/javascript"></script>
