@@ -1,7 +1,7 @@
 {
    "name"           : "jsface",
    "main"           : "jsface.js",
-   "description"    : "JSFace JavaScript Object-Oriented Programming library",
+   "description"    : "Small footprint, elegant, powerful, and cross platform JavaScript OOP library. Support singleton, super call, private, mixins, plugins, AOP and more.",
    "author"         : "Tan Nhu <tnhu AT me . com>",
    "version"        : "2.0.2",
    "keywords"       : [ "jsface", "JSFace", "OOP", "JavaScript OOP", "JavaScript Object Oriented Programming", "AOP", "Aspect Oriented Programming" ],
