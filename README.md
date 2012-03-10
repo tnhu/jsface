@@ -18,7 +18,7 @@ Browser:
 <script src="jsface.js" type="text/javascript"></script>
 ```
 
-JSFace introduces two variables in browser global scope: jsface and Class. In case you want to use other APIs such as extend, declare them, for example:
+JSFace introduces two variables in browser global scope: jsface and Class. In case you want to use other APIs such as extend, you need to create aliases, for example:
 
 ``` javascript
 var extend = jsface.extend;

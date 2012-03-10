@@ -1,5 +1,5 @@
 /*
- * JSFace Object Oriented Programming Library - Plug and Play pointcut
+ * JSFace Object Oriented Programming Library - Plug and Play pointcut plugin
  * https://github.com/tannhu/jsface
  *
  * Copyright (c) 2009-2012 Tan Nhu
