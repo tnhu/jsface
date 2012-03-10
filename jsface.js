@@ -6,13 +6,7 @@
  * Licensed under MIT license (https://github.com/tannhu/jsface/blob/master/MIT-LICENSE.txt)
  * Version: 2.0.2
  */
-(function(context, undefined) {
-  var OBJECT      = "object",
-      NUMBER      = "number",
-      LENGTH      = "length",
-      INVALID     = "Invalid params",
-      oldClass, jsface;
-
+(function(context, OBJECT, NUMBER, LENGTH, INVALID, undefined, oldClass, jsface) {
   /**
    * Check an object is a map or not. A map is something like { key1: value1, key2: value2 }.
    */
@@ -52,7 +46,7 @@
    * Loop over a collection (a string, an array, an object (a map with pairs of {key:value})), or a function (over all
    * static properties).
    * Over a String or Array, fn is executed as: fn(value, index, collection) Otherwise: fn(key, value, collection).
-   * Return Infinity on fn will stop the iteration. each returns an array of results returned by fn.
+   * Return Infinity (1/0) on fn will stop the iteration. each returns an array of results returned by fn.
    */
   function each(collection, fn) {
     var iArray, iMap, iString, iFunction, item, i, r, v, len, result = [];
@@ -73,12 +67,12 @@
     if (iArray) {
       for (i = 0, len = collection.length; i < len; i++) {
         v = iString ? collection.charAt(i) : collection[i];
-        if ((r = fn(v, i, collection)) === Infinity) { break; }
+        if ((r = fn(v, i, collection)) === 1/0) { break; }
         result.push(r);
       }
     } else {
       for (item in collection) {
-        if ((r = fn(item, collection[item], collection)) === Infinity) { break; }
+        if ((r = fn(item, collection[item], collection)) === 1/0) { break; }
         result.push(r);
       }
     }
@@ -101,12 +95,11 @@
         each(child.prototype, function(key, fn) {
           if (fn === caller || caller === fn.___origin_fn___) {          // pointcut compatible
             name = key;                                                  // found you
-            return Infinity;                                             // break each loop
+            return 1/0;                                                  // break each loop
           }
         });
 
-        len = parent.length ;                                            // order: most right parent first
-        while (len-- && !func) {
+         for (len = parent.length; len-- && !func;) {                    // order: most right parent first
           pa = parent[len];                                              // pa could be an instant
           if (isClass(pa)) { pa = pa.prototype; }                        // or a class
           func = pa[name] || 0;
@@ -180,7 +173,7 @@
     clazz = singleton ? {} : (constructor ? (Class.overload ? Class.overload("constructor", constructor) : constructor) : function(){});
 
     each(parent, function(p) {                                               // extend parent static properties
-      extend(clazz, p, ignoredKeys, true);
+      extend(clazz, p, ignoredKeys, 1);
     });
     extend(singleton ? clazz : clazz.prototype, api, ignoredKeys);           // extend api
     extend(clazz, statics, ignoredKeys);                                     // extend static properties
@@ -215,4 +208,4 @@
       context.Class   = oldClass;
     }
   }
-})(this);
+})(this, "object", "number", "length", "Invalid params");
