@@ -55,7 +55,7 @@ var Person = Class({
 });
 
 var person = new Person("Rika", 20);
-person.toString();                           // "Rika/20"
+person.toString();                               // "Rika/20"
 ```
 
 ## Define a sub-class
@@ -64,16 +64,16 @@ person.toString();                           // "Rika/20"
 var Student = Class(Person, {
   constructor: function(id, name, age) {
     this.id = id;
-    this.$super(name, age);               // Invoke parent's constructor
+    this.$super(name, age);                      // Invoke parent's constructor
   },
 
   toString: function() {
-    return this.id + "/" + this.$super(); // Invoke parent's toString method
+    return this.id + "/" + this.$super();        // Invoke parent's toString method
   }
 });
 
 var student = new Student(1, "Rika", 20);
-student.toString();                         // "1/Rika/20"
+student.toString();                              // "1/Rika/20"
 ```
 
 ## Singleton class
@@ -87,7 +87,7 @@ var Util = Class({
   }
 });
 
-Util.echo(2012);                            // 2012
+Util.echo(2012);                                 // 2012
 ```
 
 ## Static properties
@@ -113,20 +113,20 @@ var Person = Class({
 
 var person = new Person("Rika", 20);
 
-Person.MIN_AGE === person.MIN_AGE;          // true
-Person.MAX_AGE === person.MAX_AGE;          // true
-Person.isValidAge(0);                       // false
-person.isValidAge(person.age);              // true
+Person.MIN_AGE === person.MIN_AGE;               // true
+Person.MAX_AGE === person.MAX_AGE;               // true
+Person.isValidAge(0);                            // false
+person.isValidAge(person.age);                   // true
 ```
 
 ## Private properties
 
 ``` javascript
 var Person = Class(function() {
-  var MIN_AGE =   1,                       // private variables
+  var MIN_AGE =   1,                             // private variables
       MAX_AGE = 150;
 
-  function isValidAge(age) {               // private method
+  function isValidAge(age) {                     // private method
     return age >= MIN_AGE && age <= MAX_AGE;
   }
 
@@ -178,9 +178,9 @@ var Student = Class([ Person, Options, Events ], {
 });
 
 var student = new Student(1, "Rika", 20);
-student.setOptions({ foo: true });          // student.opts === { foo: true }
-student.bind();                             // true
-student.unbind();                           // false
+student.setOptions({ foo: true });               // student.opts === { foo: true }
+student.bind();                                  // true
+student.unbind();                                // false
 ```
 
 Or after defining classes:
@@ -210,7 +210,7 @@ extend(String.prototype, {
   }
 });
 
-"   Hello World    ".trim();                // "Hello World"
+"   Hello World    ".trim();                     // "Hello World"
 ```
 ## No conflict
 
@@ -287,7 +287,7 @@ var advisor = {
       this.email = "rika@sample.com";
     }
   },
-  foo: function(n) {                // sugar syntax, foo:before
+  foo: function(n) {                             // sugar syntax, foo:before
     this.counter++;
   },
   bar: {
@@ -307,10 +307,10 @@ var person = new Person("Rika");
 person.foo();
 person.bar();
 
-person.name    === "Rika";               // true
-person.age     === 20;                   // true
-person.email   === "rika@sample.com";    // true
-person.counter === 3;                    // true
+person.name    === "Rika";                       // true
+person.age     === 20;                           // true
+person.email   === "rika@sample.com";            // true
+person.counter === 3;                            // true
 ```
 
 ### Removing pointcuts
