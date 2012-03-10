@@ -331,7 +331,7 @@ Person = poincut(Person, "remove");
 ## $ready
 
 $ready plugin is designed to help parent classes to intercept their subclasses' creation. If a class uses $ready,
-it notified itself.
+it notifies itself.
 
 ### Setup
 
