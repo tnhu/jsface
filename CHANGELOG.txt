@@ -1,3 +1,8 @@
+v2.0.3                                                       TBD 
+----------------------------------------------------------------
+* Add overloading plugin: support method overloading, type
+  checking, arguments validation
+
 v2.0.2                                              Mar 09, 2012
 ----------------------------------------------------------------
 * Separate $ready as a standalone plugin
