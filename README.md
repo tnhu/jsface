@@ -27,7 +27,7 @@ var extend = jsface.extend;
 In NodeJS environment, first install JSFace via npm:
 
 ``` sh
-   npm install jsface
+npm install jsface
 ```
 
 Then use its APIs, for example:
