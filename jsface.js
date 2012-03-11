@@ -65,9 +65,9 @@
     }
 
     if (iArray) {
-      for (i = 0, len = collection.length; i < len; i++) {
+      for (i = 0, len = collection.length; i < len;) {
         v = iString ? collection.charAt(i) : collection[i];
-        if ((r = fn(v, i, collection)) === 1/0) { break; }
+        if ((r = fn(v, i++, collection)) === 1/0) { break; }
         result.push(r);
       }
     } else {
