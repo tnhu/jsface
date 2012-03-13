@@ -380,7 +380,7 @@ Have a bug? Please [create an issue here](https://github.com/tannhu/jsface/issue
 
 # Some notes
 
-Method overloadings, type checking (available in versions prior to 2.0.0) are being implemented as plugins.
+Method overloadings, type checking, and arguments validation (available in versions prior to 2.0.0) are being implemented as plugins.
 
 More use cases are covered in [unit tests](https://github.com/tannhu/jsface/tree/master/test)
 (I'm using [QUnit](https://github.com/jquery/qunit)).

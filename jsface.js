@@ -100,7 +100,7 @@
         });
 
          for (len = parent.length; len-- && !func;) {                    // order: most right parent first
-          pa = parent[len];                                              // pa could be an instant
+          pa = parent[len];                                              // pa could be an instance
           if (isClass(pa)) { pa = pa.prototype; }                        // or a class
           func = pa[name] || 0;
         }
@@ -156,7 +156,7 @@
     if ( !api) { parent = (api = parent, 0); }
     api = api || {};
 
-    var tmp, clazz, constructor, singleton, statics,
+    var clazz, constructor, singleton, statics,
         ignoredKeys = { constructor: 1, $singleton: 1, $statics: 1, prototype: 1 };
 
     parent = (parent && !isArray(parent)) ? [ parent ] : parent;             // convert to array
@@ -169,7 +169,6 @@
 
     each(Class.plugins, function(key) { ignoredKeys[key] = 1; });            // add plugins' keys into ignoredKeys
 
-    // TODO Does jsface.overload work in case of CommonJS env?
     clazz = singleton ? {} : (constructor ? (Class.overload ? Class.overload("constructor", constructor) : constructor) : function(){});
 
     each(parent, function(p) {                                               // extend parent static properties
