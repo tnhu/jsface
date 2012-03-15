@@ -69,8 +69,8 @@ var Student = Class(Person, {
   },
 
   toString: function() {
-    return this.id + "/" + Student.$superp.toString.call(this);        // Invoke parent's toString method
-    // return this.id + "/" + this.$super();                           // This api will be removed in v2.1.0
+    return this.id + "/" + Student.$superp.toString.call(this); // Invoke parent's toString method
+    // return this.id + "/" + this.$super();                    // This api will be removed in v2.1.0
   }
 });
 
