@@ -292,11 +292,11 @@ test("Create a sub class", function() {
 
   var Bar = Class(Foo, {
         constructor: function(name) {
-          this.$super(name);
+          Bar.$super.call(this, name);
         },
 
         sayHi: function() {
-          return this.$super();
+          return Bar.$superp.sayHi.call(this);
         },
 
         sayBye: function() {
@@ -325,21 +325,21 @@ test("Multiple level class inheritance", function() {
 
   var Bar = Class(Foo, {
         constructor: function(name) {
-          this.$super(name);
+          Bar.$super.call(this, name);
         },
 
         sayHi: function() {
-          return this.$super();
+          return Bar.$superp.sayHi.call(this);
         }
       });
 
   var Child = Class(Bar, {
         constructor: function(name) {
-          this.$super(name);
+          Child.$super.call(this, name);
         },
 
         sayHi: function() {
-          return this.$super();
+          return Child.$superp.sayHi.call(this);
         }
       });
 

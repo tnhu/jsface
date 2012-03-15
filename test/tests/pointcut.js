@@ -420,12 +420,20 @@ test("Pointcuts and $super", function() {
 
   Child = pointcut(Child, {
     constructor: {
-      before: function() {},
-      after: function() {}
+      before: function() {
+        this.before = true;
+      },
+      after: function() {
+        this.after = true;
+      }
     },
     inc: {
-      before: function() {},
-      after: function() {}
+      before: function() {
+        this.iBefore = true;
+      },
+      after: function() {
+        this.iAfter = true;
+      }
     }
   });
 
@@ -433,6 +441,10 @@ test("Pointcuts and $super", function() {
   p.inc(1);
 
   equal(p.num, 101, "Pointcut works incorrectly with $super");
+  equal(true, p.before, "Pointcut works incorrectly with $super");
+  equal(true, p.after, "Pointcut works incorrectly with $super");
+  equal(true, p.iBefore, "Pointcut works incorrectly with $super");
+  equal(true, p.iAfter, "Pointcut works incorrectly with $super");
 });
 
 test("Remove all pointcuts", function() {

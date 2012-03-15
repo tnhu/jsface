@@ -4,7 +4,7 @@
  *
  * Copyright (c) 2009-2012 Tan Nhu
  * Licensed under MIT license (https://github.com/tannhu/jsface/blob/master/MIT-LICENSE.txt)
- * Version: 2.0.2
+ * Version: 2.0.3
  */
 (function(context, OBJECT, NUMBER, LENGTH, INVALID, undefined, oldClass, jsface) {
   /**
@@ -83,36 +83,26 @@
    * Make $super method.
    */
   function makeSuper(child, parent) {
-    child.prototype.$super = function() {
-      var caller = arguments.callee.caller,
-          supez  = this.$super,
-          result, name, len, func, pa;
+    parent = parent && parent[0];
 
-      if (caller === child.prototype.constructor) {                      // caller is constructor
-        func = parent ? parent[0] : 0;
-        if (isClass(func)) { this.$super = func.prototype.$super; }      // $super = parent.$super
-      } else if (parent) {                                               // caller is a method: query its name
-        each(child.prototype, function(key, fn) {
-          if (fn === caller || caller === fn.___origin_fn___) {          // pointcut compatible
-            name = key;                                                  // found you
-            return 1/0;                                                  // break each loop
-          }
-        });
+    var iClass = isClass(parent), proto = child.prototype, __super;
 
-         for (len = parent.length; len-- && !func;) {                    // order: most right parent first
-          pa = parent[len];                                              // pa could be an instance
-          if (isClass(pa)) { pa = pa.prototype; }                        // or a class
-          func = pa[name] || 0;
+    if (parent) {
+      each(proto, function(fnName, fn) {
+        __super = fnName !== "$super" && isFunction(fn) && ( (iClass && isFunction(parent.prototype[fnName]) && parent.prototype[fnName]) || (!iClass && isFunction(parent[fnName]) && parent[fnName]));
+        if (__super) {
+          fn.__super = __super;
         }
+      });
 
-        if (isFunction(func)) { this.$super = pa.$super; }               // $super = parent.$super
-      }
+      child.$super  = parent;
+      child.__super = parent;
+      child.$superp = iClass ? parent.prototype : parent;
+    }
 
-      if (isFunction(func)) {                                            // no harm, not found? fine
-        result      = func.apply(this, arguments);                       // execute matched super method
-        this.$super = supez;                                             // restore $super
-        return result;
-      }
+    proto.$super = function $super() {
+      var __super = $super.caller.__super;                                   // VERY EXPENSIVE!!!
+      return __super && __super.apply(this, arguments);
     };
   }
 
@@ -157,7 +147,8 @@
     api = api || {};
 
     var clazz, constructor, singleton, statics,
-        ignoredKeys = { constructor: 1, $singleton: 1, $statics: 1, prototype: 1 };
+        ignoredKeys = { constructor: 1, $singleton: 1, $statics: 1, prototype: 1 },
+        overload    = Class.overload || function(name, fn){ return fn; };
 
     parent = (parent && !isArray(parent)) ? [ parent ] : parent;             // convert to array
     api    = isFunction(api) ? api() : api;                                  // execute api if it's a function
@@ -169,7 +160,7 @@
 
     each(Class.plugins, function(key) { ignoredKeys[key] = 1; });            // add plugins' keys into ignoredKeys
 
-    clazz = singleton ? {} : (constructor ? (Class.overload ? Class.overload("constructor", constructor) : constructor) : function(){});
+    clazz = singleton ? {} : (constructor ? overload("constructor", constructor) : function(){});
 
     each(parent, function(p) {                                               // extend parent static properties
       extend(clazz, p, ignoredKeys, 1);

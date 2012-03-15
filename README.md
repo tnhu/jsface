@@ -8,6 +8,20 @@ JSFace will give you a good taste on your JavaScript OOP development.
 * Support singleton, mixin, private properties, Aspect Oriented Programming.
 * Plugins mechanism to extend itself.
 
+# Changelog (v2.0.3)
+
+* Introduce Child.$super, Child.$superp poiting to Parent and Parent.prototype
+* Deprecate $super(): hate to see JSFace's slow vs. other frameworks
+
+See all [changlogs](https://github.com/tannhu/jsface/blob/master/CHANGELOG.txt).
+
+# Next version (v2.1.0)
+
+* Remove $super(): Use Child.$super and Child.$superp to gain more performance
+* Add overloading plugin: support method overloading, type checking, arguments validation
+* Use "use strict"
+* More speed optimization and benchmark
+
 # Setup
 
 JSFace supports both server side (CommonJS) and client side JavaScript (browser).
@@ -64,11 +78,13 @@ person.toString();                               // "Rika/20"
 var Student = Class(Person, {
   constructor: function(id, name, age) {
     this.id = id;
-    this.$super(name, age);                      // Invoke parent's constructor
+    Student.$super.call(this, name, age);        // Invoke parent's constructor
+    // this.$super(name, age);                   // This api will be removed in v2.1.0
   },
 
   toString: function() {
-    return this.id + "/" + this.$super();        // Invoke parent's toString method
+    return this.id + "/" + Student.$superp.toString.call(this);        // Invoke parent's toString method
+    // return this.id + "/" + this.$super();                           // This api will be removed in v2.1.0
   }
 });
 
