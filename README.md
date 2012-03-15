@@ -10,7 +10,7 @@ JSFace will give you a good taste on your JavaScript OOP development.
 
 # Changelog (v2.0.3)
 
-* Introduce Child.$super, Child.$superp poiting to Parent and Parent.prototype
+* Introduce Child.$super, Child.$superp pointing to Parent and Parent.prototype
 * Deprecate $super(): hate to see JSFace's slow vs. other frameworks
 
 See all [changlogs](https://github.com/tannhu/jsface/blob/master/CHANGELOG.txt).
