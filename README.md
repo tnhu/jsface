@@ -5,7 +5,7 @@ JSFace will give you a good taste on your JavaScript OOP development.
 # Features
 
 * Small footprint, no dependency, 0.7K minimized+gzip!
-* Super fast! See benchmarks: [creation](http://jsperf.com/oop-benchmark/7), [instantiation 1](http://jsperf.com/oop-benchmark/8), [instantiation 2](http://jsperf.com/oop-benchmark/9), [super call](http://jsperf.com/oop-benchmark/10), [full test](http://jsperf.com/oop-benchmark/6)
+* Super fast! See [benchmark](http://jsperf.com/oop-benchmark/6)
 * Work on both server and client side.
 * Support CommonJS.
 * Support singleton, mixin, private properties, Aspect Oriented Programming.
