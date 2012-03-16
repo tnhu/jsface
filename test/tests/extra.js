@@ -31,7 +31,6 @@ asyncTest("CommonJS support", function() {
 
     start();
     ok(exports.Class, "Class must be available in exports");
-    ok(exports.each, "each must be available in exports");
     ok(exports.isMap, "isMap must be available in exports");
     ok(exports.isArray, "isArray must be available in exports");
     ok(exports.isFunction, "isFunction must be available in exports");

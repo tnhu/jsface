@@ -1,12 +1,15 @@
-v2.1.0                                                       TBD
+v2.1.1                                                       TBD
 ----------------------------------------------------------------
 * Add overloading plugin: support method overloading, type
-  checking, arguments validation
-* Remove $super(): One way to rule them all
-* Use "use strict"
-* Optimize speed and add benchmarks
+  checking and arguments validation
 
-v2.0.3                                                       TBD
+v2.1.0                                              Mar 15, 2012
+----------------------------------------------------------------
+* Remove $super(): Speed is more important
+* Use "use strict"
+* Optimize speed, size and add benchmarks
+
+v2.0.3                                              Mar 14, 2012
 ----------------------------------------------------------------
 * Introduce Child.$super, Child.$superp
 * Deprecate $super(): hate to see it's slow vs. other frameworks

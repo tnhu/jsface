@@ -1,6 +1,5 @@
 var context    = this,
     extend     = jsface.extend,
-    each       = jsface.each,
     isMap      = jsface.isMap,
     isArray    = jsface.isArray,
     isFunction = jsface.isFunction,
@@ -8,66 +7,6 @@ var context    = this,
     isClass    = jsface.isClass;
 
 // --------- UTILITIES --------- //
-
-test("Loop with each over a string", function() {
-  each("123456", function(e, index, st) {
-    equal(st.charAt(index), e, "invalid each loop behavior over a string");
-  });
-});
-
-test("Loop with each over an array", function() {
-  each([ 1, 2, 3, 4, 5, 6, 7 ], function(e, index, array) {
-    equal(array[index], e, "invalid each loop behavior over an array");
-  });
-});
-
-test("Loop with each over an array", function() {
-  each([ 1, 2, 3, 4, 5, 6, 7 ], function(e, index, array) {
-    equal(array[index], e, "invalid each loop behavior over an array");
-  });
-});
-
-test("Loop with each over a map", function() {
-  each({ a: 1, b: 2, c: 3, d: 4 }, function(key, value, map) {
-    equal(map[key], value, "invalid each loop behavior over a map");
-  });
-});
-
-test("each returned value over a string", function() {
-  var result = each("123456", function(e, index, st) {
-    return e + e;
-  });
-  equal(result.join(""), "112233445566", "invalid each returned value over a string");
-});
-
-test("each returned value over an array", function() {
-  var result = each([ 1, 2, 3, 4, 5, 6 ], function(e, index, st) {
-    return e*2;
-  });
-  equal(result.join(""), "24681012", "invalid each returned value over an array");
-});
-
-test("each returned value over a map", function() {
-  var result = each({ a: 1, b: 2, c: 3, d: 4 }, function(key, value, map) {
-    return value*2;
-  });
-  equal(result.join(""), "2468", "invalid each returned value over a map");
-});
-
-test("Loop with each over a number", function() {
-  each(1, function(value) {
-    equal(1, value, "invalid each loop behavior over a single number");
-  });
-});
-
-test("Break each loop", function() {
-  var sum = 0;
-  each([ 2, 3, 4, 5, 6, 7 ], function(value) {
-    sum += value;
-    if (value === 4) { return Infinity; }
-  });
-  equal(sum, 9, "invalid each loop break behavior");
-});
 
 test("Check type with isMap", function() {
   equal(isMap({}), true, "jsface.isMap works incorrectly");
@@ -198,12 +137,6 @@ test("Check type with jsface.isClass", function() {
 });
 
 // --------- CLASS --------- //
-
-test("Class with invalid params", function() {
-  raises(function() {
-    Class(12345);
-  }, "An exception must be thrown for invalid params");
-});
 
 test("Special syntax", function() {
   var Test = Class();
@@ -764,16 +697,15 @@ test("Mixin: extending native objects", function() {
 
   extend(Array, {
     sum: function() {
-      var s = 0;
-      each(this, function(value) {
-        s += value;
-      });
+      var s = 0, len = this.length;
+      while (len--) {
+        s += this[len];
+      }
       return s;
     }
   });
 
   var a = [ 1, 2, 3, 4, 5 ];
-
   ok(a.sum, "Invalid extend() binding native object");
   ok(Array.sum, "Invalid extend() binding native object");
   ok(Array.prototype.sum, "Invalid extend() binding native object");
@@ -785,10 +717,10 @@ test("Mixin: extending native objects (prototype only)", function() {
 
   extend(Array.prototype, {
     sum: function() {
-      var s = 0;
-      each(this, function(value) {
-        s += value;
-      });
+      var s = 0, len = this.length;
+      while (len--) {
+        s += this[len];
+      }
       return s;
     }
   });

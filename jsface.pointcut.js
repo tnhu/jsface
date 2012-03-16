@@ -4,11 +4,12 @@
  *
  * Copyright (c) 2009-2012 Tan Nhu
  * Licensed under MIT license (https://github.com/tannhu/jsface/blob/master/MIT-LICENSE.txt).
- * Version: 1.0.0
+ * Version: 2.1.0
  */
 (function(context) {
+  "use strict";
+
   var jsface     = context.jsface || require("./jsface"),
-      each       = jsface.each,
       Class      = jsface.Class,
       isClass    = jsface.isClass,
       isFunction = jsface.isFunction,
@@ -80,6 +81,8 @@
     wrapper[ORIGIN]  = fn;
     wrapper[ADVISOR] = [ advisor ];
     wrapper[WRAPPER] = wrapper;
+    wrapper.$super   = fn.$super;
+    wrapper.$superp  = fn.$superp;
     return wrapper;
   }
 
@@ -122,13 +125,16 @@
    *  - poincut(subject, "remove", advisor);
    */
   function unpointcut(clazz, opts, advisor, iClass, iInstance, bindTo) {
-    var constructor, re, keys, fn;
+    var constructor, re, keys, fn, c;
 
     function doRestore(collection, advisor) {
-      each(collection, function(key) {
-        var iConstructor = (key === "constructor"),
-            iStatic      = iClass && bindTo[key] === clazz[key];
-            fn           = restore(iConstructor && iClass && clazz || bindTo[key], advisor);
+      var c, key, iConstructor, iStatic, fn;
+
+      for (c in collection) {
+        key          = c/1 == c ? collection[c] : c;
+        iConstructor = (key === "constructor");
+        iStatic      = iClass && bindTo[key] === clazz[key];
+        fn           = restore(iConstructor && iClass && clazz || bindTo[key], advisor);
 
         constructor = constructor || (iConstructor && fn);
         if (fn && !iConstructor) {
@@ -137,14 +143,15 @@
             clazz[key] = fn;
           }
         }
-      });
+      }
     }
 
     if (opts === "remove") {
-      if ( !advisor) {                                                       // type 1: "remove"
+      if ( !advisor) {                                                         // type 1: "remove"
         constructor = iClass && (clazz === clazz[WRAPPER]) && clazz[ORIGIN];
-        each(bindTo, function(name, fn) {
-          var iStatic = iClass && bindTo[name] === clazz[name];
+        for (var name in bindTo) {
+          var fn      = bindTo[name],
+              iStatic = iClass && bindTo[name] === clazz[name];
 
           bindTo[name] = restore(fn) || bindTo[name];
 
@@ -152,11 +159,11 @@
           if (iStatic) {
             clazz[name] = bindTo[name];
           }
-        });
-      } else {                                                               // type 2: "remove", advisor
+        }
+      } else {                                                                 // type 2: "remove", advisor
         doRestore(advisor, advisor);
       }
-    } else if ((re = /^remove /.exec(opts)) !== null) {                      // type 3: "remove contructor foo"
+    } else if ((re = /^remove /.exec(opts)) !== null) {                        // type 3: "remove contructor foo"
       keys = opts.replace(re, "").split(" ");
       doRestore(keys);
     } else {
@@ -173,7 +180,7 @@
         iInstance = isMap(clazz),
         iRemove   = (/^remove ?/.exec(opts) !== null),
         advisor   = iRemove && arguments[2],
-        bindTo;
+        bindTo, method, pointcuts;
 
     if ( !(iClass || iInstance) || !(isMap(opts) || iRemove)) {
       throw INVALID + "params";
@@ -184,8 +191,9 @@
       return unpointcut(clazz, opts, advisor, iClass, iInstance, bindTo);
     };
 
-    each(opts, function(method, pointcuts) {
-      pointcuts = isFunction(pointcuts) ? { before: pointcuts } : pointcuts;         // sugar syntax
+    for (method in opts) {
+      pointcuts = opts[method];
+      pointcuts = isFunction(pointcuts) ? { before: pointcuts } : pointcuts;   // sugar syntax
 
       var before = isMap(pointcuts) && !pointcuts.before ? noop : pointcuts.before,
           after  = isMap(pointcuts) && !pointcuts.after ? noop : pointcuts.after,
@@ -218,7 +226,7 @@
           }
         }
       }
-    });
+    }
     return clazz;
   };
 

@@ -1,7 +1,6 @@
 var context    = this,
     Class      = jsface.Class,
     extend     = jsface.extend,
-    each       = jsface.each,
     isMap      = jsface.isMap,
     isArray    = jsface.isArray,
     isFunction = jsface.isFunction,
@@ -203,13 +202,14 @@ test("Pointcut with invalid params", function() {
     pointcut(Person);
   });
 
-  each([ undefined, null, "", " ", "a string", new String(), 0, 1234, Infinity, [] ], function(v, i) {
+  var collection = [ undefined, null, "", " ", "a string", new String(), 0, 1234, Infinity, [] ];
+  for (var i in collection) {
     raises(function() {
-      pointcut(Person, v);
+      pointcut(Person, collection[i]);
     });
-  });
+  }
 
-  each([{
+  collection = [{
     constructor: 123
   }, {
     constructor: "invalid constructor pointcut"
@@ -221,11 +221,13 @@ test("Pointcut with invalid params", function() {
     constructor: {
       after: "invalid after"
     }
-  }], function(v, i) {
+  }];
+
+  for (i in collection) {
     raises(function() {
-      pointcut(Person, v);
+      pointcut(Person, collection[i]);
     });
-  });
+  };
 });
 
 test("Pointcut over native method", function() {
@@ -411,10 +413,10 @@ test("Pointcuts and $super", function() {
 
   var Child = Class(Counter, {
     constructor: function(num) {
-      this.$super(num);
+      Child.$super.call(this, num);
     },
     inc: function(n) {
-      this.$super(n);
+      Child.$superp.inc.call(this, n);
     }
   });
 

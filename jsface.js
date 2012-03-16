@@ -4,9 +4,11 @@
  *
  * Copyright (c) 2009-2012 Tan Nhu
  * Licensed under MIT license (https://github.com/tannhu/jsface/blob/master/MIT-LICENSE.txt)
- * Version: 2.0.3
+ * Version: 2.1.0
  */
-(function(context, OBJECT, NUMBER, LENGTH, INVALID, undefined, oldClass, jsface) {
+(function(context, OBJECT, NUMBER, LENGTH, undefined, oldClass, jsface) {
+  "use strict";
+
   /**
    * Check an object is a map or not. A map is something like { key1: value1, key2: value2 }.
    */
@@ -43,85 +45,9 @@
   }
 
   /**
-   * Loop over a collection (a string, an array, an object (a map with pairs of {key:value})), or a function (over all
-   * static properties).
-   * Over a String or Array, fn is executed as: fn(value, index, collection) Otherwise: fn(key, value, collection).
-   * Return Infinity (1/0) on fn will stop the iteration. each returns an array of results returned by fn.
+   * Extend object from subject, ignore properties in ignoredKeys
    */
-  function each(collection, fn) {
-    var iArray, iMap, iString, iFunction, item, i, r, v, len, result = [];
-
-    if ( !collection || !fn) { return; }
-
-    iString   = isString(collection);
-    iArray    = isArray(collection) || iString;
-    iMap      = isMap(collection);
-    iFunction = isFunction(collection);
-
-    // convert to array if collection is not a collection itself
-    if ( !iArray && !iMap && !iFunction) {
-      collection = [ collection ];
-      iArray     = 1;
-    }
-
-    if (iArray) {
-      for (i = 0, len = collection.length; i < len;) {
-        v = iString ? collection.charAt(i) : collection[i];
-        if ((r = fn(v, i++, collection)) === 1/0) { break; }
-        result.push(r);
-      }
-    } else {
-      for (item in collection) {
-        if ((r = fn(item, collection[item], collection)) === 1/0) { break; }
-        result.push(r);
-      }
-    }
-    return result;
-  }
-
-  /**
-   * Make $super method.
-   */
-  function makeSuper(child, parent) {
-    parent = parent && parent[0];
-
-    var iClass = isClass(parent), proto = child.prototype, __super;
-
-    if (parent) {
-      each(proto, function(fnName, fn) {
-        __super = fnName !== "$super" && isFunction(fn) && ( (iClass && isFunction(parent.prototype[fnName]) && parent.prototype[fnName]) || (!iClass && isFunction(parent[fnName]) && parent[fnName]));
-        if (__super) {
-          fn.__super = __super;
-        }
-      });
-
-      child.$super  = parent;
-      child.__super = parent;
-      child.$superp = iClass ? parent.prototype : parent;
-    }
-
-    proto.$super = function $super() {
-      var __super = $super.caller.__super;                                   // VERY EXPENSIVE!!!
-      return __super && __super.apply(this, arguments);
-    };
-  }
-
-  /**
-   * Extend an object.
-   */
-  function extend(object, subject, ignoredKeys, skipPrototype) {
-    if (isArray(subject)) {
-      return each(subject, function(sub) {
-        extend(object, sub, ignoredKeys, skipPrototype);
-      });
-    }
-
-    ignoredKeys = ignoredKeys || { constructor: 1, $super: 1, prototype: 1 };
-
-    var iClass     = isClass(object),
-        isSubClass = isClass(subject),
-        oPrototype = object.prototype, supez;
-
+  function extend(object, subject, ignoredKeys) {
     function copier(key, value) {
       if ( !ignoredKeys || !ignoredKeys.hasOwnProperty(key)) {    // no copy ignored keys
         object[key] = value;                                      // do copy
@@ -129,13 +55,25 @@
       }
     }
 
-    // copy static properties and prototype.* to object
-    if (isMap(subject)) { each(subject, copier); }
-    if (isSubClass && !skipPrototype) { each(subject.prototype, copier); }
+    if (isArray(subject)) {
+      for (var len = subject.length; --len >= 0;) { extend(object, subject[len], ignoredKeys); }
+    } else {
+      ignoredKeys = ignoredKeys || { constructor: 1, $super: 1, prototype: 1, $superb: 1 };
 
-    // second: prototype properties
-    if (iClass && isSubClass) {
-      extend(oPrototype, subject.prototype, ignoredKeys, skipPrototype);
+      var iClass     = isClass(object),
+          isSubClass = isClass(subject),
+          oPrototype = object.prototype, supez, key, proto;
+
+      // copy static properties and prototype.* to object
+      if (isMap(subject)) { for (key in subject) copier(key, subject[key]); }
+
+      if (isSubClass) {
+        proto = subject.prototype;
+        for (key in proto) { copier(key, proto[key]); }
+      }
+
+      // prototype properties
+      if (iClass && isSubClass) { extend(oPrototype, subject.prototype, ignoredKeys); }
     }
   }
 
@@ -143,33 +81,49 @@
    * Create a class.
    */
   function Class(parent, api) {
-    if ( !api) { parent = (api = parent, 0); }
-    api = api || {};
+    if ( !api) parent = (api = parent, 0);
 
-    var clazz, constructor, singleton, statics,
-        ignoredKeys = { constructor: 1, $singleton: 1, $statics: 1, prototype: 1 },
-        overload    = Class.overload || function(name, fn){ return fn; };
+    var clazz, constructor, singleton, statics, key, bindTo, len, i = 0, p,
+        ignoredKeys = { constructor: 1, $singleton: 1, $statics: 1, prototype: 1, $super: 1, $superp: 1 },
+        overload    = Class.overload,
+        plugins     = Class.plugins;
 
-    parent = (parent && !isArray(parent)) ? [ parent ] : parent;             // convert to array
-    api    = isFunction(api) ? api() : api;                                  // execute api if it's a function
-    if ( !isMap(api)) { throw INVALID; }
-
-    constructor = api.hasOwnProperty("constructor") ? api.constructor : 0;   // hasOwnProperty is a must, constructor is special
+    api         = (typeof api === "function" ? api() : api) || {};                                 // execute api if it's a function
+    constructor = api.hasOwnProperty("constructor") ? api.constructor : 0;                         // hasOwnProperty is a must, constructor is special
     singleton   = api.$singleton;
     statics     = api.$statics;
 
-    each(Class.plugins, function(key) { ignoredKeys[key] = 1; });            // add plugins' keys into ignoredKeys
+    for (key in plugins) { ignoredKeys[key] = 1; }                                                 // add plugins' keys into ignoredKeys
 
-    clazz = singleton ? {} : (constructor ? overload("constructor", constructor) : function(){});
+    clazz  = singleton ? {} : (constructor ? (overload ? overload("constructor", constructor) : constructor) : function(){});
+    bindTo = singleton ? clazz : clazz.prototype;
 
-    each(parent, function(p) {                                               // extend parent static properties
-      extend(clazz, p, ignoredKeys, 1);
-    });
-    extend(singleton ? clazz : clazz.prototype, api, ignoredKeys);           // extend api
-    extend(clazz, statics, ignoredKeys);                                     // extend static properties
+    parent = !parent || isArray(parent) ? parent : [ parent ];
+    len = parent && parent.length;
+    while (i < len) {
+      p = parent[i++];
+      for (key in p) {
+        if ( !ignoredKeys[key]) {
+          bindTo[key] = p[key];
+          if ( !singleton) { clazz[key] = p[key]; }
+        }
+      }
+      for (key in p.prototype) {
+        if ( !ignoredKeys[key]) { bindTo[key] = p.prototype[key]; }
+      }
+    }
 
-    if ( !singleton) { makeSuper(clazz, parent); }                           // make $super (no singleton support)
-    each(Class.plugins, function(name, fn) { fn(clazz, parent, api); });     // pass control to plugins
+    for (key in api) bindTo[key] = api[key];
+    for (key in statics) { clazz[key] = bindTo[key] = statics[key]; }
+
+    if ( !singleton) {
+      p = parent && parent[0] || parent;
+      clazz.$super  = p;
+      clazz.$superp = p && p.prototype ? p.prototype : p;
+    }
+
+    for (key in plugins) { plugins[key](clazz, parent, api); }                                     // pass control to plugins
+
     return clazz;
   }
 
@@ -180,7 +134,6 @@
   jsface = {
     Class     : Class,
     extend    : extend,
-    each      : each,
     isMap     : isMap,
     isArray   : isArray,
     isFunction: isFunction,
@@ -188,14 +141,12 @@
     isClass   : isClass
   };
 
-  if (typeof module !== "undefined" && module.exports) { // NodeJS/CommonJS
+  if (typeof module !== "undefined" && module.exports) {                                           // NodeJS/CommonJS
     module.exports = jsface;
   } else {
-    oldClass          = context.Class;                   // save current Class namespace
-    context.Class     = Class;                           // bind Class and jsface to global scope
+    oldClass          = context.Class;                                                             // save current Class namespace
+    context.Class     = Class;                                                                     // bind Class and jsface to global scope
     context.jsface    = jsface;
-    jsface.noConflict = function() {                     // no conflict
-      context.Class   = oldClass;
-    }
+    jsface.noConflict = function() { context.Class   = oldClass; }                                 // no conflict
   }
-})(this, "object", "number", "length", "Invalid params");
+})(this, "object", "number", "length");

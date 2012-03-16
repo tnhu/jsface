@@ -7,7 +7,7 @@ var Foo = Class(function(){
 
    return {
       constructor: function(name) {
-         this.$super(name);
+         Foo.$super.call(this, name);
          privateCounter++;
       },
 

@@ -32,11 +32,11 @@ var Foo = Class({
 
 var Bar = Class([ Foo, Events, Options ], {
    constructor: function(name) {
-      this.$super(name);
+      Bar.$super.call(this, name);
    },
 
    sayHi: function() {
-      return this.$super();
+      return Bar.$superp.sayHi.call(this);
    },
 
    sayBye: function() {

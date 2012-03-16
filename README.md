@@ -2,7 +2,8 @@ JSFace will give you a good taste on your JavaScript OOP development.
 
 # Features
 
-* Small footprint, no dependency, less than 1K minimized+gzip!
+* Small footprint, no dependency, 0.7K minimized+gzip!
+* Super fast! See benchmarks: [creation](http://jsperf.com/oop-benchmark/7), [instantiation 1](http://jsperf.com/oop-benchmark/8), [instantiation 2](http://jsperf.com/oop-benchmark/9), [super call](http://jsperf.com/oop-benchmark/10), [full test](http://jsperf.com/oop-benchmark/6)
 * Work on both server and client side.
 * Support CommonJS.
 * Support singleton, mixin, private properties, Aspect Oriented Programming.
@@ -65,12 +66,12 @@ var Student = Class(Person, {
   constructor: function(id, name, age) {
     this.id = id;
     Student.$super.call(this, name, age);        // Invoke parent's constructor
-    // this.$super(name, age);                   // This api will be removed in v2.1.0
+    // this.$super(name, age);                   // This api is removed since v2.1.0
   },
 
   toString: function() {
     return this.id + "/" + Student.$superp.toString.call(this); // Invoke parent's toString method
-    // return this.id + "/" + this.$super();                    // This api will be removed in v2.1.0
+    // return this.id + "/" + this.$super();                    // This api is removed since v2.1.0
   }
 });
 
@@ -238,7 +239,7 @@ var Person = jsface.Class({
 
 # Plugins
 
-## Plug and Play pointcut 
+## Plug and Play pointcut
 
 JSFace supports Aspect Oriented Programming (AOP) via simple before/after mechanism. You can apply pointcuts over class constructors, class methods, singleton methods, instance methods. You can even apply pointcuts over native classes.
 

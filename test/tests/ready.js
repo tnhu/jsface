@@ -1,6 +1,5 @@
 var context    = this,
     extend     = jsface.extend,
-    each       = jsface.each,
     isMap      = jsface.isMap,
     isArray    = jsface.isArray,
     isFunction = jsface.isFunction,
@@ -45,7 +44,7 @@ test("$ready plugin: class is notified when its subclasses are ready", function(
     }
   });
 
-  ok(notified, "$ready must be executed");
+  ok(notified, "$ready must be executed when class is created");
 
   var Bar = Class(Foo, {
     echo2: function(o) {
