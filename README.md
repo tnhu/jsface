@@ -3,7 +3,7 @@
 # Features
 
 * Small footprint, no dependency, 0.7K minimized+gzip!
-* Super fast! See [benchmark](http://jsperf.com/oop-benchmark/6)
+* Super fast! See [benchmark](http://jsperf.com/oop-benchmark/6).
 * Work on both server and client side.
 * Support CommonJS.
 * Support singleton, mixin, private properties, Aspect Oriented Programming.
