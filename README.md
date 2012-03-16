@@ -1,7 +1,5 @@
 ![Benchmark result](https://lh5.googleusercontent.com/-2dQo8ttjn48/T2KVyppgd2I/AAAAAAAADQw/GvEpE5MIYUo/s956/Screen%2520Shot%25202012-03-15%2520at%25206.21.04%2520PM.png "Benchmark")
 
-JSFace will give you a good taste on your JavaScript OOP development.
-
 # Features
 
 * Small footprint, no dependency, 0.7K minimized+gzip!
