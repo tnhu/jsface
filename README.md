@@ -124,6 +124,8 @@ person.isValidAge(person.age);                   // true
 
 ## Private properties
 
+JSFace supports private static properties, meaning the properties are shared over instances.
+
 ``` javascript
 var Person = Class(function() {
   var MIN_AGE =   1,                             // private variables
