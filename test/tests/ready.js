@@ -10,9 +10,9 @@ test("$ready plugin: class notifies itself", function() {
   var notified = false;
 
   var Foo = Class({
-    $ready: function(clazz, api, parent) {
+    $ready: function(clazz, parent, api) {
       notified = true;
-      equal(this, clazz, "$ready works incorrectly");
+      equal(this, clazz, "clazz must be equal to this");
       ok(isFunction(api.$ready), "$ready works incorrectly");
       ok(isFunction(api.echo), "$ready works incorrectly");
       ok(isFunction(clazz.prototype.echo), "$ready works incorrectly");
@@ -30,7 +30,7 @@ test("$ready plugin: class is notified when its subclasses are ready", function(
   var notified = false;
 
   var Foo = Class({
-    $ready: function(clazz, api, parent) {
+    $ready: function(clazz, parent, api) {
       notified = true;
 
       if (this !== clazz) {
