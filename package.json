@@ -5,14 +5,14 @@
    "author"         : "Tan Nhu <tnhu AT me . com>",
    "version"        : "2.1.1",
    "keywords"       : [ "jsface", "JSFace", "OOP", "JavaScript OOP", "JavaScript Object Oriented Programming", "AOP", "Aspect Oriented Programming" ],
-   "homepage"       : "https://github.com/tannhu/jsface",
+   "homepage"       : "https://github.com/tnhu/jsface",
    "licenses"       : [{
       "type"        : "MIT",
-      "url"         : "https://github.com/tannhu/jsface/blob/master/MIT-LICENSE.txt"
+      "url"         : "https://github.com/tnhu/jsface/blob/master/LICENSE.txt"
    }],
    "repository"     : {
      "type"         : "git",
-     "url"          : "git://github.com/tannhu/jsface.git"
+     "url"          : "git://github.com/tnhu/jsface.git"
    },
    "engines"        : {
       "node"        : ">=0.4.0"

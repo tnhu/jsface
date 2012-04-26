@@ -1,9 +1,9 @@
 /*
  * JSFace Object Oriented Programming Library - Ready plugin
- * https://github.com/tannhu/jsface
+ * https://github.com/tnhu/jsface
  *
  * Copyright (c) 2009-2012 Tan Nhu
- * Licensed under MIT license (https://github.com/tannhu/jsface/blob/master/LICENSE.txt)
+ * Licensed under MIT license (https://github.com/tnhu/jsface/blob/master/LICENSE.txt)
  */
 (function(context) {
   "use strict";
