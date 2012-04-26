@@ -3,8 +3,7 @@
  * https://github.com/tannhu/jsface
  *
  * Copyright (c) 2009-2012 Tan Nhu
- * Licensed under MIT license (https://github.com/tannhu/jsface/blob/master/MIT-LICENSE.txt)
- * Version: 2.1.0
+ * Licensed under MIT license (https://github.com/tannhu/jsface/blob/master/LICENSE.txt)
  */
 (function(context) {
   "use strict";

@@ -7,7 +7,7 @@
 * Super fast! See [benchmark](http://jsperf.com/oop-benchmark/6).
 * Work on both server and client side.
 * Support CommonJS.
-* Support singleton, mixin, private properties, Aspect Oriented Programming.
+* Support main, singleton, mixin, private properties, Aspect Oriented Programming.
 * Plugins mechanism to extend itself.
 
 # Setup
@@ -78,6 +78,28 @@ var Student = Class(Person, {
 
 var student = new Student(1, "Rika", 20);
 student.toString();                              // "1/Rika/20"
+```
+
+## main
+
+JSFace supports a special method named main(). It works just similar to Java's main method.
+
+``` javascript
+Class({
+  constructor: function(name) {
+    this.name = name;
+  },
+
+  getName: function() {
+    return this.name;
+  },
+
+  main: function(Person) {                       // Class is passed to main() as its first argument
+    var p = new Person("Rika");
+
+    p.getName();                                 // "Rika"
+  }
+});
 ```
 
 ## Singleton class

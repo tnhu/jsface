@@ -734,6 +734,31 @@ test("Mixin: extending native objects (prototype only)", function() {
   delete Array.prototype.sum;
 });
 
+test("Test public static void main ;-)", function() {
+  var passed;
+
+  var Person = Class({
+    constructor: function(name) {
+      this.name = name;
+    },
+
+    getName: function() {
+      passed = true;
+      return this.name;
+    },
+
+    main: function(Person) {
+      // Note that main has access to Person in its arguments only, not the person declared as var outside
+      var p = new Person("Rika");
+      p.getName();
+    }
+  });
+
+  ok(passed, "main method must be executed correctly");
+  equal(undefined, Person.main, "main must not bound to Person");
+  equal(undefined, Person.prototype.main, "main must not bound to Person.prototype");
+});
+
 // --------- PLUGINS --------- //
 
 test("Develop a Class plugin", function() {

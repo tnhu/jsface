@@ -3,10 +3,9 @@
  * https://github.com/tannhu/jsface
  *
  * Copyright (c) 2009-2012 Tan Nhu
- * Licensed under MIT license (https://github.com/tannhu/jsface/blob/master/MIT-LICENSE.txt)
- * Version: 2.1.0
+ * Licensed under MIT license (https://github.com/tannhu/jsface/blob/master/LICENSE.txt)
  */
-(function(context, OBJECT, NUMBER, LENGTH, undefined, oldClass, jsface) {
+(function(context, OBJECT, NUMBER, LENGTH, toString, undefined, oldClass, jsface) {
   "use strict";
 
   /**
@@ -34,7 +33,7 @@
    * Check an object is a string not.
    */
   function isString(obj) {
-    return Object.prototype.toString.apply(obj) === "[object String]";
+    return toString.apply(obj) === "[object String]";
   }
 
   /**
@@ -84,7 +83,7 @@
     if ( !api) parent = (api = parent, 0);
 
     var clazz, constructor, singleton, statics, key, bindTo, len, i = 0, p,
-        ignoredKeys = { constructor: 1, $singleton: 1, $statics: 1, prototype: 1, $super: 1, $superp: 1 },
+        ignoredKeys = { constructor: 1, $singleton: 1, $statics: 1, prototype: 1, $super: 1, $superp: 1, main: 1 },
         overload    = Class.overload,
         plugins     = Class.plugins;
 
@@ -113,8 +112,12 @@
       }
     }
 
-    for (key in api) bindTo[key] = api[key];
-    for (key in statics) { clazz[key] = bindTo[key] = statics[key]; }
+    for (key in api) {
+      if ( !ignoredKeys[key]) bindTo[key] = api[key];
+    }
+    for (key in statics) {
+      clazz[key] = bindTo[key] = statics[key];
+    }
 
     if ( !singleton) {
       p = parent && parent[0] || parent;
@@ -123,6 +126,7 @@
     }
 
     for (key in plugins) { plugins[key](clazz, parent, api); }                                     // pass control to plugins
+    if (isFunction(api.main)) { api.main.call(clazz, clazz); }                                     // execute main()
 
     return clazz;
   }
@@ -149,4 +153,4 @@
     context.jsface    = jsface;
     jsface.noConflict = function() { context.Class   = oldClass; }                                 // no conflict
   }
-})(this, "object", "number", "length");
+})(this, "object", "number", "length", Object.prototype.toString);
