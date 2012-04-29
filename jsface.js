@@ -5,7 +5,7 @@
  * Copyright (c) 2009-2012 Tan Nhu
  * Licensed under MIT license (https://github.com/tnhu/jsface/blob/master/LICENSE.txt)
  */
-(function(context, OBJECT, NUMBER, LENGTH, toString, undefined, oldClass, jsface) {
+(function(context, OBJECT, NUMBER, LENGTH, toString, version, undefined, oldClass, jsface) {
   "use strict";
 
   /**
@@ -162,7 +162,7 @@
 
   /* Initialization */
   jsface = {
-    version   : "2.1.1",
+    version   : version,
     Class     : Class,
     extend    : extend,
     isMap     : isMap,
@@ -180,4 +180,4 @@
     context.jsface    = jsface;
     jsface.noConflict = function() { context.Class = oldClass; }               // no conflict
   }
-})(this, "object", "number", "length", Object.prototype.toString);
+})(this, "object", "number", "length", Object.prototype.toString, "2.1.1");
