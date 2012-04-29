@@ -126,7 +126,7 @@
     // make sure parent is always an array
     parent = !parent || isArray(parent) ? parent : [ parent ];
 
-    // do inheriting
+    // do inherit
     len = parent && parent.length;
     while (i < len) {
       p = parent[i++];
