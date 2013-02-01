@@ -105,7 +105,7 @@
     if ( !api) parent = (api = parent, 0);                                     // !api means there's no parent
 
     var clazz, constructor, singleton, statics, key, bindTo, len, i = 0, p,
-        ignoredKeys = { constructor: 1, $singleton: 1, $statics: 1, prototype: 1, $super: 1, $superp: 1, main: 1 },
+        ignoredKeys = { constructor: 1, $singleton: 1, $statics: 1, prototype: 1, $super: 1, $superp: 1, main: 1, toString: 0 },
         overload    = Class.overload,
         plugins     = Class.plugins;
 
