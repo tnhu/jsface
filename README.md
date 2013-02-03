@@ -67,12 +67,10 @@ var Student = Class(Person, {
   constructor: function(id, name, age) {
     this.id = id;
     Student.$super.call(this, name, age);        // Invoke parent's constructor
-    // this.$super(name, age);                   // This api is removed since v2.1.0
   },
 
   toString: function() {
     return this.id + "/" + Student.$superp.toString.call(this); // Invoke parent's toString method
-    // return this.id + "/" + this.$super();                    // This api is removed since v2.1.0
   }
 });
 
