@@ -32,13 +32,6 @@
   /**
    * Check an object is a string not.
    * @param obj object to be checked
-   * @return true if object is a function
-   */
-  function isFunction(obj) { return (obj && typeof obj === "function"); }
-
-  /**
-   * Check an object is a string not.
-   * @param obj object to be checked
    * @return true if object is a string
    */
   function isString(obj) { return toString.apply(obj) === "[object String]"; }
