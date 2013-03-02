@@ -377,7 +377,7 @@ var ready = require("jsface.ready");
 
 ``` javascript
 var Service = Class({
-  $ready: function(clazz, api, parent) {
+  $ready: function(clazz, parent, api) {
     var type = (this !== clazz) && api.type;
 
     switch (type) {
