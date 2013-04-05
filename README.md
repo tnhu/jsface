@@ -70,7 +70,7 @@ var Student = Class(Person, {
   },
 
   toString: function() {
-    return this.id + "/" + Student.$superp.toString.call(this); // Invoke parent's toString method
+    return this.id + "/" + Student.$super.toString.call(this); // Invoke parent's toString method
   }
 });
 
