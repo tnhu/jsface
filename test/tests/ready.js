@@ -52,3 +52,21 @@ test("$ready plugin: class is notified when its subclasses are ready", function(
     }
   });
 });
+
+test("$ready plugin: class is notified when its subclasses are ready (multiple levels)", function() {
+  var count = 0;
+
+  var Foo = Class({
+    $ready: function(clazz, parent, api) {
+      if (this !== clazz) {
+        count++;
+      }
+    }
+  });
+
+  var Bar1 = Class(Foo, {});
+  var Bar2 = Class(Bar1, {});
+  var Bar3 = Class(Bar2, {});
+
+  ok(count === 3, "$ready must be executed in multiple level inheritance");
+});
