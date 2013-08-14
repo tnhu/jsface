@@ -14,12 +14,14 @@
       readyFns   = [],
       readyCount = 0;
 
-  Class.plugins.$ready = function(clazz, parent, api) {
-    var r     = api.$ready,
-        len   = parent ? parent.length : 0,
-        count = len,
+  Class.plugins.$ready = function invoke(clazz, parent, api, loop) {
+    var r       = api.$ready,
+        len     = parent ? parent.length : 0,
+        count   = len,
+        _super  = len && parent[0].$super,
         pa, i, entry;
 
+    // find and invoke $ready from parent(s)
     while (len--) {
       for (i = 0; i < readyCount; i++) {
         entry = readyFns[i];
@@ -34,10 +36,15 @@
       }
     }
 
+    // call $ready from grandparent(s), if any
+    if (_super) {
+      invoke(clazz, [ _super ], api, true);
+    }
+
     // in an environment where there are a lot of class creating/removing (rarely)
     // this implementation might cause a leak (saving pointers to clazz and $ready)
-    if (isFunction(r)) {
-      r.call(clazz, clazz, parent, api);
+    if ( !loop && isFunction(r)) {
+      r.call(clazz, clazz, parent, api);  // invoke ready from current class
       readyFns.push([ clazz,  r ]);
       readyCount++;
     }
