@@ -69,7 +69,7 @@
     if (isArray(subject)) {
       for (var len = subject.length; --len >= 0;) { extend(object, subject[len], ignoredKeys); }
     } else {
-      ignoredKeys = ignoredKeys || { constructor: 1, $super: 1, prototype: 1, $superb: 1 };
+      ignoredKeys = ignoredKeys || { constructor: 1, $super: 1, prototype: 1, $superp: 1 };
 
       var iClass     = isClass(object),
           isSubClass = isClass(subject),
