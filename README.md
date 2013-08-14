@@ -1,7 +1,7 @@
 ![Benchmark result](https://lh5.googleusercontent.com/-2dQo8ttjn48/T2KVyppgd2I/AAAAAAAADQw/GvEpE5MIYUo/s956/Screen%2520Shot%25202012-03-15%2520at%25206.21.04%2520PM.png "Benchmark")
 
 [![Build Status](https://secure.travis-ci.org/tannhu/jsface.png?branch=master)](http://travis-ci.org/tannhu/jsface)
-# Features
+## Features
 
 * Small footprint, no dependency, 0.7K minimized+gzip!
 * Super fast! See [benchmark](http://jsperf.com/oop-benchmark/6).
@@ -10,7 +10,7 @@
 * Support main, singleton, mixin, private properties, Aspect Oriented Programming.
 * Plugins mechanism to extend itself.
 
-# Setup
+## Setup
 
 JSFace supports both server side (CommonJS) and client side JavaScript (browser).
 
@@ -40,9 +40,9 @@ var jsface = require("jsface"),
     extend = jsface.extend;
 ```
 
-# API
+## API
 
-## Define a class
+### Define a class
 
 ``` javascript
 var Person = Class({
@@ -60,7 +60,7 @@ var person = new Person("Rika", 20);
 person.toString();                               // "Rika/20"
 ```
 
-## Define a sub-class
+### Define a sub-class
 
 ``` javascript
 var Student = Class(Person, {
@@ -80,7 +80,7 @@ var student = new Student(1, "Rika", 20);
 student.toString();                              // "1/Rika/20"
 ```
 
-## main
+### main
 
 JSFace supports a special method named main(). It works just similar to Java's main method.
 
@@ -102,7 +102,7 @@ Class({
 });
 ```
 
-## Singleton class
+### Singleton class
 
 ``` javascript
 var Util = Class({
@@ -116,7 +116,7 @@ var Util = Class({
 Util.echo(2012);                                 // 2012
 ```
 
-## Static properties
+### Static properties
 
 JSFace supports Java-style static properties. Meaning they are accessible on both class and instance levels.
 
@@ -145,7 +145,7 @@ Person.isValidAge(0);                            // false
 person.isValidAge(person.age);                   // true
 ```
 
-## Private properties
+### Private properties
 
 JSFace supports private static properties, meaning the properties are shared over instances.
 
@@ -171,7 +171,7 @@ var Person = Class(function() {
 });
 ```
 
-## Mixins
+### Mixins
 
 JSFace provides a powerful mechanism to support mixins. Reusable code can be mixed into almost anything.
 
@@ -240,7 +240,7 @@ extend(String.prototype, {
 
 "   Hello World    ".trim();                     // "Hello World"
 ```
-## No conflict
+### No conflict
 
 In browser environment, you might be using another library which also introduces the global namespace Class. JSFace can return the original Class back to the library claims it with a call to jsface.noConflict().
 
@@ -262,15 +262,15 @@ var Person = jsface.Class({
 });
 ```
 
-# Plugins
+## Plugins
 
-## Plug and Play pointcut
+### Plug and Play pointcut
 
 JSFace supports Aspect Oriented Programming (AOP) via simple before/after mechanism. You can apply pointcuts over class constructors, class methods, singleton methods, instance methods. You can even apply pointcuts over native classes.
 
 AOP support is implemented as a standalone plugin.
 
-### Setup
+#### Setup
 
 Browser:
 
@@ -290,7 +290,7 @@ NodeJS:
 var pointcut = require("jsface.pointcut");
 ```
 
-### Applying pointcuts
+#### Applying pointcuts
 
 In JSFace, an advisor is a set of pointcuts you want to apply to a subject. You can apply as many advisors as you want.
 
@@ -341,7 +341,7 @@ person.email   === "rika@sample.com";            // true
 person.counter === 3;                            // true
 ```
 
-### Removing pointcuts
+#### Removing pointcuts
 
 Using previous apply pointcut example:
 
@@ -356,12 +356,12 @@ Person = poincut(Person, "remove", advisor);
 Person = poincut(Person, "remove");
 ```
 
-## $ready
+### $ready
 
 $ready plugin is designed to help parent classes to intercept their subclasses' creation. If a class uses $ready,
 it notifies itself.
 
-### Setup
+#### Setup
 
 Browser:
 
@@ -375,7 +375,7 @@ NodeJS:
 var ready = require("jsface.ready");
 ```
 
-### Sample
+#### Sample
 
 ``` javascript
 var Service = Class({
@@ -402,18 +402,18 @@ var ApplicationService = Class(Service, {
 });
 ```
 
-# Bug tracker
+## Bug tracker
 
 Have a bug? Please [create an issue here](https://github.com/tannhu/jsface/issues) on GitHub!
 
-# Some notes
+## Some notes
 
 Method overloadings, type checking, and arguments validation (available in versions prior to 2.0.0) are being implemented as plugins.
 
 More use cases are covered in [unit tests](https://github.com/tannhu/jsface/tree/master/test)
 (I'm using [QUnit](https://github.com/jquery/qunit)).
 
-# License
+## License
 
 Copyright (c) 2009-2012 Tan Nhu
 
