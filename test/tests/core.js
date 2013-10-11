@@ -1,26 +1,29 @@
-var context    = this,
-    extend     = jsface.extend,
-    isMap      = jsface.isMap,
-    isArray    = jsface.isArray,
-    isFunction = jsface.isFunction,
-    isString   = jsface.isString,
-    isClass    = jsface.isClass;
+var context       = this,
+    extend        = jsface.extend,
+    mapOrNil      = jsface.mapOrNil,
+    arrayOrNil    = jsface.arrayOrNil,
+    functionOrNil = jsface.functionOrNil,
+    stringOrNil   = jsface.stringOrNil,
+    classOrNil    = jsface.classOrNil;
 
 // --------- UTILITIES --------- //
 
-test("Check type with isMap", function() {
-  equal(isMap({}), true, "jsface.isMap works incorrectly");
-  equal(isMap({ one: 1, two: 2 }), true, "jsface.isMap works incorrectly");
+test("Check type with mapOrNil", function() {
+  var emptyMap = {},
+      fooMap = { one: 1, two: 2 };
 
-  equal( !isMap(), true, "jsface.isMap works incorrectly");
-  equal( !isMap(""), true, "jsface.isMap works incorrectly");
-  equal( !isMap("Hello"), true, "jsface.isMap works incorrectly");
-  equal( !isMap([]), true, "jsface.isMap works incorrectly");
-  equal( !isMap([ 1, 2, 3 ]), true, "jsface.isMap works incorrectly");
-  equal( !isMap(1234), true, "jsface.isMap works incorrectly");
+  equal(mapOrNil(emptyMap), emptyMap, "jsface.mapOrNil works incorrectly");
+  equal(mapOrNil(fooMap), fooMap, "jsface.mapOrNil works incorrectly");
+
+  equal(mapOrNil(), null, "jsface.mapOrNil works incorrectly");
+  equal(mapOrNil(""), null, "jsface.mapOrNil works incorrectly");
+  equal(mapOrNil("Hello"), null, "jsface.mapOrNil works incorrectly");
+  equal(mapOrNil([]), null, "jsface.mapOrNil works incorrectly");
+  equal(mapOrNil([ 1, 2, 3 ]), null, "jsface.mapOrNil works incorrectly");
+  equal(mapOrNil(1234), null, "jsface.mapOrNil works incorrectly");
 });
 
-test("Check type with jsface.isMap on iframe", function() {
+test("Check type with jsface.mapOrNil on iframe", function() {
   var frame, iframe, IObject;
 
   iframe = document.createElement("iframe");
@@ -39,24 +42,26 @@ test("Check type with jsface.isMap on iframe", function() {
   map.one = 1;
   map.two = 2;
 
-  equal(isMap(map), true, "jsface.isMap works incorrectly in iframe");
+  equal(mapOrNil(map), map, "jsface.mapOrNil works incorrectly in iframe");
   document.body.removeChild(iframe);
 });
 
-test("Check type with jsface.isArray", function() {
-  equal(isArray([]), true, "jsface.isArray works incorrectly");
-  equal(isArray([ 1, 2, 3, 4 ]), true, "jsface.isArray works incorrectly");
-  equal( !isArray(), true, "jsface.isArray works incorrectly");
+test("Check type with jsface.arrayOrNil", function() {
+  var emptyArray = [],
+      fooArray = [ 1, 2, 3, 4 ];
+  equal(arrayOrNil(emptyArray), emptyArray, "jsface.arrayOrNil works incorrectly");
+  equal(arrayOrNil(fooArray), fooArray, "jsface.arrayOrNil works incorrectly");
+  equal( !arrayOrNil(), true, "jsface.arrayOrNil works incorrectly");
 
-  // jsface.isArray does not consider String as Array of characters
-  equal( !isArray(""), true, "jsface.isArray works incorrectly");
-  equal( !isArray("Hello"), true, "jsface.isArray works incorrectly");
-  equal( !isArray({}), true, "jsface.isArray works incorrectly");
-  equal( !isArray({ one: 1, two: 2 }), true, "jsface.isArray works incorrectly");
-  equal( !isArray(1), true, "jsface.isArray works incorrectly");
+  // jsface.arrayOrNil does not consider String as Array of characters
+  equal( !arrayOrNil(""), true, "jsface.arrayOrNil works incorrectly");
+  equal( !arrayOrNil("Hello"), true, "jsface.arrayOrNil works incorrectly");
+  equal( !arrayOrNil({}), true, "jsface.arrayOrNil works incorrectly");
+  equal( !arrayOrNil({ one: 1, two: 2 }), true, "jsface.arrayOrNil works incorrectly");
+  equal( !arrayOrNil(1), true, "jsface.arrayOrNil works incorrectly");
 });
 
-test("Check type with jsface.isArray on iframe", function() {
+test("Check type with jsface.arrayOrNil on iframe", function() {
   var frame, iframe, IArray, array;
 
   iframe = document.createElement("iframe");
@@ -71,23 +76,25 @@ test("Check type with jsface.isArray on iframe", function() {
 
   array = new IArray(1, 2, 3);
 
-  equal(isArray(array), true, "jsface.isArray works incorrectly in iframe");
+  equal(arrayOrNil(array), array, "jsface.arrayOrNil works incorrectly in iframe");
   document.body.removeChild(iframe);
 });
 
-test("Check type with jsface.isFunction", function() {
-  equal(isFunction(function(){}), true, "jsface.isFunction works incorrectly");
-  equal( !isFunction([]), true, "jsface.isFunction works incorrectly");
-  equal( !isFunction([ 1, 2, 3, 4 ]), true, "jsface.isFunction works incorrectly");
-  equal( !isFunction(), true, "jsface.isFunction works incorrectly");
-  equal( !isFunction(""), true, "jsface.isFunction works incorrectly");
-  equal( !isFunction("Hello"), true, "jsface.isFunction works incorrectly");
-  equal( !isFunction({}), true, "jsface.isFunction works incorrectly");
-  equal( !isFunction({ one: 1, two: 2 }), true, "jsface.isFunction works incorrectly");
-  equal( !isFunction(1), true, "jsface.isFunction works incorrectly");
+test("Check type with jsface.functionOrNil", function() {
+  var fn = function(){};
+
+  equal(functionOrNil(fn), fn, "jsface.functionOrNil works incorrectly");
+  equal(functionOrNil([]), null, "jsface.functionOrNil works incorrectly");
+  equal(functionOrNil([ 1, 2, 3, 4 ]), null, "jsface.functionOrNil works incorrectly");
+  equal(functionOrNil(), null, "jsface.functionOrNil works incorrectly");
+  equal(functionOrNil(""), null, "jsface.functionOrNil works incorrectly");
+  equal(functionOrNil("Hello"), null, "jsface.functionOrNil works incorrectly");
+  equal(functionOrNil({}), null, "jsface.functionOrNil works incorrectly");
+  equal(functionOrNil({ one: 1, two: 2 }), null, "jsface.functionOrNil works incorrectly");
+  equal(functionOrNil(1), null, "jsface.functionOrNil works incorrectly");
 });
 
-test("Check type with jsface.isFunction on iframe", function() {
+test("Check type with jsface.functionOrNil on iframe", function() {
   var frame, iframe, IFunction, fn;
 
   iframe = document.createElement("iframe");
@@ -101,26 +108,28 @@ test("Check type with jsface.isFunction on iframe", function() {
   IFunction = frame.getFunction();
 
   fn = new IFunction();
-  equal(isFunction(fn), true, "jsface.isFunction works incorrectly");
+  equal(functionOrNil(fn), fn, "jsface.functionOrNil works incorrectly");
   document.body.removeChild(iframe);
 });
 
-test("Check type with jsface.isClass", function() {
-  equal(isClass(function(){}), true, "jsface.isClass works incorrectly on function");
-  equal( !isClass(), true, "jsface.isClass works incorrectly passing empty param");
-  equal( !isClass(undefined), true, "jsface.isClass works incorrectly undefined");
-  equal( !isClass(null), true, "jsface.isClass works incorrectly on null");
-  equal( !isClass(""), true, "jsface.isClass works incorrectly empty string");
-  equal( !isClass("   "), true, "jsface.isClass works incorrectly blank string");
-  equal( !isClass({}), true, "jsface.isClass works incorrectly empty map");
-  equal( !isClass([]), true, "jsface.isClass works incorrectly empty array");
-  equal( !isClass(0), true, "jsface.isClass works incorrectly on 0");
-  equal( !isClass(1), true, "jsface.isClass works incorrectly on 1");
-  equal( !isClass(true), true, "jsface.isClass works incorrectly on true");
-  equal( !isClass(false), true, "jsface.isClass works incorrectly on false");
-  equal( !isClass([ 1, 2, 3, 4 ]), true, "jsface.isClass works incorrectly on array");
-  equal( !isClass("Hello"), true,"jsface.isClass works incorrectly on string");
-  equal( !isClass({ one: 1, two: 2 }), true, "jsface.isClass works incorrectly on map");
+test("Check type with jsface.classOrNil", function() {
+  var fn = function(){};
+
+  equal(classOrNil(fn), fn, "jsface.classOrNil works incorrectly on function");
+  equal( !classOrNil(), true, "jsface.classOrNil works incorrectly passing empty param");
+  equal( !classOrNil(undefined), true, "jsface.classOrNil works incorrectly undefined");
+  equal( !classOrNil(null), true, "jsface.classOrNil works incorrectly on null");
+  equal( !classOrNil(""), true, "jsface.classOrNil works incorrectly empty string");
+  equal( !classOrNil("   "), true, "jsface.classOrNil works incorrectly blank string");
+  equal( !classOrNil({}), true, "jsface.classOrNil works incorrectly empty map");
+  equal( !classOrNil([]), true, "jsface.classOrNil works incorrectly empty array");
+  equal( !classOrNil(0), true, "jsface.classOrNil works incorrectly on 0");
+  equal( !classOrNil(1), true, "jsface.classOrNil works incorrectly on 1");
+  equal( !classOrNil(true), true, "jsface.classOrNil works incorrectly on true");
+  equal( !classOrNil(false), true, "jsface.classOrNil works incorrectly on false");
+  equal( !classOrNil([ 1, 2, 3, 4 ]), true, "jsface.classOrNil works incorrectly on array");
+  equal( !classOrNil("Hello"), true,"jsface.classOrNil works incorrectly on string");
+  equal( !classOrNil({ one: 1, two: 2 }), true, "jsface.classOrNil works incorrectly on map");
 
   // jsface's Class/Singleton
   var Foo = Class({}),
@@ -131,22 +140,22 @@ test("Check type with jsface.isClass", function() {
         $singleton: true
       });
 
-  equal(isClass(Foo), true, "jsface.isClass works incorrectly on an empty class");
-  equal(isClass(Bar), true, "jsface.isClass works incorrectly on a simple class");
-  equal( !isClass(Util), true, "jsface.isClass works incorrectly a singleton class (singleton is a map, not a class)");
+  equal(classOrNil(Foo), Foo, "jsface.classOrNil works incorrectly on an empty class");
+  equal(classOrNil(Bar), Bar, "jsface.classOrNil works incorrectly on a simple class");
+  equal(classOrNil(Util), null, "jsface.classOrNil works incorrectly a singleton class (singleton is a map, not a class)");
 });
 
 // --------- CLASS --------- //
 
 test("Special syntax", function() {
   var Test = Class();
-  equal(isClass(Test), true, "Class defination must be a class");
+  equal(classOrNil(Test), Test, "Class defination must be a class");
 
   var Foo = Class({});
-  equal(isClass(Foo), true, "Class defination must be a class");
+  equal(classOrNil(Foo), Foo, "Class defination must be a class");
 
   var Bar = Class("Hello World", {});
-  equal(isClass(Bar), true, "Class defination must be a class");
+  equal(classOrNil(Bar), Bar, "Class defination must be a class");
 });
 
 test("Create a simple class", function() {
@@ -162,9 +171,9 @@ test("Create a simple class", function() {
 
   var foo = new Foo("John Rambo");
 
-  equal(isFunction(Foo), true, "Class defination must be a function");
-  equal(isClass(Foo), true, "Class defination must be a class");
-  equal(isMap(foo), true, "Class instance must be a map");
+  equal(functionOrNil(Foo), Foo, "Class defination must be a function");
+  equal(classOrNil(Foo), Foo, "Class defination must be a class");
+  equal(mapOrNil(foo), foo, "Class instance must be a map");
   equal(foo.sayHi(), "Hello World John Rambo", "Error invoking method on class instance");
   equal(foo.name, "John Rambo", "Invalid constructor initialization");
 });
@@ -178,7 +187,7 @@ test("Class with default constructor", function() {
 
   var foo = new Foo();
 
-  equal(isFunction(Foo), true, "Default constructor must be a function");
+  equal(functionOrNil(Foo), Foo, "Default constructor must be a function");
   equal(foo.sayBye(), "Bye!", "Error invoking method on class instance");
 });
 
@@ -201,7 +210,7 @@ test("Private properties and methods", function() {
 
   var foo = new Foo();
 
-  equal(isFunction(Foo), true, "Default constructor must be a function");
+  equal(functionOrNil(Foo), Foo, "Default constructor must be a function");
   equal(foo.sayBye(), "Bye!", "Error invoking method on class instance");
   equal(foo.sayHi(), "Hi!", "Invalid private implementation");
   equal( !foo.hi, true, "Invalid private implementation");
@@ -311,7 +320,7 @@ test("Singleton class", function() {
         }
       });
 
-  equal(isMap(Foo), true, "Singleton class must be a map object");
+  equal(mapOrNil(Foo), Foo, "Singleton class must be a map object");
   equal(Foo.sayHi(), "Hello World", "Error invoking method on singleton class");
 });
 
@@ -332,7 +341,7 @@ test("Singleton inheritance", function() {
         }
       });
 
-  equal(isMap(Bar), true, "Singleton class must be a map object");
+  equal(mapOrNil(Bar), Bar, "Singleton class must be a map object");
   equal(Bar.sayHi(), "Hello World", "Error invoking method on singleton class");
   equal(Bar.sayBye(), "Bye!", "Error invoking method on singleton class");
 });
@@ -354,7 +363,7 @@ test("Inherit from a singleton", function() {
 
   var bar = new Bar();
 
-  equal(isClass(Bar), true, "Class defination must be a class");
+  equal(classOrNil(Bar), Bar, "Class defination must be a class");
   equal(bar.sayHi, Bar.sayHi, "Static method must be the same on both class and class instance");
   equal(bar.sayHi, Foo.sayHi, "Static method must be the same on both class and class instance");
   equal(Foo.sayHi, Bar.sayHi, "Static method must be the same on both class");
@@ -775,7 +784,7 @@ test("Develop a Class plugin", function() {
   var Foo = Class();
   var foo = new Foo();
 
-  equal(isFunction(Foo.prototype.log), true, "Class plugins mechanism works incorrectly");
-  equal(isFunction(foo.log), true, "Class plugins mechanism works incorrectly");
+  equal(functionOrNil(Foo.prototype.log), Foo.prototype.log, "Class plugins mechanism works incorrectly");
+  equal(functionOrNil(foo.log), foo.log, "Class plugins mechanism works incorrectly");
   delete Class.plugins.$log;
 });

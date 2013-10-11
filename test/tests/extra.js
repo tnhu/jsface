@@ -12,7 +12,7 @@ function getScript(url, callback) {
   script.onload = script.onreadystatechange = function() {
     if ( !done && ( !this.readyState || this.readyState == "loaded" || this.readyState == "complete")) {
       done = true;
-      isFunction(callback) && callback();
+      functionOrNil(callback) && callback();
       script.onload = script.onreadystatechange = null;
       head.removeChild(script);
     }
@@ -31,11 +31,11 @@ asyncTest("CommonJS support", function() {
 
     start();
     ok(exports.Class, "Class must be available in exports");
-    ok(exports.isMap, "isMap must be available in exports");
-    ok(exports.isArray, "isArray must be available in exports");
-    ok(exports.isFunction, "isFunction must be available in exports");
-    ok(exports.isString, "isString must be available in exports");
-    ok(exports.isClass, "isClass must be available in exports");
+    ok(exports.mapOrNil, "mapOrNil must be available in exports");
+    ok(exports.arrayOrNil, "arrayOrNil must be available in exports");
+    ok(exports.functionOrNil, "functionOrNil must be available in exports");
+    ok(exports.stringOrNil, "stringOrNil must be available in exports");
+    ok(exports.classOrNil, "classOrNil must be available in exports");
     delete context.module;
   });
 });

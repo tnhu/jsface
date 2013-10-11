@@ -6,22 +6,20 @@
  * Licensed under MIT license (https://github.com/tnhu/jsface/blob/master/LICENSE.txt).
  */
 (function(context) {
-  "use strict";
-
-  var jsface     = context.jsface || require("./jsface"),
-      Class      = jsface.Class,
-      isClass    = jsface.isClass,
-      isFunction = jsface.isFunction,
-      extend     = jsface.extend,
-      isMap      = jsface.isMap,
-      WRAPPER    = "___wrapper___",
-      BEFORE     = "___before_fns___",
-      AFTER      = "___after_fns___",
-      ORIGIN     = "___origin_fn___",
-      ADVISOR    = "___advisors___",
-      INVALID    = "Invalid ",
-      NON_FUNC   = "Non-function property named ",
-      noop       = function(){};
+  var jsface        = context.jsface || require("./jsface"),
+      Class         = jsface.Class,
+      classOrNil    = jsface.classOrNil,
+      functionOrNil = jsface.functionOrNil,
+      extend        = jsface.extend,
+      mapOrNil      = jsface.mapOrNil,
+      WRAPPER       = "___wrapper___",
+      BEFORE        = "___before_fns___",
+      AFTER         = "___after_fns___",
+      ORIGIN        = "___origin_fn___",
+      ADVISOR       = "___advisors___",
+      INVALID       = "Invalid ",
+      NON_FUNC      = "Non-function property named ",
+      noop          = function(){};
 
   /**
    * Wrap a function with before & after.
@@ -40,7 +38,7 @@
       // Invoke before, if it returns { $skip: true } then skip fn() and after() and returns $data
       while (bLen--) {
         r = _before[bLen].apply(this, arguments);
-        if (isMap(r) && r.$skip === true) {
+        if (mapOrNil(r) && r.$skip === true) {
           return r.$data;
         }
       }
@@ -50,7 +48,7 @@
 
       while (aLen--) {
         r = _after[aLen].apply(this, arguments);
-        if (isMap(r) && r.$skip === true) {
+        if (mapOrNil(r) && r.$skip === true) {
           return ret;
         }
       }
@@ -67,7 +65,7 @@
 
     // create a reusable wrapper structure
     extend(wrapper, fn, 0, true);
-    if (isClass(fn)) {
+    if (classOrNil(fn)) {
       wrapper.prototype = fn.prototype;
 
       // this destroys the origin of wrapper[ORIGIN], in theory, prototype.constructor should point
@@ -175,13 +173,13 @@
    * Apply pointcut to a subject.
    */
   jsface.pointcut = function pointcut(clazz, opts) {
-    var iClass    = isFunction(clazz),
-        iInstance = isMap(clazz),
+    var iClass    = functionOrNil(clazz),
+        iInstance = mapOrNil(clazz),
         iRemove   = (/^remove ?/.exec(opts) !== null),
         advisor   = iRemove && arguments[2],
         bindTo, method, pointcuts;
 
-    if ( !(iClass || iInstance) || !(isMap(opts) || iRemove)) {
+    if ( !(iClass || iInstance) || !(mapOrNil(opts) || iRemove)) {
       throw INVALID + "params";
     }
     bindTo = iClass ? clazz.prototype : clazz;
@@ -192,22 +190,22 @@
 
     for (method in opts) {
       pointcuts = opts[method];
-      pointcuts = isFunction(pointcuts) ? { before: pointcuts } : pointcuts;   // sugar syntax
+      pointcuts = functionOrNil(pointcuts) ? { before: pointcuts } : pointcuts;   // sugar syntax
 
-      var before = isMap(pointcuts) && !pointcuts.before ? noop : pointcuts.before,
-          after  = isMap(pointcuts) && !pointcuts.after ? noop : pointcuts.after,
+      var before = mapOrNil(pointcuts) && !pointcuts.before ? noop : pointcuts.before,
+          after  = mapOrNil(pointcuts) && !pointcuts.after ? noop : pointcuts.after,
           isStatic;
 
       // check if before & after are valid
-      if ( !isFunction(before)) {
+      if ( !functionOrNil(before)) {
         throw INVALID + method + ":before";
       }
-      if ( !isFunction(after)) {
+      if ( !functionOrNil(after)) {
         throw INVALID + method + ":after";
       }
 
       if (iInstance) {
-        if (isFunction(bindTo[method])) {
+        if (functionOrNil(bindTo[method])) {
           bindTo[method] = wrap(bindTo[method], before, after, opts);
         } else {
           throw NON_FUNC + method;
@@ -216,7 +214,7 @@
         if (method === "constructor") {
           clazz = wrap(clazz, before, after, opts);
         } else {
-          if (isFunction(bindTo[method])) {
+          if (functionOrNil(bindTo[method])) {
             isStatic = iClass && bindTo[method] === clazz[method];
             bindTo[method] = wrap(bindTo[method], before, after, opts);
             if (isStatic) { clazz[method] = bindTo[method]; }

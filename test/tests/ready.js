@@ -1,10 +1,7 @@
-var context    = this,
-    extend     = jsface.extend,
-    isMap      = jsface.isMap,
-    isArray    = jsface.isArray,
-    isFunction = jsface.isFunction,
-    isString   = jsface.isString,
-    isClass    = jsface.isClass;
+var context       = this,
+    extend        = jsface.extend,
+    isMap         = jsface.isMap,
+    functionOrNil = jsface.functionOrNil;
 
 test("$ready plugin: class notifies itself", function() {
   var notified = false;
@@ -13,9 +10,9 @@ test("$ready plugin: class notifies itself", function() {
     $ready: function(clazz, parent, api) {
       notified = true;
       equal(this, clazz, "clazz must be equal to this");
-      ok(isFunction(api.$ready), "$ready works incorrectly");
-      ok(isFunction(api.echo), "$ready works incorrectly");
-      ok(isFunction(clazz.prototype.echo), "$ready works incorrectly");
+      ok(functionOrNil(api.$ready), "$ready works incorrectly");
+      ok(functionOrNil(api.echo), "$ready works incorrectly");
+      ok(functionOrNil(clazz.prototype.echo), "$ready works incorrectly");
       ok( !parent, "$ready works incorrectly");
     },
     echo: function(o) {
@@ -36,7 +33,7 @@ test("$ready plugin: class is notified when its subclasses are ready", function(
       if (this !== clazz) {
         ok(api.echo2, "$ready works incorrectly");
         ok( !api.$ready, "$ready works incorrectly");
-        ok(isFunction(clazz.prototype.echo2), "$ready works incorrectly");
+        ok(functionOrNil(clazz.prototype.echo2), "$ready works incorrectly");
       }
     },
     echo: function(o) {

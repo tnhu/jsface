@@ -8,11 +8,11 @@
 (function(context) {
   "use strict";
 
-  var jsface     = context.jsface || require("./jsface"),
-      Class      = jsface.Class,
-      isFunction = jsface.isFunction,
-      readyFns   = [],
-      readyCount = 0;
+  var jsface        = context.jsface || require("./jsface"),
+      Class         = jsface.Class,
+      functionOrNil = jsface.functionOrNil,
+      readyFns      = [],
+      readyCount    = 0;
 
   Class.plugins.$ready = function invoke(clazz, parent, api, loop) {
     var r       = api.$ready,
@@ -43,7 +43,7 @@
 
     // in an environment where there are a lot of class creating/removing (rarely)
     // this implementation might cause a leak (saving pointers to clazz and $ready)
-    if ( !loop && isFunction(r)) {
+    if ( !loop && functionOrNil(r)) {
       r.call(clazz, clazz, parent, api);  // invoke ready from current class
       readyFns.push([ clazz,  r ]);
       readyCount++;
