@@ -1,11 +1,6 @@
 var context    = this,
     Class      = jsface.Class,
     extend     = jsface.extend,
-    isMap      = jsface.isMap,
-    isArray    = jsface.isArray,
-    isFunction = jsface.isFunction,
-    isString   = jsface.isString,
-    isClass    = jsface.isClass,
     pointcut   = jsface.pointcut;
 
 test("Pointcut over constructor", function() {
