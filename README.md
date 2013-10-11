@@ -20,11 +20,7 @@ Browser:
 <script src="jsface.js" type="text/javascript"></script>
 ```
 
-JSFace introduces two variables in browser global scope: jsface and Class. In case you want to use other APIs such as extend, you need to create aliases, for example:
-
-``` javascript
-var extend = jsface.extend;
-```
+JSFace introduces two global variables: jsface and Class. Other APIs are under jsface namespace.
 
 In NodeJS environment, first install JSFace via npm:
 
@@ -66,11 +62,11 @@ person.toString();                               // "Rika/20"
 var Student = Class(Person, {
   constructor: function(id, name, age) {
     this.id = id;
-    Student.$super.call(this, name, age);        // Invoke parent's constructor
+    this.$class.$super.call(this, name, age);    // Invoke parent's constructor
   },
 
   toString: function() {
-    return this.id + "/" + Student.$superp.toString.call(this); // Invoke parent's toString method
+    return this.id + "/" + this.$class.$superp.toString.call(this); // Invoke parent's toString method
   }
 });
 
@@ -80,7 +76,7 @@ student.toString();                              // "1/Rika/20"
 
 ### main
 
-JSFace supports a special method named main(). It works just similar to Java's main method.
+JSFace supports a special method named main(). main() is executed right after the class is created.
 
 ``` javascript
 Class({
@@ -246,14 +242,7 @@ In browser environment, you might be using another library which also introduces
 jsface.noConflict();
 
 // Code that uses other library's Class can follow here
-```
-
-Actually, Class is an alias of jsface.Class:
-
-``` javascript
-jsface.noConflict();
-
-// Code that uses other library's Class can follow here
+// ...
 
 // Define classes by using jsface.Class directly
 var Person = jsface.Class({
@@ -404,16 +393,9 @@ var ApplicationService = Class(Service, {
 
 Have a bug? Please [create an issue here](https://github.com/tannhu/jsface/issues) on GitHub!
 
-## Some notes
-
-Method overloadings, type checking, and arguments validation (available in versions prior to 2.0.0) are being implemented as plugins.
-
-More use cases are covered in [unit tests](https://github.com/tannhu/jsface/tree/master/test)
-(I'm using [QUnit](https://github.com/jquery/qunit)).
-
 ## License
 
-Copyright (c) 2009-2012 Tan Nhu
+Copyright (c) 2009-2013 Tan Nhu
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

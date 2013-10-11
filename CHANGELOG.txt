@@ -1,7 +1,11 @@
-v2.x.0                                                       TBD
+v2.2.0                                              Oct 11, 2013
 ----------------------------------------------------------------
-* Add overloading plugin: support method overloading, type
-  checking and arguments validation
+* Introduce $class (issue #14, thanks to Anton Baukin)
+* API change (remove isMap, isArray, isFunction, isString,
+  isClass; add mapOrNil, arrayOrNil, functionOrNil, stringOrNil
+  classOrNil)
+* Update jsface.ready
+* Update unit test
 
 v2.1.1                                              Apr 25, 2012
 ----------------------------------------------------------------
@@ -50,18 +54,16 @@ v2.0.0                                              Dec 10, 2011
 * Sugar syntax Class(), pointcuts()
 * CommonJS support
 * Make jsFace private methods not exposed via jsFace namespace
-* Remove unneccessary code
+* Remove unnecessary code
 * Size optimization
 * More unit tests
 
 v1.2                                                June 30 2011
 ----------------------------------------------------------------
-
 * More elegant syntax.
 * Remove unnecessary meta data copying on class inheritance.
 
 v1.2b                                           November 26 2010
 ----------------------------------------------------------------
-
 * Initial release. A complete new look from version 1.2a which
   was developed for browsers.
