@@ -1,22 +1,40 @@
 {
-   "name"           : "jsface",
-   "main"           : "jsface.js",
-   "description"    : "Small, fast, elegant, powerful, and cross platform JavaScript OOP library. Support main, singleton, super call, private, mixins, plugins, AOP and more.",
-   "author"         : "Tan Nhu <tnhu AT me . com>",
-   "version"        : "2.1.1",
-   "keywords"       : [ "jsface", "JSFace", "OOP", "JavaScript OOP", "JavaScript Object Oriented Programming", "AOP", "Aspect Oriented Programming" ],
-   "homepage"       : "https://github.com/tnhu/jsface",
-   "licenses"       : [{
-      "type"        : "MIT",
-      "url"         : "https://github.com/tnhu/jsface/blob/master/LICENSE.txt"
-   }],
-   "repository"     : {
-     "type"         : "git",
-     "url"          : "git://github.com/tnhu/jsface.git"
-   },
-   "engines"        : {
-      "node"        : ">=0.4.0"
-   },
-   "dependencies"   : {},
-   "devDependencies": {}
+  "name": "jsface",
+  "main": "jsface.js",
+  "description": "Small, fast, elegant, powerful, and cross platform JavaScript OOP library. Support main, singleton, super call, private, mixins, plugins, AOP and more.",
+  "author": "Tan Nhu <tnhu AT me . com>",
+  "version": "2.1.1",
+  "keywords": [
+    "jsface",
+    "JSFace",
+    "OOP",
+    "JavaScript OOP",
+    "JavaScript Object Oriented Programming",
+    "AOP",
+    "Aspect Oriented Programming"
+  ],
+  "homepage": "https://github.com/tnhu/jsface",
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/tnhu/jsface/blob/master/LICENSE.txt"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/tnhu/jsface.git"
+  },
+  "engines": {
+    "node": ">=0.4.0"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "grunt": "~0.4.1",
+    "grunt-contrib-qunit": ">=0.2.1",
+    "grunt-contrib-watch": ">=0.3.1",
+    "grunt-contrib-uglify": ">=0.2.0",
+    "grunt-contrib-copy": ">=0.4.0",
+    "grunt-contrib-clean": "~0.5.0",
+    "grunt-contrib-concat": "~0.3.0"
+  }
 }
