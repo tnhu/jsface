@@ -122,7 +122,7 @@
     bindTo = singleton ? clazz : clazz.prototype;
 
     // make sure parent is always an array
-    parent = !parent || arrayOrNil(parent) ? parent : [ parent ];
+    parent = !parent || arrayOrNil(parent) ? parent : new Array( parent );
 
     // do inherit
     len = parent && parent.length;
