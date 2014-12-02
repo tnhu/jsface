@@ -149,13 +149,13 @@ test("Check type with jsface.classOrNil", function() {
 
 test("Special syntax", function() {
   var Test = Class();
-  equal(classOrNil(Test), Test, "Class defination must be a class");
+  equal(classOrNil(Test), Test, "Class definition must be a class");
 
   var Foo = Class({});
-  equal(classOrNil(Foo), Foo, "Class defination must be a class");
+  equal(classOrNil(Foo), Foo, "Class definition must be a class");
 
-  var Bar = Class("Hello World", {});
-  equal(classOrNil(Bar), Bar, "Class defination must be a class");
+  var Bar = Class(Object, {});
+  equal(classOrNil(Bar), Bar, "Class definition must be a class");
 });
 
 test("Create a simple class", function() {
@@ -171,8 +171,8 @@ test("Create a simple class", function() {
 
   var foo = new Foo("John Rambo");
 
-  equal(functionOrNil(Foo), Foo, "Class defination must be a function");
-  equal(classOrNil(Foo), Foo, "Class defination must be a class");
+  equal(functionOrNil(Foo), Foo, "Class definition must be a function");
+  equal(classOrNil(Foo), Foo, "Class definition must be a class");
   equal(mapOrNil(foo), foo, "Class instance must be a map");
   equal(foo.sayHi(), "Hello World John Rambo", "Error invoking method on class instance");
   equal(foo.name, "John Rambo", "Invalid constructor initialization");
@@ -363,7 +363,7 @@ test("Inherit from a singleton", function() {
 
   var bar = new Bar();
 
-  equal(classOrNil(Bar), Bar, "Class defination must be a class");
+  equal(classOrNil(Bar), Bar, "Class definition must be a class");
   equal(bar.sayHi, Bar.sayHi, "Static method must be the same on both class and class instance");
   equal(bar.sayHi, Foo.sayHi, "Static method must be the same on both class and class instance");
   equal(Foo.sayHi, Bar.sayHi, "Static method must be the same on both class");

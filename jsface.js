@@ -118,14 +118,19 @@
     // construct constructor
     clazz  = singleton ? {} : (constructor ? constructor : function(){});
 
+    // make sure parent is always an array
+    parent = !parent || arrayOrNil(parent) ? parent : [ parent ];
+    len = parent && parent.length;
+
+    if ( !singleton && len) {
+      clazz.prototype             = classOrNil(parent[0]) ? new parent[0] : parent[0];
+      clazz.prototype.constructor = clazz;
+    }
+
     // determine bindTo: where api should be bound
     bindTo = singleton ? clazz : clazz.prototype;
 
-    // make sure parent is always an array
-    parent = !parent || arrayOrNil(parent) ? parent : [ parent ];
-
     // do inherit
-    len = parent && parent.length;
     while (i < len) {
       p = parent[i++];
       for (key in p) {
@@ -152,7 +157,6 @@
       p = parent && parent[0] || parent;
       clazz.$super  = p;
       clazz.$superp = p && p.prototype ? p.prototype : p;
-      bindTo.$class = clazz;
     }
 
     for (key in plugins) { plugins[key](clazz, parent, api); }                 // pass control to plugins
