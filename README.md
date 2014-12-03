@@ -62,11 +62,11 @@ person.toString();                               // "Rika/20"
 var Student = Class(Person, {
   constructor: function(id, name, age) {
     this.id = id;
-    Student.$super.call(this, name, age);    // Invoke parent's constructor
+    Student.$super.call(this, name, age);        // Call parent's constructor
   },
 
   toString: function() {
-    return this.id + "/" + Student.$superp.toString.call(this); // Invoke parent's toString method
+    return this.id + "/" + Student.$superp.toString.call(this); // Call parent's toString method
   }
 });
 
