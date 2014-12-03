@@ -9,8 +9,8 @@
   	"package.json",
   	"README.md",
   	"Gruntfile.js",
-    "dist/*",
-    "samples/*",
-    "test/*"
+    "dist",
+    "samples",
+    "test"
   ]
 }
