@@ -1,3 +1,16 @@
 {
-  "name": "jsface"
+  "name": "jsface",
+  "version": "2.3.0",
+  "main": "jsface.js",
+  "ignore": [
+  	".gitignore",
+  	".travis.yml",
+  	"CHANGELOG.txt",
+  	"package.json",
+  	"README.md",
+  	"Gruntfile.js",
+    "dist/*",
+    "samples/*",
+    "test/*"
+  ]
 }
