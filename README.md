@@ -29,7 +29,9 @@ bower install jsface
 
 #### dnsjs
 
+``` javascript
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jsface/2.4.0/jsface.js"></script>
+```
 
 #### Manually
 
