@@ -8,20 +8,18 @@ module.exports = function(grunt) {
 
     watch: {
       files: [ 'test/tests/*.js', 'test/*.html', '*.js', 'samples/*.js' ],
-      tasks: [ 'clean', 'qunit', 'concat', 'copy', 'uglify' ]
+      tasks: [ 'clean', 'qunit', 'copy', 'uglify' ]
     },
 
     uglify: {
       options: {
         report: 'gzip',
-        banner: '/*\n * JSFace Object Oriented Programming Library.\n * Copyright (c) 2009-2013 Tan Nhu, http://lnkd.in/tnhu\n */\n'
+        banner: '/*\n * JSFace Object Oriented Programming Library.\n * Copyright (c) Tan Nhu, http://lnkd.in/tnhu\n */\n'
       },
       my_target: {
         files: {
           'dist/jsface.min.js':          [ 'jsface.js' ],
-          'dist/jsface.ready.min.js':    [ 'jsface.ready.js' ],
-          'dist/jsface.pointcut.min.js': [ 'jsface.pointcut.js' ],
-          'dist/jsface.all.min.js':      [ 'jsface.js', 'jsface.ready.js', 'jsface.pointcut.js' ]
+          'dist/jsface.pointcut.min.js': [ 'jsface.pointcut.js' ]
         }
       }
     },
@@ -31,15 +29,8 @@ module.exports = function(grunt) {
     copy: {
       main: {
         files: [
-          { src: [ './jsface.js', './jsface.pointcut.js', './jsface.ready.js' ], dest: 'dist/', filter: 'isFile' }
+          { src: [ './jsface.js', './jsface.pointcut.js' ], dest: 'dist/', filter: 'isFile' }
         ]
-      }
-    },
-
-    concat: {
-      dist: {
-        src : [ 'jsface.js', 'jsface.ready.js', 'jsface.pointcut.js' ],
-        dest: 'dist/jsface.all.js'
       }
     }
   });
@@ -49,7 +40,6 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-clean');
-  grunt.loadNpmTasks('grunt-contrib-concat');
 
-  grunt.registerTask('default', [ 'clean', 'qunit', 'concat', 'copy', 'uglify' ]);
+  grunt.registerTask('default', [ 'clean', 'qunit', 'copy', 'uglify' ]);
 };

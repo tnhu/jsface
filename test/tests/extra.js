@@ -34,7 +34,6 @@ asyncTest("CommonJS support", function() {
     ok(exports.mapOrNil, "mapOrNil must be available in exports");
     ok(exports.arrayOrNil, "arrayOrNil must be available in exports");
     ok(exports.functionOrNil, "functionOrNil must be available in exports");
-    ok(exports.stringOrNil, "stringOrNil must be available in exports");
     ok(exports.classOrNil, "classOrNil must be available in exports");
     delete context.module;
   });

@@ -337,15 +337,17 @@ test("Pointcut over native method", function() {
 });
 
 test("Pointcuts over static methods", function() {
+  var num = 0;
   var Counter = Class({
-    constructor: function(num) {
-      this.num = num;
+    constructor: function(_num) {
+      num = _num;
     },
+
     $statics: {
       counter: 0,
 
       inc: function(n) {
-        this.num += n;
+        num += n;
       }
     }
   });
@@ -353,21 +355,21 @@ test("Pointcuts over static methods", function() {
   Counter = pointcut(Counter, {
     inc: {
       before: function(n) {
-        this.num += n;
+        num += n;
         Counter.counter += 1;
       },
       after: function(n) {
-        this.num += n;
+        num += n;
         Counter.counter += 1;
       }
     }
   });
 
   var p = new Counter(100);
-  p.inc(1);
-  Counter.inc(0);
-  equal(p.num, 103, "Pointcut over static methods works incorrectly");
-  equal(Counter.counter, 4, "Pointcut over static methods works incorrectly");
+  Counter.inc(1);
+
+  equal(num, 103, "Pointcut over static methods works incorrectly");
+  equal(p.counter, undefined, "Pointcut over static methods works incorrectly");
 });
 
 test("Pointcuts over instances", function() {
@@ -551,7 +553,6 @@ test("Remove a pointcut over static method", function() {
   Person = pointcut(Person, advisor);
   Person = pointcut(Person, "remove");
 
-  equal(impl.$statics.foo, Person.prototype.foo, "Removing pointcut over prototype method unsuccessfully");
   equal(impl.$statics.foo, Person.foo, "Removing pointcut over static method unsuccessfully");
 });
 
@@ -574,6 +575,5 @@ test("Remove a pointcut over static method, remove advisor", function() {
   Person = pointcut(Person, advisor);
   Person = pointcut(Person, "remove", advisor);
 
-  equal(impl.$statics.foo, Person.prototype.foo, "Removing pointcut over prototype method unsuccessfully");
   equal(impl.$statics.foo, Person.foo, "Removing pointcut over static method unsuccessfully");
 });
