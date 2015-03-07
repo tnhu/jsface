@@ -2,7 +2,7 @@
  * JSFace Object Oriented Programming Library - Plug and Play pointcut plugin
  * https://github.com/tnhu/jsface
  *
- * Copyright (c) 2009-2012 Tan Nhu
+ * Copyright (c) Tan Nhu
  * Licensed under MIT license (https://github.com/tnhu/jsface/blob/master/LICENSE.txt).
  */
 (function(context) {
@@ -17,8 +17,6 @@
       AFTER         = "___after_fns___",
       ORIGIN        = "___origin_fn___",
       ADVISOR       = "___advisors___",
-      INVALID       = "Invalid ",
-      NON_FUNC      = "Non-function property named ",
       noop          = function(){};
 
   /**
@@ -130,14 +128,16 @@
       for (c in collection) {
         key          = c/1 == c ? collection[c] : c;
         iConstructor = (key === "constructor");
-        iStatic      = iClass && bindTo[key] === clazz[key];
-        fn           = restore(iConstructor && iClass && clazz || bindTo[key], advisor);
+        iStatic      = iClass && clazz[key];
 
-        constructor = constructor || (iConstructor && fn);
-        if (fn && !iConstructor) {
-          bindTo[key] = fn;
-          if (iStatic) {
-            clazz[key] = fn;
+        if (key === "constructor" && iClass) {
+          constructor = restore(iClass, advisor);;
+        } else {
+          if (clazz[key]) {
+            clazz[key] = restore(clazz[key], advisor);
+          }
+          if (bindTo[key]) {
+            bindTo[key] = restore(bindTo[key], advisor);
           }
         }
       }
@@ -147,15 +147,10 @@
       if ( !advisor) {                                                         // type 1: "remove"
         constructor = iClass && (clazz === clazz[WRAPPER]) && clazz[ORIGIN];
         for (var name in bindTo) {
-          var fn      = bindTo[name],
-              iStatic = iClass && bindTo[name] === clazz[name];
-
-          bindTo[name] = restore(fn) || bindTo[name];
-
-          // restore static method
-          if (iStatic) {
-            clazz[name] = bindTo[name];
-          }
+          bindTo[name] = restore(bindTo[name]) || bindTo[name];
+        }
+        for (var name in clazz) {
+          clazz[name] = restore(clazz[name]) || clazz[name];
         }
       } else {                                                                 // type 2: "remove", advisor
         doRestore(advisor, advisor);
@@ -164,7 +159,7 @@
       keys = opts.replace(re, "").split(" ");
       doRestore(keys);
     } else {
-      throw INVALID + "params";
+      throw "Invalid params";
     }
     return constructor || clazz;
   }
@@ -173,14 +168,14 @@
    * Apply pointcut to a subject.
    */
   jsface.pointcut = function pointcut(clazz, opts) {
-    var iClass    = functionOrNil(clazz),
+    var iClass    = classOrNil(clazz) || functionOrNil(clazz),
         iInstance = mapOrNil(clazz),
         iRemove   = (/^remove ?/.exec(opts) !== null),
         advisor   = iRemove && arguments[2],
         bindTo, method, pointcuts;
 
     if ( !(iClass || iInstance) || !(mapOrNil(opts) || iRemove)) {
-      throw INVALID + "params";
+      throw "Invalid params";
     }
     bindTo = iClass ? clazz.prototype : clazz;
 
@@ -194,32 +189,38 @@
 
       var before = mapOrNil(pointcuts) && !pointcuts.before ? noop : pointcuts.before,
           after  = mapOrNil(pointcuts) && !pointcuts.after ? noop : pointcuts.after,
-          isStatic;
+          isStatic, found = false;
 
       // check if before & after are valid
       if ( !functionOrNil(before)) {
-        throw INVALID + method + ":before";
+        throw "Invalid " + method + ":before";
       }
       if ( !functionOrNil(after)) {
-        throw INVALID + method + ":after";
+        throw "Invalid " + method + ":after";
       }
 
       if (iInstance) {
         if (functionOrNil(bindTo[method])) {
           bindTo[method] = wrap(bindTo[method], before, after, opts);
         } else {
-          throw NON_FUNC + method;
+          throw "Non-function property named " + method + " on instance";
         }
       } else {
         if (method === "constructor") {
           clazz = wrap(clazz, before, after, opts);
         } else {
-          if (functionOrNil(bindTo[method])) {
-            isStatic = iClass && bindTo[method] === clazz[method];
+          if (functionOrNil(clazz[method])) {     // static method
+            clazz[method] = wrap(clazz[method], before, after, opts);
+            found = true;
+          }
+
+          if (functionOrNil(bindTo[method])) {  // normal (non-static) method
             bindTo[method] = wrap(bindTo[method], before, after, opts);
-            if (isStatic) { clazz[method] = bindTo[method]; }
-          } else {
-            throw NON_FUNC + method;
+            found = true;
+          }
+
+          if ( !found) {
+            throw "Non-function property named " + method + " on class";
           }
         }
       }

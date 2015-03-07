@@ -142,7 +142,7 @@ test("Check type with jsface.classOrNil", function() {
 
   equal(classOrNil(Foo), Foo, "jsface.classOrNil works incorrectly on an empty class");
   equal(classOrNil(Bar), Bar, "jsface.classOrNil works incorrectly on a simple class");
-  equal(classOrNil(Util), null, "jsface.classOrNil works incorrectly a singleton class (singleton is a map, not a class)");
+  equal(classOrNil(Util), Util, "jsface.classOrNil works incorrectly a singleton class (singleton is a map, not a class)");
 });
 
 // --------- CLASS --------- //
@@ -307,8 +307,65 @@ test("Static methods", function() {
   var bar = new Bar("John Rambo");
 
   equal(Bar.sayBye(), "Bye!", "Error invoking static method");
-  equal(bar.sayBye(), "Bye!", "Error invoking static method from class instance");
-  equal(bar.sayBye, Bar.sayBye, "Static method must be the same on both class and class instance");
+  equal(bar.sayBye, undefined, "Static method should not be on instance level");
+});
+
+test("Static methods should be inherited accordingly", function() {
+  var Foo = Class({
+    fooField: 100,
+
+    constructor: function(name) {
+      this.name = name;
+    },
+
+    fooMethod: function() {
+      return "fooMethod";
+    },
+
+    $statics: {
+      fooStaticMethod: function() {
+       return "fooStaticMethod";
+      }
+    }
+  });
+
+  var Bar = Class(Foo, {
+    barField: 200,
+
+    constructor: function(name) {
+      this.name = name;
+    },
+
+    barMethod: function() {
+      return "barMethod";
+    },
+
+    $statics: {
+      barStaticMethod: function() {
+       return "barStaticMethod";
+      }
+    }
+  });
+
+  equal(Foo.fooStaticMethod(), "fooStaticMethod", "Static method is not created properly");
+  equal(Bar.fooStaticMethod(), "fooStaticMethod", "Static method is not inherited properly");
+  equal(Bar.barStaticMethod(), "barStaticMethod", "Static method is not created properly");
+
+  var foo = new Foo("Tom");
+      bar = new Bar("John Rambo");
+
+  equal(foo.name, "Tom", "Invalid class creation");
+  equal(foo.fooField, 100, "Invalid class creation");
+  equal(foo.fooMethod(), "fooMethod", "Invalid class creation");
+  equal(foo.fooStaticMethod, undefined, "Static method should not be on instance");
+
+  equal(bar.name, "John Rambo", "Invalid class creation");
+  equal(bar.fooField, 100, "Invalid class creation");
+  equal(bar.barField, 200, "Invalid class creation");
+  equal(bar.fooMethod(), "fooMethod", "Invalid class creation");
+  equal(bar.barMethod(), "barMethod", "Invalid class creation");
+  equal(bar.fooStaticMethod, undefined, "Static method should not be on instance");
+  equal(bar.barStaticMethod, undefined, "Static method should not be on instance");
 });
 
 test("Singleton class", function() {
@@ -320,7 +377,7 @@ test("Singleton class", function() {
         }
       });
 
-  equal(mapOrNil(Foo), Foo, "Singleton class must be a map object");
+  equal(classOrNil(Foo), Foo, "Singleton class must be a a class");
   equal(Foo.sayHi(), "Hello World", "Error invoking method on singleton class");
 });
 
@@ -341,7 +398,7 @@ test("Singleton inheritance", function() {
         }
       });
 
-  equal(mapOrNil(Bar), Bar, "Singleton class must be a map object");
+  equal(classOrNil(Bar), Bar, "Singleton class must be a a class");
   equal(Bar.sayHi(), "Hello World", "Error invoking method on singleton class");
   equal(Bar.sayBye(), "Bye!", "Error invoking method on singleton class");
 });
@@ -364,12 +421,68 @@ test("Inherit from a singleton", function() {
   var bar = new Bar();
 
   equal(classOrNil(Bar), Bar, "Class definition must be a class");
-  equal(bar.sayHi, Bar.sayHi, "Static method must be the same on both class and class instance");
-  equal(bar.sayHi, Foo.sayHi, "Static method must be the same on both class and class instance");
+  equal(bar.sayHi, undefined, "Static method from parent class should not be available on child instance");
+  equal(Foo.sayHi(), "Hello World", "Error invoking method on singleton class");
+  equal(Bar.sayHi(), "Hello World", "Static method should be available on child class");
   equal(Foo.sayHi, Bar.sayHi, "Static method must be the same on both class");
-  equal(Bar.sayHi(), "Hello World", "Error invoking method on singleton class");
-  equal(bar.sayHi(), "Hello World", "Error invoking method on singleton class");
   equal(bar.sayBye(), "Bye!", "Error invoking method on class");
+});
+
+
+test("Override singleton method", function() {
+  var Foo = Class({
+    $singleton: true,
+
+    hi: function() {
+      return "hi";
+    },
+
+    bye: function() {
+      return "bye";
+    }
+  });
+
+  var Bar = Class(Foo, {
+    $singleton: true,
+
+    // override hi
+    hi: function() {
+      return "override-hi";
+    }
+  });
+
+  equal(Foo.hi(), "hi", "Error invoking method on singleton class");
+  equal(Foo.bye(), "bye", "Static method should be available on child class");
+  equal(Bar.hi(), "override-hi", "Error invoking method on singleton class");
+  equal(Foo.bye(), "bye", "Static method should be available on child class");
+});
+
+test("Override singleton method and call parent method", function() {
+  var Foo = Class({
+    $singleton: true,
+
+    hi: function() {
+      return "hi";
+    },
+
+    bye: function() {
+      return "bye";
+    }
+  });
+
+  var Bar = Class(Foo, {
+    $singleton: true,
+
+    // override hi
+    hi: function() {
+      return "override-" + Bar.$super.hi.call(this);
+    }
+  });
+
+  equal(Foo.hi(), "hi", "Error invoking method on singleton class");
+  equal(Foo.bye(), "bye", "Static method should be available on child class");
+  equal(Bar.hi(), "override-hi", "Error invoking method on singleton class");
+  equal(Foo.bye(), "bye", "Static method should be available on child class");
 });
 
 test("Mixin: class extends class", function() {
@@ -583,9 +696,12 @@ test("Mixin: class extends singleton", function() {
 
   var bar = new Bar("John Rambo");
 
-  equal(bar.welcome(), "Welcome John Rambo", "Invalid extend() behavior, property must be overriden properly");
-  equal(bar.sayHi(), "Hello World John Rambo", "Invalid extend() behavior");
+  ok(functionOrNil(Bar.welcome), "Static method is not copied when extending");
+  ok(functionOrNil(Bar.sayHi), "Static method is not copied when extending");
+
+  equal(bar.welcome(), "invalid", "Invalid extend() behavior, property must be overriden properly");
   equal(bar.sayBye(), "Bye!", "Invalid extend() behavior");
+  equal(bar.sayHi, undefined, "Invalid extend() behavior");
 });
 
 test("Mixin: singleton extends class", function() {
@@ -668,10 +784,10 @@ test("Mixin: class extends both class and instance", function() {
       });
 
   var Events = Class({
-        bind: function(event, fn) {
+        _bind: function(event, fn) {
           return true;
         },
-        unbind: function(event, fn) {
+        _unbind: function(event, fn) {
           return false;
         }
       });
@@ -689,36 +805,34 @@ test("Mixin: class extends both class and instance", function() {
 
   equal(foo.name, "Bar", "Invalid extend() behavior, constructor must be bound correctly");
   equal(foo.opts, "nothing", "Invalid extend() behavior, constructor must be bound correctly");
-  equal(Foo.bind(), true, "Invalid extend() behavior");
-  equal( !Foo.unbind(), true, "Invalid extend() behavior");
-  equal(foo.bind(), true, "Invalid extend() behavior");
-  equal( !foo.unbind(), true, "Invalid extend() behavior");
+  equal(Foo._bind(), true, "Invalid extend() behavior");
+  equal( !Foo._unbind(), true, "Invalid extend() behavior");
+  equal(foo._bind, undefined, "Static method can't be copied to instance");
+  equal(foo._unbind, undefined, "Static method can't be copied to instance");
 });
 
 test("Mixin: extending native objects", function() {
   extend(String, {
-    trim: function() {
+    myTrim: function() {
       return this.replace(/^\s+|\s+$/g, "");
     }
   });
 
-  equal("    Hello World   ".trim(), "Hello World", "Invalid extend() binding String.prototype");
+  ok(String.myTrim, "Extend does not work properly");
+  equal(String.prototype.myTrim, undefined, "Extend does not work properly");
+  equal(String.myTrim.apply("    Hello World   "), "Hello World", "Invalid extend() binding String.prototype");
 
-  extend(Array, {
-    sum: function() {
-      var s = 0, len = this.length;
-      while (len--) {
-        s += this[len];
-      }
-      return s;
+  delete String.myTrim;
+
+  extend(String.prototype, {
+    myTrim: function() {
+      return this.replace(/^\s+|\s+$/g, "");
     }
   });
 
-  var a = [ 1, 2, 3, 4, 5 ];
-  ok(a.sum, "Invalid extend() binding native object");
-  ok(Array.sum, "Invalid extend() binding native object");
-  ok(Array.prototype.sum, "Invalid extend() binding native object");
-  equal(a.sum(), 15, "Invalid extend() binding native object");
+  ok(String.prototype.myTrim, "Extend does not work properly");
+  equal(String.myTrim, undefined, "Extend does not work properly");
+  equal("    Hello World   ".myTrim(), "Hello World", "Invalid extend() binding String.prototype");
 });
 
 test("Mixin: extending native objects (prototype only)", function() {
@@ -768,7 +882,28 @@ test("Test public static void main ;-)", function() {
   equal(undefined, Person.prototype.main, "main must not bound to Person.prototype");
 });
 
-// --------- PLUGINS --------- //
+
+test("Test instanceof", function() {
+  var Person = Class({
+    constructor: function(name) {
+      this.name = name;
+    }
+  });
+
+  var Student = Class(Person, {
+    constructor: function(id, name) {
+      this.id = id;
+      Person.call(this, name);
+    }
+  });
+
+  var p = new Person("Tom"),
+      s = new Student(1, "Mary");
+
+  ok(p instanceof Person, "class fails to test instanceof");
+  ok(s instanceof Person, "class fails to test instanceof");
+  ok(s instanceof Student, "class fails to test instanceof");
+});
 
 test("Develop a Class plugin", function() {
   var Logger = Class({
@@ -787,4 +922,69 @@ test("Develop a Class plugin", function() {
   equal(functionOrNil(Foo.prototype.log), Foo.prototype.log, "Class plugins mechanism works incorrectly");
   equal(functionOrNil(foo.log), foo.log, "Class plugins mechanism works incorrectly");
   delete Class.plugins.$log;
+});
+
+test("$ready plugin: class notifies itself", function() {
+  var notified = false;
+
+  var Foo = Class({
+    $ready: function(clazz, parent, api) {
+      notified = true;
+      equal(this, clazz, "clazz must be equal to this");
+      ok(functionOrNil(api.$ready), "$ready works incorrectly");
+      ok(functionOrNil(api.echo), "$ready works incorrectly");
+      ok(functionOrNil(clazz.prototype.echo), "$ready works incorrectly");
+      ok( !parent, "$ready works incorrectly");
+    },
+    echo: function(o) {
+      return o;
+    }
+  });
+
+  ok(notified, "$ready must be executed");
+});
+
+test("$ready plugin: class is notified when its subclasses are ready", function() {
+  var notified = false;
+
+  var Foo = Class({
+    $ready: function(clazz, parent, api) {
+      notified = true;
+
+      if (this !== clazz) {
+        ok(api.echo2, "$ready works incorrectly");
+        ok( !api.$ready, "$ready works incorrectly");
+        ok(functionOrNil(clazz.prototype.echo2), "$ready works incorrectly");
+      }
+    },
+    echo: function(o) {
+      return o;
+    }
+  });
+
+  ok(notified, "$ready must be executed when class is created");
+
+  var Bar = Class(Foo, {
+    echo2: function(o) {
+      return o;
+    }
+  });
+});
+
+test("$ready plugin: class is notified when its subclasses are ready (multiple levels)", function() {
+  var count = 0;
+
+  var Foo = Class({
+    $ready: function(clazz, parent, api) {
+      if (this !== clazz) {
+        count++;
+      }
+    }
+  });
+
+  var Bar1 = Class(Foo, {});
+  var Bar2 = Class(Bar1, {});
+  var Bar3 = Class(Bar2, {});
+
+  ok(count === 3, "$ready must be executed in multiple level inheritance");
 });

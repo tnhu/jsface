@@ -1,6 +1,7 @@
 ![Benchmark result](https://lh5.googleusercontent.com/-2dQo8ttjn48/T2KVyppgd2I/AAAAAAAADQw/GvEpE5MIYUo/s956/Screen%2520Shot%25202012-03-15%2520at%25206.21.04%2520PM.png "Benchmark")
 
 [![Build Status](https://secure.travis-ci.org/tannhu/jsface.svg?branch=master)](http://travis-ci.org/tannhu/jsface)
+
 ## Features
 
 * Small footprint, no dependency, 0.7K minimized+gzip!
@@ -14,15 +15,31 @@
 
 JSFace supports both server side (CommonJS) and client side JavaScript (browser).
 
-Browser:
+### Browser
 
-``` html
-<script src="jsface.js" type="text/javascript"></script>
+#### bower
+
+``` sh
+bower install jsface
 ```
 
-JSFace introduces two global variables: jsface and Class. Other APIs are under jsface namespace.
+``` html
+<script src="bower_components/jsface/jsface.js"></script>
+```
 
-In NodeJS environment, first install JSFace via npm:
+#### dnsjs
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jsface/2.4.0/jsface.js"></script>
+
+#### Manually
+
+``` html
+<script src="jsface.js"></script>
+```
+
+### NodeJS environment
+
+First install JSFace via npm:
 
 ``` sh
 npm install jsface
@@ -36,7 +53,7 @@ var jsface = require("jsface"),
     extend = jsface.extend;
 ```
 
-## API
+## Usage
 
 ### Define a class
 
@@ -112,8 +129,6 @@ Util.echo(2012);                                 // 2012
 
 ### Static properties
 
-JSFace supports Java-style static properties. Meaning they are accessible on both class and instance levels.
-
 ``` javascript
 var Person = Class({
   $statics: {
@@ -131,12 +146,9 @@ var Person = Class({
   }
 });
 
-var person = new Person("Rika", 20);
-
-Person.MIN_AGE === person.MIN_AGE;               // true
-Person.MAX_AGE === person.MAX_AGE;               // true
+Person.MIN_AGE === 1;                            // true
+Person.MAX_AGE === 150;                          // true
 Person.isValidAge(0);                            // false
-person.isValidAge(person.age);                   // true
 ```
 
 ### Private properties
@@ -262,7 +274,7 @@ AOP support is implemented as a standalone plugin.
 Browser:
 
 ``` html
-<script src="jsface.pointcut.js" type="text/javascript"></script>
+<script src="jsface.pointcut.js"></script>
 ```
 
 then in your code, make an alias to jsface.pointcut:
@@ -345,29 +357,14 @@ Person = poincut(Person, "remove");
 
 ### $ready
 
-$ready plugin is designed to help parent classes to intercept their subclasses' creation. If a class uses $ready,
-it notifies itself.
-
-#### Setup
-
-Browser:
-
-``` html
-<script src="jsface.ready.js" type="text/javascript"></script>
-```
-
-NodeJS:
-
-``` javascript
-var ready = require("jsface.ready");
-```
+$ready plugin is designed to help a parent class to intercept their subclasses' creation.
 
 #### Sample
 
 ``` javascript
 var Service = Class({
   $ready: function(clazz, parent, api) {
-    var type = (this !== clazz) && api.type;
+    var type = (this !== clazz) && api.type;     // (this !== clazz) means this comes from a sub-class
 
     switch (type) {
       case "session":
@@ -395,7 +392,7 @@ Have a bug? Please [create an issue here](https://github.com/tannhu/jsface/issue
 
 ## License
 
-Copyright (c) 2009-2013 Tan Nhu
+Copyright (c) Tan Nhu
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

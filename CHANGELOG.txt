@@ -1,3 +1,12 @@
+v2.4.0                                              Mar 07, 2015
+----------------------------------------------------------------
+* Remove static properties from instance (#25). Class level only
+* Integrate jsface.$ready plugin into core
+* Remove jsface.stringOrNil, sorry if it breaks ;-)
+* Fix (#26) - Thanks Freddy Snijder!
+* Fix (#12)
+* More unit tests
+
 v2.3.0                                              Dec 02, 2014
 ----------------------------------------------------------------
 * Fix instanceof (#20)
