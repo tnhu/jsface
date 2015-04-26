@@ -1,3 +1,7 @@
+v2.4.1                                              Apr 25, 2015
+----------------------------------------------------------------
+* Merge Milos Zikic's getter/setter support
+
 v2.4.0                                              Mar 07, 2015
 ----------------------------------------------------------------
 * Remove static properties from instance (#25). Class level only
