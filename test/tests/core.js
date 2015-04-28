@@ -368,6 +368,74 @@ test("Static methods should be inherited accordingly", function() {
   equal(bar.barStaticMethod, undefined, "Static method should not be on instance");
 });
 
+test("Properties - getters and setters", function() {
+
+  var Person = Class({
+    constructor : function(name) {
+      this._name = name;
+    },
+    name : {
+      get : function() {
+        return this._name;
+      },
+      set : function(value) {
+        this._name = value;
+      }
+    }
+  });
+
+  var person = new Person("Milos");
+
+  equal(person.name, "Milos", "Invalid property getter");
+
+  person.name = "Boki";
+
+  equal(person.name, "Boki", "Invalid property setter");
+
+});
+
+test("Properties - getters and setters - inheritance", function() {
+
+  var Person = Class({
+    constructor : function(name) {
+      this._name = name;
+    },
+    name : {
+      get : function() {
+        return this._name;
+      },
+      set : function(value) {
+        this._name = value;
+      }
+    }
+  });
+
+  var Student = Class(Person, {
+    constructor : function(name, age) {
+      Student.$super.call(this, name);
+      this._age = age;
+    },
+    age : {
+      get : function() {
+        return this._age;
+      },
+      set : function(value) {
+        this._age = value;
+      }
+    }
+  });
+
+  var student = new Student("Mia", 18);
+
+  equal(student.name, "Mia", "Bad property inheritance");
+
+  student.name = "Persa";
+
+  equal(student.name, "Persa", "Bad property inheritance");
+  equal(student.age, 18, "Invalid property getter");
+
+});
+
 test("Singleton class", function() {
   var Foo = Class({
         $singleton: true,
