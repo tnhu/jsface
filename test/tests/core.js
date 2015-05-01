@@ -369,7 +369,6 @@ test("Static methods should be inherited accordingly", function() {
 });
 
 test("Properties - getters and setters", function() {
-
   var Person = Class({
     constructor : function(name) {
       this._name = name;
@@ -391,11 +390,28 @@ test("Properties - getters and setters", function() {
   person.name = "Boki";
 
   equal(person.name, "Boki", "Invalid property setter");
-
 });
 
-test("Properties - getters and setters - inheritance", function() {
+test("Properties - skip getters and setters", function() {
+  var Person = Class({
+    name : undefined,
 
+    setName: function(name) {
+      this.name = name;
+    }
+  });
+
+  var person = new Person();
+
+  equal(person.name, undefined, "Invalid property getter");
+
+  person.setName("Boki");
+
+  equal(person.name, "Boki", "Invalid property setter");
+});
+
+
+test("Properties - getters and setters - inheritance", function() {
   var Person = Class({
     constructor : function(name) {
       this._name = name;
@@ -495,7 +511,6 @@ test("Inherit from a singleton", function() {
   equal(Foo.sayHi, Bar.sayHi, "Static method must be the same on both class");
   equal(bar.sayBye(), "Bye!", "Error invoking method on class");
 });
-
 
 test("Override singleton method", function() {
   var Foo = Class({

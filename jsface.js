@@ -159,7 +159,8 @@
     for (key in api) {
       if ( !ignoredKeys[key]) {
         var prop = api[key];
-        if (prop.get || prop.set) {                 // check if it is a property descriptor
+
+        if (prop && (prop.get || prop.set)) {                 // check if it is a property descriptor
           Object.defineProperty(bindTo, key, prop);
         } else {
           bindTo[key] = prop;
