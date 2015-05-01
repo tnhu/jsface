@@ -158,7 +158,13 @@
     // copy properties from api to bindTo
     for (key in api) {
       if ( !ignoredKeys[key]) {
-        bindTo[key] = api[key];
+        var prop = api[key];
+
+        if (prop && (prop.get || prop.set)) {                 // check if it is a property descriptor
+          Object.defineProperty(bindTo, key, prop);
+        } else {
+          bindTo[key] = prop;
+        }
       }
     }
 
