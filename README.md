@@ -69,10 +69,10 @@ var Person = Class({
   // Getter/Setter
   address: {
     get: function() {
-        return this.address;
+      return this.address;
     },
     set: function(value) {
-        this.address = value;
+      this.address = value;
     }
   },
 
