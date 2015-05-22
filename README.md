@@ -65,6 +65,16 @@ var Person = Class({
     this.name = name;
     this.age  = age;
   },
+  
+  // Getter/Setter
+  address: {
+    get: function() {
+        return this.address;
+    },
+    set: function(value) {
+        this.address = value;
+    }
+  },
 
   toString: function() {
     return this.name + "/" + this.age;
