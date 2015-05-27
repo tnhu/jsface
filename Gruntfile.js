@@ -3,7 +3,7 @@ module.exports = function(grunt) {
     pkg: grunt.file.readJSON('package.json'),
 
     qunit: {
-      all: [ 'test/*.html' ]
+      all: [ 'test/index.html' ]
     },
 
     watch: {
@@ -13,7 +13,7 @@ module.exports = function(grunt) {
 
     uglify: {
       options: {
-        report: 'gzip',
+        compress: { warnings: false },
         banner: '/*\n * JSFace Object Oriented Programming Library.\n * Copyright (c) Tan Nhu, http://lnkd.in/tnhu\n */\n'
       },
       my_target: {
