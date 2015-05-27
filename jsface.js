@@ -95,15 +95,16 @@
       parent = (api = parent, 0); // !api means there's no parent
     }
 
+    // TODO remove $statics, use $static instead
     var clazz, constructor, singleton, statics, key, bindTo, len, i = 0, p,
-        ignoredKeys = { constructor: 1, $singleton: 1, $statics: 1, prototype: 1, $super: 1, $superp: 1, main: 1, toString: 0 },
+        ignoredKeys = { constructor: 1, $singleton: 1, $static:1, $statics: 1, prototype: 1, $super: 1, $superp: 1, main: 1, toString: 0 },
         plugins     = Class.plugins,
         rootParent, parentClass, Stub;
 
     api         = (typeof api === "function" ? api() : api) || {};             // execute api if it's a function
     constructor = api.hasOwnProperty("constructor") ? api.constructor : 0;     // hasOwnProperty is a must, constructor is special
     singleton   = api.$singleton;
-    statics     = api.$statics;
+    statics     = api.$statics || api.$static;
 
     // add plugins' keys into ignoredKeys
     for (key in plugins) { ignoredKeys[key] = 1; }
@@ -127,7 +128,7 @@
 
         Stub.prototype                    = parentClass.prototype;
         Stub.prototype.constructor        = Stub;
-        clazz.prototype                   = new Stub;
+        clazz.prototype                   = new Stub();
         clazz.prototype.constructor       = clazz;       // restoring proper constructor for child class
         parentClass.prototype.constructor = parentClass; // restoring proper constructor for parent class
       }
@@ -146,7 +147,7 @@
           clazz[key] = p[key];
         }
       }
-      if ( !singleton && i != 0) {
+      if ( !singleton && i !== 0) {
         for (key in p.prototype) {
           if ( !ignoredKeys[key]) {
             bindTo[key] = p.prototype[key];

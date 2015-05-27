@@ -297,7 +297,7 @@ test("Static methods", function() {
           this.name = name;
         },
 
-        $statics: {
+        $static: {
           sayBye: function() {
            return "Bye!";
           }
@@ -322,7 +322,7 @@ test("Static methods should be inherited accordingly", function() {
       return "fooMethod";
     },
 
-    $statics: {
+    $static: {
       fooStaticMethod: function() {
        return "fooStaticMethod";
       }
@@ -340,7 +340,7 @@ test("Static methods should be inherited accordingly", function() {
       return "barMethod";
     },
 
-    $statics: {
+    $static: {
       barStaticMethod: function() {
        return "barStaticMethod";
       }
@@ -801,7 +801,7 @@ test("Mixin: singleton extends class", function() {
       });
 
   var Bar = Class({
-        $statics: {
+        $static: {
           sample: 1,
           fn: function() { return 2; }
         },
