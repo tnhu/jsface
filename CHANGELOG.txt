@@ -1,3 +1,11 @@
+v2.4.5                                              May 26, 2015
+----------------------------------------------------------------
+* Rename $static to $statics ($statics will be removed in 2.5.0)
+
+v2.4.2                                              May 22, 2015
+----------------------------------------------------------------
+* Fix undefined issue caused by getter/setter impl
+
 v2.4.1                                              Apr 25, 2015
 ----------------------------------------------------------------
 * Merge Milos Zikic's getter/setter support
