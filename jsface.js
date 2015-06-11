@@ -85,6 +85,26 @@
   }
 
   /**
+   * To make object fully immutable, freeze each object inside it.
+   * @param object to deep freeze
+   */
+  function deepFreeze(object) {
+    var prop, propKey;
+    Object.freeze(object); // first freeze the object
+    for (propKey in object) {
+      prop = object[propKey];
+      if (!object.hasOwnProperty(propKey) || !(typeof prop === 'object') || Object.isFrozen(prop)) {
+        // If the object is on the prototype, not an object, or is already frozen,
+        // skip it. Note that this might leave an unfrozen reference somewhere in the
+        // object if there is an already frozen object containing an unfrozen object.
+        continue;
+      }
+
+      deepFreeze(prop); // recursively call deepFreeze
+    }
+  }
+
+  /**
    * Create a class.
    * @param parent parent class(es)
    * @param api class api
@@ -96,13 +116,14 @@
     }
 
     // TODO remove $statics, use $static instead
-    var clazz, constructor, singleton, statics, key, bindTo, len, i = 0, p,
-        ignoredKeys = { constructor: 1, $singleton: 1, $static:1, $statics: 1, prototype: 1, $super: 1, $superp: 1, main: 1, toString: 0 },
+    var clazz, consts, constructor, singleton, statics, key, bindTo, len, i = 0, p,
+        ignoredKeys = { constructor: 1, $const: 1, $singleton: 1, $static:1, $statics: 1, prototype: 1, $super: 1, $superp: 1, main: 1, toString: 0 },
         plugins     = Class.plugins,
         rootParent, parentClass, Stub;
 
     api         = (typeof api === "function" ? api() : api) || {};             // execute api if it's a function
     constructor = api.hasOwnProperty("constructor") ? api.constructor : 0;     // hasOwnProperty is a must, constructor is special
+    consts      = api.$const;
     singleton   = api.$singleton;
     statics     = api.$statics || api.$static;
 
@@ -172,6 +193,15 @@
     // copy static properties from statics to clazz
     for (key in statics) {
       clazz[key] = statics[key];
+    }
+
+    // copy immutable properties from consts to clazz and freeze them recursively
+    for (key in consts) {
+      Object.defineProperty(clazz, key, { configurable: true, enumerable: true, writable: false, value: consts[key] });
+
+      if ((typeof clazz[key] === 'object') && !Object.isFrozen(clazz[key])) {
+        deepFreeze(clazz[key]); // if property is an unfrozen object, freeze it recursively
+      }
     }
 
     // add $super and $superp to refer to parent class and parent.prototype (if applied)
