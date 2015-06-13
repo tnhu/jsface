@@ -197,7 +197,7 @@
 
     // copy immutable properties from consts to clazz and freeze them recursively
     for (key in consts) {
-      Object.defineProperty(clazz, key, { configurable: true, enumerable: true, writable: false, value: consts[key] });
+      Object.defineProperty(clazz, key, { enumerable: true, value: consts[key] }); // enumerable for proper inheritance
 
       if ((typeof clazz[key] === 'object') && !Object.isFrozen(clazz[key])) {
         deepFreeze(clazz[key]); // if property is an unfrozen object, freeze it recursively
