@@ -13,8 +13,16 @@ var Options = Class({
 });
 
 var Foo = Class({
-   $statics: {
+   $static: {
       VERSION: "1.3"
+   },
+
+   $const: {
+      CONSTANT: "frozen value",
+      Namespace: {
+         FIRST_OPTION: "first option",
+         SECOND_OPTION: "second option"
+      }
    },
 
    constructor: function(name) {
