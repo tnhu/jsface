@@ -245,7 +245,7 @@
 
     $const: function (clazz, parent, api) {
       var key,
-          consts  = api.$const;
+          consts = api.$const;
 
       // copy immutable properties from consts to clazz and freeze them recursively
       for (key in consts) {
