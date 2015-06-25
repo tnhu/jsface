@@ -179,6 +179,7 @@ var Person = Class({
     this.age  = age;
   }
 });
+
 Person.MIN_AGE = -1;
 Person.MIN_AGE === 1;                            // true, MIN_AGE is immutable
 ```
