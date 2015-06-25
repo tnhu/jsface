@@ -116,14 +116,13 @@
     }
 
     // TODO remove $statics, use $static instead
-    var clazz, consts, constructor, singleton, statics, key, bindTo, len, i = 0, p,
-        ignoredKeys = { constructor: 1, $const: 1, $singleton: 1, $static:1, $statics: 1, prototype: 1, $super: 1, $superp: 1, main: 1, toString: 0 },
+    var clazz, constructor, singleton, statics, key, bindTo, len, i = 0, p,
+        ignoredKeys = { constructor: 1, $singleton: 1, $static:1, $statics: 1, prototype: 1, $super: 1, $superp: 1, main: 1, toString: 0 },
         plugins     = Class.plugins,
         rootParent, parentClass, Stub;
 
     api         = (typeof api === "function" ? api() : api) || {};             // execute api if it's a function
     constructor = api.hasOwnProperty("constructor") ? api.constructor : 0;     // hasOwnProperty is a must, constructor is special
-    consts      = api.$const;
     singleton   = api.$singleton;
     statics     = api.$statics || api.$static;
 
@@ -195,15 +194,6 @@
       clazz[key] = statics[key];
     }
 
-    // copy immutable properties from consts to clazz and freeze them recursively
-    for (key in consts) {
-      Object.defineProperty(clazz, key, { enumerable: true, value: consts[key] }); // enumerable for proper inheritance
-
-      if ((typeof clazz[key] === 'object') && !Object.isFrozen(clazz[key])) {
-        deepFreeze(clazz[key]); // if property is an unfrozen object, freeze it recursively
-      }
-    }
-
     // add $super and $superp to refer to parent class and parent.prototype (if applied)
     p = parent && rootParent || parent;
     clazz.$super  = p;
@@ -250,6 +240,20 @@
         r.call(clazz, clazz, parent, api);  // invoke ready from current class
         readyFns.push([ clazz,  r ]);
         readyCount++;
+      }
+    },
+
+    $const: function (clazz, parent, api) {
+      var key,
+          consts  = api.$const;
+
+      // copy immutable properties from consts to clazz and freeze them recursively
+      for (key in consts) {
+        Object.defineProperty(clazz, key, { enumerable: true, value: consts[key] }); // enumerable for proper inheritance
+
+        if ((typeof clazz[key] === 'object') && !Object.isFrozen(clazz[key])) {
+          deepFreeze(clazz[key]); // if property is an unfrozen object, freeze it recursively
+        }
       }
     }
   };
