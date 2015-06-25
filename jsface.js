@@ -85,6 +85,26 @@
   }
 
   /**
+   * To make object fully immutable, freeze each object inside it.
+   * @param object to deep freeze
+   */
+  function deepFreeze(object) {
+    var prop, propKey;
+    Object.freeze(object); // first freeze the object
+    for (propKey in object) {
+      prop = object[propKey];
+      if (!object.hasOwnProperty(propKey) || !(typeof prop === 'object') || Object.isFrozen(prop)) {
+        // If the object is on the prototype, not an object, or is already frozen,
+        // skip it. Note that this might leave an unfrozen reference somewhere in the
+        // object if there is an already frozen object containing an unfrozen object.
+        continue;
+      }
+
+      deepFreeze(prop); // recursively call deepFreeze
+    }
+  }
+
+  /**
    * Create a class.
    * @param parent parent class(es)
    * @param api class api
@@ -220,6 +240,20 @@
         r.call(clazz, clazz, parent, api);  // invoke ready from current class
         readyFns.push([ clazz,  r ]);
         readyCount++;
+      }
+    },
+
+    $const: function (clazz, parent, api) {
+      var key,
+          consts  = api.$const;
+
+      // copy immutable properties from consts to clazz and freeze them recursively
+      for (key in consts) {
+        Object.defineProperty(clazz, key, { enumerable: true, value: consts[key] }); // enumerable for proper inheritance
+
+        if ((typeof clazz[key] === 'object') && !Object.isFrozen(clazz[key])) {
+          deepFreeze(clazz[key]); // if property is an unfrozen object, freeze it recursively
+        }
       }
     }
   };

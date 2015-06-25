@@ -291,6 +291,114 @@ test("Multiple level class inheritance", function() {
   equal(child.sayHi(), "Hello John Rambo", "Subclass must be able to invoke parent method");
 });
 
+test("Constants", function() {
+  var Bar = Class({
+    constructor: function(name) {
+      this.name = name;
+    },
+
+    $const: {
+      CONSTANT: 1,
+      OBJECT: {
+        C1: "c1",
+        C2: "c2",
+        C3: {
+          C31: "c31"
+        }
+      }
+    }
+  });
+
+  var bar = new Bar("Constants");
+
+  equal(Bar.CONSTANT, 1, "Error getting constant");
+  equal(Bar.OBJECT.C1, "c1", "Error getting object constant");
+  equal(bar.CONSTANT, undefined, "Constant should not be on instance level");
+  equal(bar.OBJECT, undefined, "Object constant should not be on instance level");
+
+  Bar.CONSTANT = 2;
+
+  equal(Bar.CONSTANT, 1, "Error, constant value was changed");
+
+  Bar.OBJECT.C3.C31 = "foo";
+
+  equal(Bar.OBJECT.C3.C31, "c31", "Error, object constant value was changed");
+});
+
+test("Constants - inheritance", function() {
+  var Foo = Class({
+    fooField: 100,
+
+    constructor: function(name) {
+      this.name = name;
+    },
+
+    fooMethod: function() {
+      return "fooMethod";
+    },
+
+    $const: {
+      FOO_CONST: "fooConst",
+      OVERRIDDEN_CONST: "originalValue",
+      OBJECT_CONST: {
+        FIRST: "first",
+        SECOND: "second",
+        THIRD: {
+          THIRD_FIRST: "thirdFirst",
+          THIRD_SECOND: "thirdSecond"
+        }
+      }
+    }
+  });
+
+  var Bar = Class(Foo, {
+    barField: 200,
+
+    constructor: function(name) {
+      this.name = name;
+    },
+
+    barMethod: function() {
+      return "barMethod";
+    },
+
+    $const: {
+      BAR_CONST: "barConst",
+      OVERRIDDEN_CONST: "overriddenValue"
+    }
+  });
+
+  equal(Foo.FOO_CONST, "fooConst", "Constant is not created properly");
+  equal(Bar.FOO_CONST, "fooConst", "Constant is not inherited properly");
+  equal(Bar.BAR_CONST, "barConst", "Constant is not created properly");
+  equal(Foo.OVERRIDDEN_CONST, "originalValue", "Constant is not created properly");
+  equal(Bar.OVERRIDDEN_CONST, "overriddenValue", "Constant is not overridden properly");
+  equal(Bar.OBJECT_CONST.FIRST, "first", "Constant is not inherited properly");
+  equal(Bar.OBJECT_CONST.THIRD.THIRD_SECOND, "thirdSecond", "Constant is not inherited properly");
+
+  Bar.OBJECT_CONST.THIRD.THIRD_SECOND = "bar";
+
+  equal(Bar.OBJECT_CONST.THIRD.THIRD_SECOND, "thirdSecond", "Error, object constant value was changed");
+
+  var foo = new Foo("Tom");
+  var bar = new Bar("John Rambo");
+
+  equal(foo.name, "Tom", "Invalid class creation");
+  equal(foo.fooField, 100, "Invalid class creation");
+  equal(foo.fooMethod(), "fooMethod", "Invalid class creation");
+  equal(foo.FOO_CONST, undefined, "Constant should not be on instance");
+
+  equal(bar.name, "John Rambo", "Invalid class creation");
+  equal(bar.fooField, 100, "Invalid class creation");
+  equal(bar.barField, 200, "Invalid class creation");
+  equal(bar.fooMethod(), "fooMethod", "Invalid class creation");
+  equal(bar.barMethod(), "barMethod", "Invalid class creation");
+  equal(bar.FOO_CONST, undefined, "Constant should not be on instance");
+  equal(bar.BAR_CONST, undefined, "Constant should not be on instance");
+  equal(bar.OVERRIDDEN_CONST, undefined, "Constant should not be on instance");
+  equal(bar.OBJECT_CONST, undefined, "Constant should not be on instance");
+});
+
 test("Static methods", function() {
   var Bar = Class({
         constructor: function(name) {
