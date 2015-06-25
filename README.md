@@ -163,6 +163,27 @@ Person.MAX_AGE === 150;                          // true
 Person.isValidAge(0);                            // false
 ```
 
+### Constants
+
+Constants work the same as static properties. The only different is they are immutable.
+
+``` javascript
+var Person = Class({
+  $const: {
+    MIN_AGE: 1,
+    MAX_AGE: 150
+  },
+
+  constructor: function(name, age) {
+    this.name = name;
+    this.age  = age;
+  }
+});
+Person.MIN_AGE = -1;
+Person.MIN_AGE === 1;                            // true, MIN_AGE is immutable
+```
+
+
 ### Private properties
 
 JSFace supports private static properties, meaning the properties are shared over instances.
