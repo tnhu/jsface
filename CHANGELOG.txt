@@ -1,3 +1,7 @@
+v2.4.6                                              Jun 24, 2015
+----------------------------------------------------------------
+* Implement $const plugin (thanks to Federico Budassi)
+
 v2.4.5                                              May 26, 2015
 ----------------------------------------------------------------
 * Rename $static to $statics ($statics will be removed in 2.5.0)
