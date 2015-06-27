@@ -8,7 +8,7 @@
 * Super fast! See [benchmark](http://jsperf.com/oop-benchmark/6).
 * Work on both server and client side.
 * Support CommonJS.
-* Support main, singleton, mixin, private properties, Aspect Oriented Programming.
+* Support getter/setter, constant, main, singleton, mixin, private properties, Aspect Oriented Programming.
 * Plugins mechanism to extend itself.
 
 ## Setup
