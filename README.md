@@ -30,7 +30,7 @@ bower install jsface
 #### dnsjs
 
 ``` javascript
-<script src="https://cdn.jsdelivr.net/jsface/2.4.7/jsface.min.js"></script>
+<script src="https://cdn.jsdelivr.net/jsface/2.4.8/jsface.min.js"></script>
 ```
 
 #### Manually
