@@ -1,6 +1,6 @@
 {
   "name": "jsface",
-  "version": "2.4.6",
+  "version": "2.4.9",
   "main": "jsface.js",
   "ignore": [
     ".gitignore",
