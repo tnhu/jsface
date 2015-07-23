@@ -182,6 +182,7 @@
         var prop = api[key];
 
         if (prop && (prop.get || prop.set)) {                 // check if it is a property descriptor
+          prop.enumerable = true;
           Object.defineProperty(bindTo, key, prop);
         } else {
           bindTo[key] = prop;

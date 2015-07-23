@@ -502,7 +502,7 @@ test("Properties - getters and setters", function() {
 
 test("Properties - skip getters and setters", function() {
   var Person = Class({
-    name : undefined,
+    name: undefined,
 
     setName: function(name) {
       this.name = name;
@@ -518,32 +518,31 @@ test("Properties - skip getters and setters", function() {
   equal(person.name, "Boki", "Invalid property setter");
 });
 
-
 test("Properties - getters and setters - inheritance", function() {
   var Person = Class({
-    constructor : function(name) {
+    constructor: function(name) {
       this._name = name;
     },
-    name : {
-      get : function() {
+    name: {
+      get: function() {
         return this._name;
       },
-      set : function(value) {
+      set: function(value) {
         this._name = value;
       }
     }
   });
 
   var Student = Class(Person, {
-    constructor : function(name, age) {
+    constructor: function(name, age) {
       Student.$super.call(this, name);
       this._age = age;
     },
-    age : {
-      get : function() {
+    age: {
+      get: function() {
         return this._age;
       },
-      set : function(value) {
+      set: function(value) {
         this._age = value;
       }
     }
@@ -557,7 +556,53 @@ test("Properties - getters and setters - inheritance", function() {
 
   equal(student.name, "Persa", "Bad property inheritance");
   equal(student.age, 18, "Invalid property getter");
+});
 
+test("Properties - getters and setters - inheritance and mixins", function() {
+  var Person = Class({
+    constructor: function(name) {
+      this._name = name;
+    },
+    name: {
+      get: function() {
+        return this._name;
+      },
+      set: function(value) {
+        this._name = value;
+      }
+    }
+  });
+
+  var Options = Class({
+    option: {
+      get: function() {
+        return this._option;
+      },
+      set: function(value) {
+        this._option = value;
+      }
+    }
+  });
+
+  var Student = Class([Person, Options], {
+    constructor: function(name, age) {
+      Student.$super.call(this, name);
+      this._age = age;
+    },
+    age: {
+      get: function() {
+        return this._age;
+      },
+      set: function(value) {
+        this._age = value;
+      }
+    }
+  });
+
+  var student = new Student("Mia", 18);
+  student.option = 'some option';
+
+  equal(student.option, 'some option', 'Getter/setter does not work properly with mixin');
 });
 
 test("Singleton class", function() {
