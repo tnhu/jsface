@@ -5,7 +5,7 @@
  * Copyright (c) Tan Nhu
  * Licensed under MIT license (https://github.com/tnhu/jsface/blob/master/LICENSE.txt)
  */
-(function(context, OBJECT, NUMBER, LENGTH, toString, readyFns, readyCount, undefined, oldClass, jsface) {
+(function(context, OBJECT, NUMBER, LENGTH, toString, readyFns, readyCount, undefined, oldClass, oldJsface, jsface) {
   /**
    * Return a map itself or null. A map is a set of { key: value }
    * @param obj object to be checked
@@ -272,9 +272,14 @@
   if (typeof module !== "undefined" && module.exports) {                       // NodeJS/CommonJS
     module.exports = jsface;
   } else {
-    oldClass          = context.Class;                                         // save current Class namespace
-    context.Class     = Class;                                                 // bind Class and jsface to global scope
+    oldClass          = context.Class;                                       // save current Class namespace
+    context.Class     = Class;                                               // bind Class and jsface to global scope
+    oldJsface         = context.jsface;                                      // save current jsface namespace
     context.jsface    = jsface;
-    jsface.noConflict = function() { context.Class = oldClass; };              // no conflict
+    jsface.noConflict = function() {
+       context.Class = oldClass;
+       context.jsface = oldJsface;                                           // restore global jsface
+       return jsface;
+    };              // no conflict
   }
 })(this, "object", "number", "length", Object.prototype.toString, [], 0);
