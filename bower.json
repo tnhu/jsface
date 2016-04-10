@@ -1,6 +1,6 @@
 {
   "name": "jsface",
-  "version": "2.4.9",
+  "version": "2.4.10",
   "main": "jsface.js",
   "ignore": [
     ".gitignore",
@@ -8,7 +8,7 @@
     "CHANGELOG.txt",
     "package.json",
     "README.md",
-    "Gruntfile.js",
+    "gulpfile.js",
     "dist",
     "samples",
     "test"
