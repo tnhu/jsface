@@ -1,9 +1,9 @@
-var context       = this,
-    extend        = jsface.extend,
+/*global jsface, test, document, window, equal, Class, ok*/
+
+var extend        = jsface.extend,
     mapOrNil      = jsface.mapOrNil,
     arrayOrNil    = jsface.arrayOrNil,
     functionOrNil = jsface.functionOrNil,
-    stringOrNil   = jsface.stringOrNil,
     classOrNil    = jsface.classOrNil;
 
 // --------- UTILITIES --------- //
@@ -460,7 +460,7 @@ test("Static methods should be inherited accordingly", function() {
   equal(Bar.barStaticMethod(), "barStaticMethod", "Static method is not created properly");
 
   var foo = new Foo("Tom");
-      bar = new Bar("John Rambo");
+  var bar = new Bar("John Rambo");
 
   equal(foo.name, "Tom", "Invalid class creation");
   equal(foo.fooField, 100, "Invalid class creation");
@@ -986,10 +986,10 @@ test("Mixin: class extends multiple classes", function() {
       });
 
   var Events = Class({
-        bind: function(event, fn) {
+        bind: function() {
           return true;
         },
-        unbind: function(event, fn) {
+        unbind: function() {
           return false;
         }
       });
@@ -1020,10 +1020,10 @@ test("Mixin: class extends both class and instance", function() {
       });
 
   var Events = Class({
-        _bind: function(event, fn) {
+        _bind: function() {
           return true;
         },
-        _unbind: function(event, fn) {
+        _unbind: function() {
           return false;
         }
       });
@@ -1148,9 +1148,9 @@ test("Develop a Class plugin", function() {
     }
   });
 
-  Class.plugins.$log = function(clazz, parent, api) {
+  Class.plugins.$log = function(clazz) {
     extend(clazz, Logger);
-  }
+  };
 
   var Foo = Class();
   var foo = new Foo();
@@ -1163,7 +1163,7 @@ test("Develop a Class plugin", function() {
 test("$ready plugin: class notifies itself", function() {
   var notified = false;
 
-  var Foo = Class({
+  Class({
     $ready: function(clazz, parent, api) {
       notified = true;
       equal(this, clazz, "clazz must be equal to this");
@@ -1200,7 +1200,7 @@ test("$ready plugin: class is notified when its subclasses are ready", function(
 
   ok(notified, "$ready must be executed when class is created");
 
-  var Bar = Class(Foo, {
+  Class(Foo, {
     echo2: function(o) {
       return o;
     }
@@ -1211,7 +1211,7 @@ test("$ready plugin: class is notified when its subclasses are ready (multiple l
   var count = 0;
 
   var Foo = Class({
-    $ready: function(clazz, parent, api) {
+    $ready: function(clazz) {
       if (this !== clazz) {
         count++;
       }
@@ -1220,7 +1220,24 @@ test("$ready plugin: class is notified when its subclasses are ready (multiple l
 
   var Bar1 = Class(Foo, {});
   var Bar2 = Class(Bar1, {});
-  var Bar3 = Class(Bar2, {});
+  Class(Bar2, {});
 
-  ok(count === 3, "$ready must be executed in multiple level inheritance");
+  equal(count, 3, "$ready must be executed in multiple level inheritance");
+});
+
+test("Default contructor should invoke its parent constructor", function() {
+  var Person = Class({
+    constructor: function(id, name) {
+      this.id = id;
+      this.name = name;
+    }
+  });
+
+  var Student = Class(Person, {
+  });
+
+  var s = new Student(1, 'John');
+
+  equal(s.id, 1, "parent constructor must be called");
+  equal(s.name, "John", "parent constructor must be called");
 });

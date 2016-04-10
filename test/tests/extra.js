@@ -50,7 +50,6 @@ asyncTest("noConflict support", function() {
     equal(Class(), 1, "noConflict works incorrectly");
 
     getScript("../jsface.js", function() {});
-    getScript("../jsface.ready.js", function() {});
     getScript("../jsface.pointcut.js", function() {});
   });
 });

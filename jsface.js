@@ -40,10 +40,8 @@
    * @param value value
    * @param ignoredKeys ignored keys
    * @param object object
-   * @param iClass true if object is a class
-   * @param oPrototype object prototype
    */
-  function copier(key, value, ignoredKeys, object, iClass, oPrototype) {
+  function copier(key, value, ignoredKeys, object) {
     if ( !ignoredKeys || !ignoredKeys.hasOwnProperty(key)) {
       object[key] = value;
     }
@@ -63,7 +61,7 @@
 
       var iClass     = classOrNil(object),
           isSubClass = classOrNil(subject),
-          oPrototype = object.prototype, supez, key, proto;
+          oPrototype = object.prototype, key, proto;
 
       // copy static properties and prototype.* to object
       if (mapOrNil(subject) || iClass) {
@@ -93,7 +91,7 @@
     Object.freeze(object); // first freeze the object
     for (propKey in object) {
       prop = object[propKey];
-      if (!object.hasOwnProperty(propKey) || !(typeof prop === 'object') || Object.isFrozen(prop)) {
+      if (!object.hasOwnProperty(propKey) || (typeof prop !== 'object') || Object.isFrozen(prop)) {
         // If the object is on the prototype, not an object, or is already frozen,
         // skip it. Note that this might leave an unfrozen reference somewhere in the
         // object if there is an already frozen object containing an unfrozen object.
@@ -122,20 +120,24 @@
         rootParent, parentClass, Stub;
 
     api         = (typeof api === "function" ? api() : api) || {};             // execute api if it's a function
-    constructor = api.hasOwnProperty("constructor") ? api.constructor : 0;     // hasOwnProperty is a must, constructor is special
+    constructor = api.hasOwnProperty("constructor") ? api.constructor : null;  // hasOwnProperty is a must, constructor is special
     singleton   = api.$singleton;
     statics     = api.$statics || api.$static;
 
     // add plugins' keys into ignoredKeys
     for (key in plugins) { ignoredKeys[key] = 1; }
 
-    // construct constructor
-    clazz  = singleton ? function(){} : (constructor ? constructor : function(){});
-
-    // make sure parent is always an array
+    // make sure parent be always an array
     parent = !parent || parent instanceof Array ? parent : [ parent ];
     len = parent && parent.length;
     rootParent = parent[0];
+
+    // construct constructor
+    clazz = singleton ? function(){} : (constructor ? constructor : function(){
+      if (rootParent) {
+        rootParent.apply(this, arguments);
+      }
+    });
 
     if ( !singleton && len) {
       parentClass = rootParent.prototype && rootParent === rootParent.prototype.constructor && rootParent;
