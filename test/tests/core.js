@@ -605,6 +605,29 @@ test("Properties - getters and setters - inheritance and mixins", function() {
   equal(student.option, 'some option', 'Getter/setter does not work properly with mixin');
 });
 
+test("Properties - getters and setters - inherit from parent", function() {
+  var Person = Class({
+    constructor: function(name) {
+      this.user = {name: 'John'};
+    },
+    name: {
+      get: function() {
+        return this.user.name;
+      }
+    }
+  });
+
+ try {
+   var Student = Class(Person, {
+     constructor: function(name, age) {
+       Student.$super.call(this, name);
+     }
+   });
+  } catch (e) {
+   throw "Wrong getter inheritance"; 
+  }
+});
+
 test("Singleton class", function() {
   var Foo = Class({
         $singleton: true,

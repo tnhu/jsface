@@ -117,7 +117,7 @@
     var clazz, constructor, singleton, statics, key, bindTo, len, i = 0, p,
         ignoredKeys = { constructor: 1, $singleton: 1, $static:1, $statics: 1, prototype: 1, $super: 1, $superp: 1, main: 1, toString: 0 },
         plugins     = Class.plugins,
-        rootParent, parentClass, Stub;
+        rootParent, parentClass, Stub, descriptor;
 
     api         = (typeof api === "function" ? api() : api) || {};             // execute api if it's a function
     constructor = api.hasOwnProperty("constructor") ? api.constructor : null;  // hasOwnProperty is a must, constructor is special
@@ -172,7 +172,8 @@
       if ( !singleton && i !== 0) {
         for (key in p.prototype) {
           if ( !ignoredKeys[key]) {
-            bindTo[key] = p.prototype[key];
+            descriptor = Object.getOwnPropertyDescriptor(p.prototype, key);                                    // Fix #37
+            bindTo[key] = (descriptor && (descriptor.get || descriptor.set)) ? descriptor : p.prototype[key]; 
           }
         }
       }
