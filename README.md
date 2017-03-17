@@ -143,7 +143,7 @@ Util.echo(2012);                                 // 2012
 
 ``` javascript
 var Person = Class({
-  $static: {
+  $statics: {
     MIN_AGE:   1,
     MAX_AGE: 150,
 
